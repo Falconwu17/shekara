@@ -130,6 +130,9 @@ class IncidentDesk:
             hops.append(Hop(incident_id, inc.origin_bank, inc.kind, link.hop_no + 1, ref))
         return hops
 
+    def has(self, incident_id: str) -> bool:
+        return incident_id in self._incidents
+
     def my_segment(self, incident_id: str) -> dict:
         """Свой сегмент: только свои счета и свои звенья."""
         inc = self._incidents[incident_id]
