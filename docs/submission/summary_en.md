@@ -2,7 +2,7 @@
 
 *Track: AI for Finance (anti-fraud) and Digital Banking (AML/regtech). Type: MVP with demo and an analytical solution with experimental metrics.*
 
-**Problem.** In 2024 Kazakhstan registered over 22,000 cases of online fraud — about half of all fraud; victims lost about KZT 45 billion and only about KZT 2 billion was recovered (Ministry of Internal Affairs). Acting as a money mule has been a criminal offence since September 2025 (Art. 232-1 of the Criminal Code), and the National Bank's anti-fraud centre has operated since July 2024. Funds stolen through social engineering move through chains of mule accounts at different banks. Each bank sees one link only, so its fraud model cannot recognise the scheme, and banking-secrecy and personal-data law rule out pooling the data.
+**Problem.** In 2024 Kazakhstan registered more than 17,000 cases of online fraud — about half of all fraud; victims lost about KZT 45 billion and only about KZT 2 billion was recovered (Ministry of Internal Affairs). Acting as a money mule has been a criminal offence since September 2025 (Art. 232-1 of the Criminal Code), and the National Bank's anti-fraud centre has operated since July 2024. Funds stolen through social engineering move through chains of mule accounts at different banks. Each bank sees one link only, so its fraud model cannot recognise the scheme, and banking-secrecy and personal-data law rule out pooling the data.
 
 **Solution.** SHEKARA is a protocol and a graph-based model that lets banks detect mule networks together. Customer records never leave a bank. The bank that holds an account sends a minimal risk estimate (a score or a short noisy vector) only to banks whose customers had real credited transfers with that account; during the day a request is possible only by quoting such a transfer. The receiving bank checks an incoming credit without network calls, and a suspicious chain is traced through the next banks along credited transfers. Each bank sees only its own segment; only a mandated operator (the NBK anti-fraud centre) assembles the full chain. Exchange goes through a hub with a hash-chained log, and the regulator chooses the disclosure level.
 
@@ -12,4 +12,4 @@
 
 **Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 20 automated pre-submission checks passing. Open-source code: https://github.com/Falconwu17/shekara. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
 
-**Team.** [Names, roles, university, supervisor.]
+**Team.** [Authors, roles, university]. Supervisor: Akmaral Kassymova.

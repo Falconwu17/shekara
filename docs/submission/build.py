@@ -160,7 +160,7 @@ ANNOTATION_RU = """# ШЕКАРА: межбанковское выявление
 
 *Трек: AI for Finance (антифрод) и Digital Banking (AML/regtech). Тип работы: MVP с демо и аналитическое решение с экспериментальными метриками.*
 
-**Проблема.** В 2024 году в Казахстане зарегистрировано свыше 22 тыс. случаев интернет-мошенничества — около половины всех мошенничеств; жертвы потеряли около 45 млрд ₸, а вернуть удалось около 2 млрд ₸ (МВД; источники — docs/sources.md). С сентября 2025 года дропперство — уголовное преступление (ст. 232-1 УК РК), с июля 2024 года работает Антифрод-центр НБК. Средства жертв социальной инженерии проходят через цепочки счетов-дропов в разных банках. Каждый банк видит лишь одно звено, поэтому его антифрод-модель не распознаёт схему. Объединить данные банков нельзя из-за банковской тайны и законодательства о персональных данных.
+**Проблема.** В 2024 году в Казахстане зарегистрировано более 17 тыс. случаев интернет-мошенничества — около половины всех мошенничеств; жертвы потеряли около 45 млрд ₸, а вернуть удалось около 2 млрд ₸ (МВД; источники — docs/sources.md). С сентября 2025 года дропперство — уголовное преступление (ст. 232-1 УК РК), с июля 2024 года работает Антифрод-центр НБК. Средства жертв социальной инженерии проходят через цепочки счетов-дропов в разных банках. Каждый банк видит лишь одно звено, поэтому его антифрод-модель не распознаёт схему. Объединить данные банков нельзя из-за банковской тайны и законодательства о персональных данных.
 
 **Решение.** ШЕКАРА — протокол и графовая модель, с которыми банки совместно выявляют сети дропов. Клиентские записи не покидают банк. Банк-владелец счёта рассылает минимальную оценку риска (балл или короткий зашумлённый вектор) только тем банкам, с клиентами которых у счёта были реальные зачисленные переводы, а днём запрос возможен только по ссылке на такой перевод. Банк-получатель проверяет входящее зачисление без сетевых запросов, подозрительная цепочка трассируется по следующим банкам по зачисленным переводам. Каждый банк видит только свой сегмент, полную цепочку собирает только оператор с мандатом (антифрод-центр НБК). Обмен идёт через хаб с журналом на хэш-цепочке, уровень раскрытия выбирает регулятор.
 
@@ -170,14 +170,14 @@ ANNOTATION_RU = """# ШЕКАРА: межбанковское выявление
 
 **Готовность и внедрение.** Работающий прототип: шлюзы банков с правилом need-to-know и квотами, хаб с журналом, проверка при зачислении, трассировка и дерево оператора на реальном тестовом паттерне, дашборд; 20 автоматических проверок перед подачей пройдены. Открытый код: {repo}. TRL 4. Следующий этап — пилот с двумя банками в регуляторной песочнице НБК / АРРФР.
 
-**Команда.** [Имена, роли, вуз, научный руководитель.]
+**Команда.** [Имена авторов, роли, вуз]. Научный руководитель — Касымова Акмарал Хамзиевна.
 """
 
 SUMMARY_EN = """# SHEKARA: cross-bank detection of money-mule networks without pooling customer data
 
 *Track: AI for Finance (anti-fraud) and Digital Banking (AML/regtech). Type: MVP with demo and an analytical solution with experimental metrics.*
 
-**Problem.** In 2024 Kazakhstan registered over 22,000 cases of online fraud — about half of all fraud; victims lost about KZT 45 billion and only about KZT 2 billion was recovered (Ministry of Internal Affairs). Acting as a money mule has been a criminal offence since September 2025 (Art. 232-1 of the Criminal Code), and the National Bank's anti-fraud centre has operated since July 2024. Funds stolen through social engineering move through chains of mule accounts at different banks. Each bank sees one link only, so its fraud model cannot recognise the scheme, and banking-secrecy and personal-data law rule out pooling the data.
+**Problem.** In 2024 Kazakhstan registered more than 17,000 cases of online fraud — about half of all fraud; victims lost about KZT 45 billion and only about KZT 2 billion was recovered (Ministry of Internal Affairs). Acting as a money mule has been a criminal offence since September 2025 (Art. 232-1 of the Criminal Code), and the National Bank's anti-fraud centre has operated since July 2024. Funds stolen through social engineering move through chains of mule accounts at different banks. Each bank sees one link only, so its fraud model cannot recognise the scheme, and banking-secrecy and personal-data law rule out pooling the data.
 
 **Solution.** SHEKARA is a protocol and a graph-based model that lets banks detect mule networks together. Customer records never leave a bank. The bank that holds an account sends a minimal risk estimate (a score or a short noisy vector) only to banks whose customers had real credited transfers with that account; during the day a request is possible only by quoting such a transfer. The receiving bank checks an incoming credit without network calls, and a suspicious chain is traced through the next banks along credited transfers. Each bank sees only its own segment; only a mandated operator (the NBK anti-fraud centre) assembles the full chain. Exchange goes through a hub with a hash-chained log, and the regulator chooses the disclosure level.
 
@@ -187,14 +187,14 @@ SUMMARY_EN = """# SHEKARA: cross-bank detection of money-mule networks without p
 
 **Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 20 automated pre-submission checks passing. Open-source code: {repo}. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
 
-**Team.** [Names, roles, university, supervisor.]
+**Team.** [Authors, roles, university]. Supervisor: Akmaral Kassymova.
 """
 
 
 def one_pager(n) -> str:
     return f"""# ШЕКАРА — одна страница
 
-**1. Проблема.** Деньги жертвы социальной инженерии за минуты проходят через 3–5 счетов-дропов в разных банках; каждый банк видит одно звено. 2024 год (МВД): свыше 22 тыс. случаев интернет-мошенничества, ≈ 45 млрд ₸ ущерба, возвращено ≈ 2 млрд ₸. Антифрод-центр НБК (с июля 2024) больше всего перехватывает на стороне банка-отправителя — именно там ШЕКАРА даёт наибольший прирост. На бенчмарке AMLworld: один банк видит {pct(n['share_seen'])} схемы, {pct(n['interbank'])} переводов отмывания пересекают границу банков, в {pct(n['prior'])} схем участвуют счета, уже бывшие в межбанковских переводах.
+**1. Проблема.** Деньги жертвы социальной инженерии за минуты проходят через 3–5 счетов-дропов в разных банках; каждый банк видит одно звено. 2024 год (МВД): более 17 тыс. случаев интернет-мошенничества, ≈ 45 млрд ₸ ущерба, возвращено ≈ 2 млрд ₸. Антифрод-центр НБК (с июля 2024) больше всего перехватывает на стороне банка-отправителя — именно там ШЕКАРА даёт наибольший прирост. На бенчмарке AMLworld: один банк видит {pct(n['share_seen'])} схемы, {pct(n['interbank'])} переводов отмывания пересекают границу банков, в {pct(n['prior'])} схем участвуют счета, уже бывшие в межбанковских переводах.
 
 **2. Для кого.** Антифрод- и AML-подразделения банков второго уровня; оператор межбанковского обмена (антифрод-центр НБК); далее МФО через ГКБ.
 
