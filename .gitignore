@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+.pip-cache/
 *.egg-info/
 
 # Data: датасет большой и не для git, а kaggle.json — секрет
