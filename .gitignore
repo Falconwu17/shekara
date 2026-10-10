@@ -28,3 +28,8 @@ Thumbs.db
 
 # Streamlit
 .streamlit/
+
+# Исследовательские прогоны: базы и баллы
+experiments/coverage/
+experiments/results/preds/
+experiments/results/check_preds/
