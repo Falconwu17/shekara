@@ -11,8 +11,8 @@
 | `dwell_med_h` | 20.7083 |
 | `pos_all` | 519 |
 | `pos_pp` | 98 |
-| `lat_inbound_ms` | 0.6677 |
-| `lat_query_ms` | 0.0014 |
+| `lat_inbound_ms` | 0.6640 |
+| `lat_query_ms` | 0.0068 |
 | `isolation|all_max|ap` | 0.3074 |
 | `isolation|all_max|ap_sd` | 0.0121 |
 | `isolation|all_max|f1` | 0.3940 |
