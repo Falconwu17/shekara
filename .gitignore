@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Data: датасет большой и не для git, а kaggle.json — секрет
+data/raw/
+data/processed/
+*.csv
+*.parquet
+kaggle.json
+.kaggle/
+
+# Эксперименты
+experiments/results/*.csv
+experiments/figures/*.png
+*.ckpt
+*.pt
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
