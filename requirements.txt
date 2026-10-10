@@ -1,0 +1,23 @@
+# Стек по разделу 3.2 docs/SHEKARA.md. Python 3.11+.
+# Сейчас для protocol/ и tests/ достаточно pytest; torch / torch-geometric нужны только
+# для model/ и экспериментов, их можно ставить после скачивания датасета.
+
+numpy>=1.26
+polars>=1.0           # коннектор (раздел 3.2, компонент 1)
+duckdb>=0.10           # локальный граф банка (компонент 2)
+pyarrow>=15            # обмен таблицами duckdb ↔ polars
+
+torch>=2.2             # GNN (компонент 3)
+torch-geometric>=2.5
+
+fastapi>=0.110          # шлюз и хаб (компоненты 4-5)
+uvicorn>=0.29
+opacus>=1.4             # RDP-accountant для epsilon (protocol/accountant.py)
+pynacl>=1.5             # подпись журнала, sealed boxes (protocol/hub.py)
+
+streamlit>=1.33          # дашборды (компонент 6)
+pyvis>=0.3
+
+matplotlib>=3.8          # графики эксперимента
+
+pytest>=8.0

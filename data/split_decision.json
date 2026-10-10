@@ -1,0 +1,147 @@
+{
+  "decided_on": "2026-10-10",
+  "rule": "docs/SHEKARA.md, раздел 3.3",
+  "seed": 0,
+  "full_days": [
+    "2022-09-01",
+    "2022-09-02",
+    "2022-09-03",
+    "2022-09-04",
+    "2022-09-05",
+    "2022-09-06",
+    "2022-09-07",
+    "2022-09-08",
+    "2022-09-09",
+    "2022-09-10"
+  ],
+  "tail_days": [
+    {
+      "day": "2022-09-11",
+      "n": 396,
+      "laundering_share": 0.5858585858585859
+    },
+    {
+      "day": "2022-09-12",
+      "n": 281,
+      "laundering_share": 0.604982206405694
+    },
+    {
+      "day": "2022-09-13",
+      "n": 184,
+      "laundering_share": 0.5760869565217391
+    },
+    {
+      "day": "2022-09-14",
+      "n": 121,
+      "laundering_share": 0.5785123966942148
+    },
+    {
+      "day": "2022-09-15",
+      "n": 46,
+      "laundering_share": 0.6086956521739131
+    },
+    {
+      "day": "2022-09-16",
+      "n": 46,
+      "laundering_share": 0.5652173913043478
+    },
+    {
+      "day": "2022-09-17",
+      "n": 23,
+      "laundering_share": 0.6521739130434783
+    },
+    {
+      "day": "2022-09-18",
+      "n": 11,
+      "laundering_share": 0.7272727272727273
+    }
+  ],
+  "train_days": [
+    "2022-09-01",
+    "2022-09-02",
+    "2022-09-03",
+    "2022-09-04",
+    "2022-09-05",
+    "2022-09-06"
+  ],
+  "val_days": [
+    "2022-09-07"
+  ],
+  "test_days": [
+    "2022-09-08",
+    "2022-09-09",
+    "2022-09-10"
+  ],
+  "n_participants": 30,
+  "participants": [
+    "070",
+    "012",
+    "010",
+    "001",
+    "020",
+    "003",
+    "007",
+    "0211",
+    "028",
+    "0116",
+    "011",
+    "022",
+    "00220",
+    "015",
+    "01292",
+    "023",
+    "0118",
+    "01362",
+    "006",
+    "0220",
+    "004",
+    "01420",
+    "00410",
+    "0214",
+    "0015",
+    "0213",
+    "01588",
+    "01674",
+    "01467",
+    "019"
+  ],
+  "n_candidates": [
+    {
+      "n": 5,
+      "expected_test_positives": 12.1,
+      "level1_patterns_train": 3,
+      "passes": false
+    },
+    {
+      "n": 8,
+      "expected_test_positives": 15.9,
+      "level1_patterns_train": 3,
+      "passes": false
+    },
+    {
+      "n": 10,
+      "expected_test_positives": 19.3,
+      "level1_patterns_train": 4,
+      "passes": false
+    },
+    {
+      "n": 15,
+      "expected_test_positives": 34.0,
+      "level1_patterns_train": 7,
+      "passes": false
+    },
+    {
+      "n": 20,
+      "expected_test_positives": 49.9,
+      "level1_patterns_train": 9,
+      "passes": false
+    },
+    {
+      "n": 30,
+      "expected_test_positives": 70.0,
+      "level1_patterns_train": 12,
+      "passes": false
+    }
+  ],
+  "bootstrap_by_patterns": true
+}

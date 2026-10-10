@@ -1,0 +1,2152 @@
+{
+  "daily": [
+    {
+      "day": "2022-09-01",
+      "n": 1114921,
+      "laundering_share": 0.0002888097004182359
+    },
+    {
+      "day": "2022-09-02",
+      "n": 754449,
+      "laundering_share": 0.0005407920217271148
+    },
+    {
+      "day": "2022-09-03",
+      "n": 207382,
+      "laundering_share": 0.0018854095340964981
+    },
+    {
+      "day": "2022-09-04",
+      "n": 207430,
+      "laundering_share": 0.0019621076989827894
+    },
+    {
+      "day": "2022-09-05",
+      "n": 482650,
+      "laundering_share": 0.0009758624261887496
+    },
+    {
+      "day": "2022-09-06",
+      "n": 482089,
+      "laundering_share": 0.0011014563700893403
+    },
+    {
+      "day": "2022-09-07",
+      "n": 482751,
+      "laundering_share": 0.001029516251649401
+    },
+    {
+      "day": "2022-09-08",
+      "n": 482773,
+      "laundering_share": 0.0011164667452405169
+    },
+    {
+      "day": "2022-09-09",
+      "n": 654467,
+      "laundering_share": 0.0007853719133279447
+    },
+    {
+      "day": "2022-09-10",
+      "n": 208325,
+      "laundering_share": 0.002121684867394696
+    },
+    {
+      "day": "2022-09-11",
+      "n": 396,
+      "laundering_share": 0.5858585858585859
+    },
+    {
+      "day": "2022-09-12",
+      "n": 281,
+      "laundering_share": 0.604982206405694
+    },
+    {
+      "day": "2022-09-13",
+      "n": 184,
+      "laundering_share": 0.5760869565217391
+    },
+    {
+      "day": "2022-09-14",
+      "n": 121,
+      "laundering_share": 0.5785123966942148
+    },
+    {
+      "day": "2022-09-15",
+      "n": 46,
+      "laundering_share": 0.6086956521739131
+    },
+    {
+      "day": "2022-09-16",
+      "n": 46,
+      "laundering_share": 0.5652173913043478
+    },
+    {
+      "day": "2022-09-17",
+      "n": 23,
+      "laundering_share": 0.6521739130434783
+    },
+    {
+      "day": "2022-09-18",
+      "n": 11,
+      "laundering_share": 0.7272727272727273
+    }
+  ],
+  "structure_train_days": {
+    "laundering_interbank_share": 0.9822134387351779,
+    "dwell_minutes": {
+      "n": 504,
+      "p10": 123.0,
+      "median": 1242.5,
+      "p90": 3980.0
+    },
+    "pattern_share_seen_by_one_bank": 0.2793430284110323,
+    "patterns_with_prior_interbank_accounts": 0.8227272727272728
+  },
+  "duplicate_rows": {
+    "groups": 9,
+    "rows_share": 3.545235331736533e-06
+  },
+  "transit_accounts": {
+    "train": 340,
+    "val": 43,
+    "test": 182
+  },
+  "touched_accounts": {
+    "train": 3471,
+    "val": 769,
+    "test": 2134
+  },
+  "nightly_volume_train": [
+    {
+      "owner": "001",
+      "recipient": "0015",
+      "releases": 2
+    },
+    {
+      "owner": "001",
+      "recipient": "00220",
+      "releases": 199
+    },
+    {
+      "owner": "001",
+      "recipient": "004",
+      "releases": 2
+    },
+    {
+      "owner": "001",
+      "recipient": "006",
+      "releases": 1
+    },
+    {
+      "owner": "001",
+      "recipient": "007",
+      "releases": 1
+    },
+    {
+      "owner": "001",
+      "recipient": "010",
+      "releases": 362
+    },
+    {
+      "owner": "001",
+      "recipient": "011",
+      "releases": 6
+    },
+    {
+      "owner": "001",
+      "recipient": "0116",
+      "releases": 1
+    },
+    {
+      "owner": "001",
+      "recipient": "012",
+      "releases": 227
+    },
+    {
+      "owner": "001",
+      "recipient": "01292",
+      "releases": 162
+    },
+    {
+      "owner": "001",
+      "recipient": "01362",
+      "releases": 162
+    },
+    {
+      "owner": "001",
+      "recipient": "01420",
+      "releases": 103
+    },
+    {
+      "owner": "001",
+      "recipient": "01467",
+      "releases": 100
+    },
+    {
+      "owner": "001",
+      "recipient": "015",
+      "releases": 2
+    },
+    {
+      "owner": "001",
+      "recipient": "01588",
+      "releases": 97
+    },
+    {
+      "owner": "001",
+      "recipient": "01674",
+      "releases": 94
+    },
+    {
+      "owner": "001",
+      "recipient": "020",
+      "releases": 4
+    },
+    {
+      "owner": "001",
+      "recipient": "0211",
+      "releases": 2
+    },
+    {
+      "owner": "001",
+      "recipient": "022",
+      "releases": 1
+    },
+    {
+      "owner": "001",
+      "recipient": "0220",
+      "releases": 1
+    },
+    {
+      "owner": "001",
+      "recipient": "023",
+      "releases": 5
+    },
+    {
+      "owner": "001",
+      "recipient": "070",
+      "releases": 211
+    },
+    {
+      "owner": "0015",
+      "recipient": "001",
+      "releases": 2
+    },
+    {
+      "owner": "0015",
+      "recipient": "006",
+      "releases": 107
+    },
+    {
+      "owner": "0015",
+      "recipient": "012",
+      "releases": 1
+    },
+    {
+      "owner": "0015",
+      "recipient": "01467",
+      "releases": 1
+    },
+    {
+      "owner": "0015",
+      "recipient": "019",
+      "releases": 101
+    },
+    {
+      "owner": "0015",
+      "recipient": "0211",
+      "releases": 117
+    },
+    {
+      "owner": "0015",
+      "recipient": "022",
+      "releases": 1
+    },
+    {
+      "owner": "0015",
+      "recipient": "0220",
+      "releases": 119
+    },
+    {
+      "owner": "0015",
+      "recipient": "028",
+      "releases": 101
+    },
+    {
+      "owner": "0015",
+      "recipient": "070",
+      "releases": 114
+    },
+    {
+      "owner": "00220",
+      "recipient": "001",
+      "releases": 153
+    },
+    {
+      "owner": "00220",
+      "recipient": "010",
+      "releases": 186
+    },
+    {
+      "owner": "00220",
+      "recipient": "011",
+      "releases": 1
+    },
+    {
+      "owner": "00220",
+      "recipient": "0118",
+      "releases": 1
+    },
+    {
+      "owner": "00220",
+      "recipient": "012",
+      "releases": 101
+    },
+    {
+      "owner": "00220",
+      "recipient": "01292",
+      "releases": 71
+    },
+    {
+      "owner": "00220",
+      "recipient": "01362",
+      "releases": 71
+    },
+    {
+      "owner": "00220",
+      "recipient": "01420",
+      "releases": 59
+    },
+    {
+      "owner": "00220",
+      "recipient": "01467",
+      "releases": 44
+    },
+    {
+      "owner": "00220",
+      "recipient": "01588",
+      "releases": 53
+    },
+    {
+      "owner": "00220",
+      "recipient": "01674",
+      "releases": 47
+    },
+    {
+      "owner": "00220",
+      "recipient": "020",
+      "releases": 3
+    },
+    {
+      "owner": "00220",
+      "recipient": "0211",
+      "releases": 1
+    },
+    {
+      "owner": "00220",
+      "recipient": "023",
+      "releases": 2
+    },
+    {
+      "owner": "00220",
+      "recipient": "028",
+      "releases": 1
+    },
+    {
+      "owner": "00220",
+      "recipient": "070",
+      "releases": 103
+    },
+    {
+      "owner": "003",
+      "recipient": "004",
+      "releases": 196
+    },
+    {
+      "owner": "003",
+      "recipient": "006",
+      "releases": 114
+    },
+    {
+      "owner": "003",
+      "recipient": "007",
+      "releases": 93
+    },
+    {
+      "owner": "003",
+      "recipient": "010",
+      "releases": 2
+    },
+    {
+      "owner": "003",
+      "recipient": "012",
+      "releases": 96
+    },
+    {
+      "owner": "003",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "003",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "003",
+      "recipient": "01588",
+      "releases": 1
+    },
+    {
+      "owner": "003",
+      "recipient": "019",
+      "releases": 1
+    },
+    {
+      "owner": "003",
+      "recipient": "020",
+      "releases": 176
+    },
+    {
+      "owner": "003",
+      "recipient": "028",
+      "releases": 2
+    },
+    {
+      "owner": "003",
+      "recipient": "070",
+      "releases": 188
+    },
+    {
+      "owner": "004",
+      "recipient": "001",
+      "releases": 2
+    },
+    {
+      "owner": "004",
+      "recipient": "003",
+      "releases": 162
+    },
+    {
+      "owner": "004",
+      "recipient": "006",
+      "releases": 1
+    },
+    {
+      "owner": "004",
+      "recipient": "007",
+      "releases": 99
+    },
+    {
+      "owner": "004",
+      "recipient": "012",
+      "releases": 1
+    },
+    {
+      "owner": "004",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "004",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "004",
+      "recipient": "020",
+      "releases": 71
+    },
+    {
+      "owner": "004",
+      "recipient": "0213",
+      "releases": 1
+    },
+    {
+      "owner": "004",
+      "recipient": "028",
+      "releases": 79
+    },
+    {
+      "owner": "004",
+      "recipient": "070",
+      "releases": 113
+    },
+    {
+      "owner": "00410",
+      "recipient": "010",
+      "releases": 1
+    },
+    {
+      "owner": "00410",
+      "recipient": "011",
+      "releases": 77
+    },
+    {
+      "owner": "00410",
+      "recipient": "012",
+      "releases": 82
+    },
+    {
+      "owner": "00410",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "00410",
+      "recipient": "019",
+      "releases": 1
+    },
+    {
+      "owner": "00410",
+      "recipient": "020",
+      "releases": 85
+    },
+    {
+      "owner": "00410",
+      "recipient": "0214",
+      "releases": 1
+    },
+    {
+      "owner": "00410",
+      "recipient": "022",
+      "releases": 87
+    },
+    {
+      "owner": "00410",
+      "recipient": "023",
+      "releases": 85
+    },
+    {
+      "owner": "00410",
+      "recipient": "070",
+      "releases": 89
+    },
+    {
+      "owner": "006",
+      "recipient": "001",
+      "releases": 1
+    },
+    {
+      "owner": "006",
+      "recipient": "0015",
+      "releases": 109
+    },
+    {
+      "owner": "006",
+      "recipient": "003",
+      "releases": 107
+    },
+    {
+      "owner": "006",
+      "recipient": "004",
+      "releases": 1
+    },
+    {
+      "owner": "006",
+      "recipient": "007",
+      "releases": 99
+    },
+    {
+      "owner": "006",
+      "recipient": "010",
+      "releases": 1
+    },
+    {
+      "owner": "006",
+      "recipient": "011",
+      "releases": 1
+    },
+    {
+      "owner": "006",
+      "recipient": "012",
+      "releases": 85
+    },
+    {
+      "owner": "006",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "006",
+      "recipient": "019",
+      "releases": 107
+    },
+    {
+      "owner": "006",
+      "recipient": "020",
+      "releases": 1
+    },
+    {
+      "owner": "006",
+      "recipient": "0211",
+      "releases": 118
+    },
+    {
+      "owner": "006",
+      "recipient": "028",
+      "releases": 90
+    },
+    {
+      "owner": "006",
+      "recipient": "070",
+      "releases": 125
+    },
+    {
+      "owner": "007",
+      "recipient": "001",
+      "releases": 1
+    },
+    {
+      "owner": "007",
+      "recipient": "003",
+      "releases": 93
+    },
+    {
+      "owner": "007",
+      "recipient": "004",
+      "releases": 99
+    },
+    {
+      "owner": "007",
+      "recipient": "006",
+      "releases": 109
+    },
+    {
+      "owner": "007",
+      "recipient": "010",
+      "releases": 1
+    },
+    {
+      "owner": "007",
+      "recipient": "012",
+      "releases": 100
+    },
+    {
+      "owner": "007",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "007",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "007",
+      "recipient": "0211",
+      "releases": 103
+    },
+    {
+      "owner": "007",
+      "recipient": "0220",
+      "releases": 1
+    },
+    {
+      "owner": "007",
+      "recipient": "028",
+      "releases": 72
+    },
+    {
+      "owner": "007",
+      "recipient": "070",
+      "releases": 178
+    },
+    {
+      "owner": "010",
+      "recipient": "001",
+      "releases": 364
+    },
+    {
+      "owner": "010",
+      "recipient": "00220",
+      "releases": 236
+    },
+    {
+      "owner": "010",
+      "recipient": "003",
+      "releases": 2
+    },
+    {
+      "owner": "010",
+      "recipient": "00410",
+      "releases": 1
+    },
+    {
+      "owner": "010",
+      "recipient": "006",
+      "releases": 1
+    },
+    {
+      "owner": "010",
+      "recipient": "007",
+      "releases": 1
+    },
+    {
+      "owner": "010",
+      "recipient": "011",
+      "releases": 5
+    },
+    {
+      "owner": "010",
+      "recipient": "0116",
+      "releases": 1
+    },
+    {
+      "owner": "010",
+      "recipient": "0118",
+      "releases": 1
+    },
+    {
+      "owner": "010",
+      "recipient": "012",
+      "releases": 246
+    },
+    {
+      "owner": "010",
+      "recipient": "01292",
+      "releases": 181
+    },
+    {
+      "owner": "010",
+      "recipient": "01362",
+      "releases": 171
+    },
+    {
+      "owner": "010",
+      "recipient": "01420",
+      "releases": 131
+    },
+    {
+      "owner": "010",
+      "recipient": "01467",
+      "releases": 92
+    },
+    {
+      "owner": "010",
+      "recipient": "015",
+      "releases": 1
+    },
+    {
+      "owner": "010",
+      "recipient": "01588",
+      "releases": 88
+    },
+    {
+      "owner": "010",
+      "recipient": "01674",
+      "releases": 91
+    },
+    {
+      "owner": "010",
+      "recipient": "020",
+      "releases": 9
+    },
+    {
+      "owner": "010",
+      "recipient": "0214",
+      "releases": 2
+    },
+    {
+      "owner": "010",
+      "recipient": "022",
+      "releases": 3
+    },
+    {
+      "owner": "010",
+      "recipient": "023",
+      "releases": 3
+    },
+    {
+      "owner": "010",
+      "recipient": "070",
+      "releases": 219
+    },
+    {
+      "owner": "011",
+      "recipient": "001",
+      "releases": 6
+    },
+    {
+      "owner": "011",
+      "recipient": "00220",
+      "releases": 1
+    },
+    {
+      "owner": "011",
+      "recipient": "00410",
+      "releases": 82
+    },
+    {
+      "owner": "011",
+      "recipient": "006",
+      "releases": 1
+    },
+    {
+      "owner": "011",
+      "recipient": "010",
+      "releases": 6
+    },
+    {
+      "owner": "011",
+      "recipient": "012",
+      "releases": 119
+    },
+    {
+      "owner": "011",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "011",
+      "recipient": "01362",
+      "releases": 2
+    },
+    {
+      "owner": "011",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "011",
+      "recipient": "020",
+      "releases": 136
+    },
+    {
+      "owner": "011",
+      "recipient": "022",
+      "releases": 141
+    },
+    {
+      "owner": "011",
+      "recipient": "023",
+      "releases": 117
+    },
+    {
+      "owner": "011",
+      "recipient": "070",
+      "releases": 105
+    },
+    {
+      "owner": "0116",
+      "recipient": "001",
+      "releases": 1
+    },
+    {
+      "owner": "0116",
+      "recipient": "010",
+      "releases": 1
+    },
+    {
+      "owner": "0116",
+      "recipient": "0118",
+      "releases": 271
+    },
+    {
+      "owner": "0116",
+      "recipient": "012",
+      "releases": 1
+    },
+    {
+      "owner": "0116",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "0116",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "0116",
+      "recipient": "070",
+      "releases": 156
+    },
+    {
+      "owner": "0118",
+      "recipient": "00220",
+      "releases": 1
+    },
+    {
+      "owner": "0118",
+      "recipient": "010",
+      "releases": 1
+    },
+    {
+      "owner": "0118",
+      "recipient": "0116",
+      "releases": 232
+    },
+    {
+      "owner": "0118",
+      "recipient": "0213",
+      "releases": 1
+    },
+    {
+      "owner": "0118",
+      "recipient": "070",
+      "releases": 125
+    },
+    {
+      "owner": "012",
+      "recipient": "001",
+      "releases": 194
+    },
+    {
+      "owner": "012",
+      "recipient": "0015",
+      "releases": 1
+    },
+    {
+      "owner": "012",
+      "recipient": "00220",
+      "releases": 118
+    },
+    {
+      "owner": "012",
+      "recipient": "003",
+      "releases": 98
+    },
+    {
+      "owner": "012",
+      "recipient": "004",
+      "releases": 1
+    },
+    {
+      "owner": "012",
+      "recipient": "00410",
+      "releases": 92
+    },
+    {
+      "owner": "012",
+      "recipient": "006",
+      "releases": 96
+    },
+    {
+      "owner": "012",
+      "recipient": "007",
+      "releases": 95
+    },
+    {
+      "owner": "012",
+      "recipient": "010",
+      "releases": 192
+    },
+    {
+      "owner": "012",
+      "recipient": "011",
+      "releases": 118
+    },
+    {
+      "owner": "012",
+      "recipient": "0116",
+      "releases": 1
+    },
+    {
+      "owner": "012",
+      "recipient": "01292",
+      "releases": 80
+    },
+    {
+      "owner": "012",
+      "recipient": "01362",
+      "releases": 73
+    },
+    {
+      "owner": "012",
+      "recipient": "01420",
+      "releases": 66
+    },
+    {
+      "owner": "012",
+      "recipient": "01467",
+      "releases": 52
+    },
+    {
+      "owner": "012",
+      "recipient": "015",
+      "releases": 1
+    },
+    {
+      "owner": "012",
+      "recipient": "01588",
+      "releases": 46
+    },
+    {
+      "owner": "012",
+      "recipient": "01674",
+      "releases": 44
+    },
+    {
+      "owner": "012",
+      "recipient": "020",
+      "releases": 115
+    },
+    {
+      "owner": "012",
+      "recipient": "0211",
+      "releases": 1
+    },
+    {
+      "owner": "012",
+      "recipient": "022",
+      "releases": 127
+    },
+    {
+      "owner": "012",
+      "recipient": "023",
+      "releases": 117
+    },
+    {
+      "owner": "012",
+      "recipient": "028",
+      "releases": 1
+    },
+    {
+      "owner": "012",
+      "recipient": "070",
+      "releases": 277
+    },
+    {
+      "owner": "01292",
+      "recipient": "001",
+      "releases": 142
+    },
+    {
+      "owner": "01292",
+      "recipient": "00220",
+      "releases": 75
+    },
+    {
+      "owner": "01292",
+      "recipient": "003",
+      "releases": 1
+    },
+    {
+      "owner": "01292",
+      "recipient": "006",
+      "releases": 1
+    },
+    {
+      "owner": "01292",
+      "recipient": "007",
+      "releases": 1
+    },
+    {
+      "owner": "01292",
+      "recipient": "010",
+      "releases": 142
+    },
+    {
+      "owner": "01292",
+      "recipient": "011",
+      "releases": 1
+    },
+    {
+      "owner": "01292",
+      "recipient": "012",
+      "releases": 82
+    },
+    {
+      "owner": "01292",
+      "recipient": "01362",
+      "releases": 60
+    },
+    {
+      "owner": "01292",
+      "recipient": "01420",
+      "releases": 54
+    },
+    {
+      "owner": "01292",
+      "recipient": "01467",
+      "releases": 57
+    },
+    {
+      "owner": "01292",
+      "recipient": "01588",
+      "releases": 45
+    },
+    {
+      "owner": "01292",
+      "recipient": "01674",
+      "releases": 30
+    },
+    {
+      "owner": "01292",
+      "recipient": "020",
+      "releases": 1
+    },
+    {
+      "owner": "01292",
+      "recipient": "0211",
+      "releases": 1
+    },
+    {
+      "owner": "01292",
+      "recipient": "028",
+      "releases": 1
+    },
+    {
+      "owner": "01292",
+      "recipient": "070",
+      "releases": 87
+    },
+    {
+      "owner": "01362",
+      "recipient": "001",
+      "releases": 134
+    },
+    {
+      "owner": "01362",
+      "recipient": "00220",
+      "releases": 84
+    },
+    {
+      "owner": "01362",
+      "recipient": "010",
+      "releases": 139
+    },
+    {
+      "owner": "01362",
+      "recipient": "011",
+      "releases": 2
+    },
+    {
+      "owner": "01362",
+      "recipient": "012",
+      "releases": 77
+    },
+    {
+      "owner": "01362",
+      "recipient": "01292",
+      "releases": 62
+    },
+    {
+      "owner": "01362",
+      "recipient": "01420",
+      "releases": 52
+    },
+    {
+      "owner": "01362",
+      "recipient": "01467",
+      "releases": 37
+    },
+    {
+      "owner": "01362",
+      "recipient": "01588",
+      "releases": 39
+    },
+    {
+      "owner": "01362",
+      "recipient": "01674",
+      "releases": 45
+    },
+    {
+      "owner": "01362",
+      "recipient": "020",
+      "releases": 2
+    },
+    {
+      "owner": "01362",
+      "recipient": "023",
+      "releases": 1
+    },
+    {
+      "owner": "01362",
+      "recipient": "070",
+      "releases": 89
+    },
+    {
+      "owner": "01420",
+      "recipient": "001",
+      "releases": 92
+    },
+    {
+      "owner": "01420",
+      "recipient": "00220",
+      "releases": 63
+    },
+    {
+      "owner": "01420",
+      "recipient": "003",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "004",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "010",
+      "releases": 122
+    },
+    {
+      "owner": "01420",
+      "recipient": "011",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "0116",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "012",
+      "releases": 72
+    },
+    {
+      "owner": "01420",
+      "recipient": "01292",
+      "releases": 57
+    },
+    {
+      "owner": "01420",
+      "recipient": "01362",
+      "releases": 55
+    },
+    {
+      "owner": "01420",
+      "recipient": "01467",
+      "releases": 38
+    },
+    {
+      "owner": "01420",
+      "recipient": "015",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "01588",
+      "releases": 40
+    },
+    {
+      "owner": "01420",
+      "recipient": "01674",
+      "releases": 32
+    },
+    {
+      "owner": "01420",
+      "recipient": "022",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "023",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "028",
+      "releases": 1
+    },
+    {
+      "owner": "01420",
+      "recipient": "070",
+      "releases": 75
+    },
+    {
+      "owner": "01467",
+      "recipient": "001",
+      "releases": 85
+    },
+    {
+      "owner": "01467",
+      "recipient": "0015",
+      "releases": 1
+    },
+    {
+      "owner": "01467",
+      "recipient": "00220",
+      "releases": 48
+    },
+    {
+      "owner": "01467",
+      "recipient": "010",
+      "releases": 84
+    },
+    {
+      "owner": "01467",
+      "recipient": "012",
+      "releases": 65
+    },
+    {
+      "owner": "01467",
+      "recipient": "01292",
+      "releases": 63
+    },
+    {
+      "owner": "01467",
+      "recipient": "01362",
+      "releases": 46
+    },
+    {
+      "owner": "01467",
+      "recipient": "01420",
+      "releases": 35
+    },
+    {
+      "owner": "01467",
+      "recipient": "01588",
+      "releases": 34
+    },
+    {
+      "owner": "01467",
+      "recipient": "01674",
+      "releases": 28
+    },
+    {
+      "owner": "01467",
+      "recipient": "020",
+      "releases": 2
+    },
+    {
+      "owner": "01467",
+      "recipient": "023",
+      "releases": 1
+    },
+    {
+      "owner": "01467",
+      "recipient": "028",
+      "releases": 1
+    },
+    {
+      "owner": "01467",
+      "recipient": "070",
+      "releases": 66
+    },
+    {
+      "owner": "015",
+      "recipient": "001",
+      "releases": 2
+    },
+    {
+      "owner": "015",
+      "recipient": "010",
+      "releases": 1
+    },
+    {
+      "owner": "015",
+      "recipient": "012",
+      "releases": 1
+    },
+    {
+      "owner": "015",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "015",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "015",
+      "recipient": "0213",
+      "releases": 1
+    },
+    {
+      "owner": "015",
+      "recipient": "070",
+      "releases": 177
+    },
+    {
+      "owner": "01588",
+      "recipient": "001",
+      "releases": 90
+    },
+    {
+      "owner": "01588",
+      "recipient": "00220",
+      "releases": 53
+    },
+    {
+      "owner": "01588",
+      "recipient": "003",
+      "releases": 1
+    },
+    {
+      "owner": "01588",
+      "recipient": "010",
+      "releases": 82
+    },
+    {
+      "owner": "01588",
+      "recipient": "012",
+      "releases": 52
+    },
+    {
+      "owner": "01588",
+      "recipient": "01292",
+      "releases": 51
+    },
+    {
+      "owner": "01588",
+      "recipient": "01362",
+      "releases": 45
+    },
+    {
+      "owner": "01588",
+      "recipient": "01420",
+      "releases": 40
+    },
+    {
+      "owner": "01588",
+      "recipient": "01467",
+      "releases": 32
+    },
+    {
+      "owner": "01588",
+      "recipient": "01674",
+      "releases": 36
+    },
+    {
+      "owner": "01588",
+      "recipient": "0214",
+      "releases": 1
+    },
+    {
+      "owner": "01588",
+      "recipient": "070",
+      "releases": 73
+    },
+    {
+      "owner": "01674",
+      "recipient": "001",
+      "releases": 86
+    },
+    {
+      "owner": "01674",
+      "recipient": "00220",
+      "releases": 45
+    },
+    {
+      "owner": "01674",
+      "recipient": "004",
+      "releases": 1
+    },
+    {
+      "owner": "01674",
+      "recipient": "00410",
+      "releases": 2
+    },
+    {
+      "owner": "01674",
+      "recipient": "007",
+      "releases": 1
+    },
+    {
+      "owner": "01674",
+      "recipient": "010",
+      "releases": 84
+    },
+    {
+      "owner": "01674",
+      "recipient": "0116",
+      "releases": 1
+    },
+    {
+      "owner": "01674",
+      "recipient": "012",
+      "releases": 42
+    },
+    {
+      "owner": "01674",
+      "recipient": "01292",
+      "releases": 29
+    },
+    {
+      "owner": "01674",
+      "recipient": "01362",
+      "releases": 44
+    },
+    {
+      "owner": "01674",
+      "recipient": "01420",
+      "releases": 29
+    },
+    {
+      "owner": "01674",
+      "recipient": "01467",
+      "releases": 27
+    },
+    {
+      "owner": "01674",
+      "recipient": "015",
+      "releases": 1
+    },
+    {
+      "owner": "01674",
+      "recipient": "01588",
+      "releases": 36
+    },
+    {
+      "owner": "01674",
+      "recipient": "020",
+      "releases": 1
+    },
+    {
+      "owner": "01674",
+      "recipient": "0214",
+      "releases": 1
+    },
+    {
+      "owner": "01674",
+      "recipient": "022",
+      "releases": 1
+    },
+    {
+      "owner": "01674",
+      "recipient": "028",
+      "releases": 2
+    },
+    {
+      "owner": "01674",
+      "recipient": "070",
+      "releases": 95
+    },
+    {
+      "owner": "019",
+      "recipient": "0015",
+      "releases": 93
+    },
+    {
+      "owner": "019",
+      "recipient": "003",
+      "releases": 1
+    },
+    {
+      "owner": "019",
+      "recipient": "00410",
+      "releases": 1
+    },
+    {
+      "owner": "019",
+      "recipient": "006",
+      "releases": 96
+    },
+    {
+      "owner": "019",
+      "recipient": "0211",
+      "releases": 108
+    },
+    {
+      "owner": "019",
+      "recipient": "0213",
+      "releases": 91
+    },
+    {
+      "owner": "019",
+      "recipient": "0214",
+      "releases": 128
+    },
+    {
+      "owner": "019",
+      "recipient": "023",
+      "releases": 1
+    },
+    {
+      "owner": "019",
+      "recipient": "028",
+      "releases": 99
+    },
+    {
+      "owner": "019",
+      "recipient": "070",
+      "releases": 99
+    },
+    {
+      "owner": "020",
+      "recipient": "001",
+      "releases": 4
+    },
+    {
+      "owner": "020",
+      "recipient": "00220",
+      "releases": 3
+    },
+    {
+      "owner": "020",
+      "recipient": "003",
+      "releases": 154
+    },
+    {
+      "owner": "020",
+      "recipient": "004",
+      "releases": 75
+    },
+    {
+      "owner": "020",
+      "recipient": "00410",
+      "releases": 82
+    },
+    {
+      "owner": "020",
+      "recipient": "006",
+      "releases": 1
+    },
+    {
+      "owner": "020",
+      "recipient": "010",
+      "releases": 9
+    },
+    {
+      "owner": "020",
+      "recipient": "011",
+      "releases": 131
+    },
+    {
+      "owner": "020",
+      "recipient": "012",
+      "releases": 119
+    },
+    {
+      "owner": "020",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "020",
+      "recipient": "01362",
+      "releases": 4
+    },
+    {
+      "owner": "020",
+      "recipient": "01467",
+      "releases": 2
+    },
+    {
+      "owner": "020",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "020",
+      "recipient": "022",
+      "releases": 115
+    },
+    {
+      "owner": "020",
+      "recipient": "023",
+      "releases": 126
+    },
+    {
+      "owner": "020",
+      "recipient": "028",
+      "releases": 1
+    },
+    {
+      "owner": "020",
+      "recipient": "070",
+      "releases": 151
+    },
+    {
+      "owner": "0211",
+      "recipient": "001",
+      "releases": 2
+    },
+    {
+      "owner": "0211",
+      "recipient": "0015",
+      "releases": 105
+    },
+    {
+      "owner": "0211",
+      "recipient": "00220",
+      "releases": 1
+    },
+    {
+      "owner": "0211",
+      "recipient": "006",
+      "releases": 105
+    },
+    {
+      "owner": "0211",
+      "recipient": "007",
+      "releases": 100
+    },
+    {
+      "owner": "0211",
+      "recipient": "012",
+      "releases": 1
+    },
+    {
+      "owner": "0211",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "0211",
+      "recipient": "019",
+      "releases": 109
+    },
+    {
+      "owner": "0211",
+      "recipient": "0213",
+      "releases": 1
+    },
+    {
+      "owner": "0211",
+      "recipient": "028",
+      "releases": 97
+    },
+    {
+      "owner": "0211",
+      "recipient": "070",
+      "releases": 151
+    },
+    {
+      "owner": "0213",
+      "recipient": "004",
+      "releases": 1
+    },
+    {
+      "owner": "0213",
+      "recipient": "0118",
+      "releases": 1
+    },
+    {
+      "owner": "0213",
+      "recipient": "015",
+      "releases": 1
+    },
+    {
+      "owner": "0213",
+      "recipient": "019",
+      "releases": 95
+    },
+    {
+      "owner": "0213",
+      "recipient": "0211",
+      "releases": 1
+    },
+    {
+      "owner": "0213",
+      "recipient": "0214",
+      "releases": 229
+    },
+    {
+      "owner": "0213",
+      "recipient": "028",
+      "releases": 101
+    },
+    {
+      "owner": "0213",
+      "recipient": "070",
+      "releases": 126
+    },
+    {
+      "owner": "0214",
+      "recipient": "00410",
+      "releases": 1
+    },
+    {
+      "owner": "0214",
+      "recipient": "010",
+      "releases": 2
+    },
+    {
+      "owner": "0214",
+      "recipient": "01588",
+      "releases": 1
+    },
+    {
+      "owner": "0214",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "0214",
+      "recipient": "019",
+      "releases": 117
+    },
+    {
+      "owner": "0214",
+      "recipient": "0213",
+      "releases": 229
+    },
+    {
+      "owner": "0214",
+      "recipient": "028",
+      "releases": 124
+    },
+    {
+      "owner": "0214",
+      "recipient": "070",
+      "releases": 104
+    },
+    {
+      "owner": "022",
+      "recipient": "001",
+      "releases": 1
+    },
+    {
+      "owner": "022",
+      "recipient": "0015",
+      "releases": 1
+    },
+    {
+      "owner": "022",
+      "recipient": "00410",
+      "releases": 84
+    },
+    {
+      "owner": "022",
+      "recipient": "010",
+      "releases": 2
+    },
+    {
+      "owner": "022",
+      "recipient": "011",
+      "releases": 126
+    },
+    {
+      "owner": "022",
+      "recipient": "012",
+      "releases": 136
+    },
+    {
+      "owner": "022",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "022",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "022",
+      "recipient": "020",
+      "releases": 123
+    },
+    {
+      "owner": "022",
+      "recipient": "023",
+      "releases": 129
+    },
+    {
+      "owner": "022",
+      "recipient": "070",
+      "releases": 124
+    },
+    {
+      "owner": "0220",
+      "recipient": "001",
+      "releases": 1
+    },
+    {
+      "owner": "0220",
+      "recipient": "0015",
+      "releases": 121
+    },
+    {
+      "owner": "0220",
+      "recipient": "007",
+      "releases": 1
+    },
+    {
+      "owner": "0220",
+      "recipient": "070",
+      "releases": 142
+    },
+    {
+      "owner": "023",
+      "recipient": "001",
+      "releases": 5
+    },
+    {
+      "owner": "023",
+      "recipient": "00220",
+      "releases": 2
+    },
+    {
+      "owner": "023",
+      "recipient": "00410",
+      "releases": 91
+    },
+    {
+      "owner": "023",
+      "recipient": "010",
+      "releases": 4
+    },
+    {
+      "owner": "023",
+      "recipient": "011",
+      "releases": 122
+    },
+    {
+      "owner": "023",
+      "recipient": "012",
+      "releases": 118
+    },
+    {
+      "owner": "023",
+      "recipient": "01362",
+      "releases": 1
+    },
+    {
+      "owner": "023",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "023",
+      "recipient": "01467",
+      "releases": 1
+    },
+    {
+      "owner": "023",
+      "recipient": "019",
+      "releases": 1
+    },
+    {
+      "owner": "023",
+      "recipient": "020",
+      "releases": 120
+    },
+    {
+      "owner": "023",
+      "recipient": "022",
+      "releases": 126
+    },
+    {
+      "owner": "023",
+      "recipient": "070",
+      "releases": 90
+    },
+    {
+      "owner": "028",
+      "recipient": "0015",
+      "releases": 90
+    },
+    {
+      "owner": "028",
+      "recipient": "00220",
+      "releases": 1
+    },
+    {
+      "owner": "028",
+      "recipient": "003",
+      "releases": 2
+    },
+    {
+      "owner": "028",
+      "recipient": "004",
+      "releases": 73
+    },
+    {
+      "owner": "028",
+      "recipient": "006",
+      "releases": 88
+    },
+    {
+      "owner": "028",
+      "recipient": "007",
+      "releases": 74
+    },
+    {
+      "owner": "028",
+      "recipient": "012",
+      "releases": 1
+    },
+    {
+      "owner": "028",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "028",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "028",
+      "recipient": "01467",
+      "releases": 1
+    },
+    {
+      "owner": "028",
+      "recipient": "01674",
+      "releases": 2
+    },
+    {
+      "owner": "028",
+      "recipient": "019",
+      "releases": 93
+    },
+    {
+      "owner": "028",
+      "recipient": "020",
+      "releases": 1
+    },
+    {
+      "owner": "028",
+      "recipient": "0211",
+      "releases": 98
+    },
+    {
+      "owner": "028",
+      "recipient": "0213",
+      "releases": 102
+    },
+    {
+      "owner": "028",
+      "recipient": "0214",
+      "releases": 132
+    },
+    {
+      "owner": "028",
+      "recipient": "070",
+      "releases": 172
+    },
+    {
+      "owner": "070",
+      "recipient": "001",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "0015",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "00220",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "003",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "004",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "00410",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "006",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "007",
+      "releases": 3
+    },
+    {
+      "owner": "070",
+      "recipient": "010",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "011",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "0116",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "0118",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "012",
+      "releases": 3
+    },
+    {
+      "owner": "070",
+      "recipient": "01292",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "01362",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "01420",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "01467",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "015",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "01588",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "01674",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "019",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "020",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "0211",
+      "releases": 3
+    },
+    {
+      "owner": "070",
+      "recipient": "0213",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "0214",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "022",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "0220",
+      "releases": 2
+    },
+    {
+      "owner": "070",
+      "recipient": "023",
+      "releases": 1
+    },
+    {
+      "owner": "070",
+      "recipient": "028",
+      "releases": 3
+    }
+  ],
+  "patterns_available": true
+}

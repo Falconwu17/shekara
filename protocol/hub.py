@@ -1,0 +1,100 @@
+"""Хаб: маршрутизация между шлюзами банков и журнал аудита с хэш-цепочкой
+(разделы 3.2, 3.7). Хаб пишет только метаданные: кто, кому, когда, хэш ссылки, итог."""
+
+from __future__ import annotations
+
+import hashlib
+import sqlite3
+from datetime import datetime
+from typing import Iterable
+
+from protocol.gateway import Broadcast, Gateway, not_found
+from trace.incident import Hop, IncidentDesk
+
+GENESIS = "0" * 64
+_SEP = "\x1f"
+_FIELDS = ("ts", "kind", "src", "dst", "ref_hash", "detail")
+
+
+def ref_digest(ref_hmac: str) -> str:
+    return hashlib.sha256(ref_hmac.encode("utf-8")).hexdigest()
+
+
+def _entry_hash(prev_hash: str, values: Iterable[str]) -> str:
+    return hashlib.sha256(_SEP.join((prev_hash, *values)).encode("utf-8")).hexdigest()
+
+
+class AuditLog:
+    def __init__(self, path: str = ":memory:"):
+        self._db = sqlite3.connect(path)
+        self._db.execute(
+            "CREATE TABLE IF NOT EXISTS audit (seq INTEGER PRIMARY KEY, ts TEXT, kind TEXT,"
+            " src TEXT, dst TEXT, ref_hash TEXT, detail TEXT, prev_hash TEXT, hash TEXT)"
+        )
+
+    def head(self) -> tuple[int, str]:
+        row = self._db.execute("SELECT seq, hash FROM audit ORDER BY seq DESC LIMIT 1").fetchone()
+        return row if row else (0, GENESIS)
+
+    def append(self, ts: datetime, kind: str, src: str, dst: str, ref_hash: str = "", detail: str = "") -> str:
+        seq, prev = self.head()
+        values = (ts.isoformat(), kind, src, dst, ref_hash, detail)
+        h = _entry_hash(prev, values)
+        self._db.execute(
+            "INSERT INTO audit VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (seq + 1, *values, prev, h)
+        )
+        self._db.commit()
+        return h
+
+    def entries(self) -> list[dict]:
+        cur = self._db.execute(f"SELECT {', '.join(_FIELDS)} FROM audit ORDER BY seq")
+        return [dict(zip(_FIELDS, r)) for r in cur]
+
+    def verify(self) -> bool:
+        prev = GENESIS
+        for *values, stored_prev, stored_hash in self._db.execute(
+            f"SELECT {', '.join(_FIELDS)}, prev_hash, hash FROM audit ORDER BY seq"
+        ):
+            if stored_prev != prev or _entry_hash(prev, values) != stored_hash:
+                return False
+            prev = stored_hash
+        return True
+
+
+class Hub:
+    def __init__(self, log: AuditLog | None = None):
+        self.log = log or AuditLog()
+        self._gateways: dict[str, Gateway] = {}
+        self._desks: dict[str, IncidentDesk] = {}
+
+    def register(self, gateway: Gateway, desk: IncidentDesk | None = None) -> None:
+        self._gateways[gateway.bank_id] = gateway
+        if desk is not None:
+            self._desks[gateway.bank_id] = desk
+
+    def send_hop(self, sender: str, target: str, hop: Hop, now: datetime) -> str | dict:
+        desk = self._desks.get(target)
+        result = desk.receive(sender, hop, now) if desk else {"error": "not_found"}
+        status = result["error"] if isinstance(result, dict) else "ok"
+        self.log.append(
+            now, f"incident_{hop.kind}", sender, target, ref_digest(hop.tx_ref_hmac), f"hop={hop.hop_no};{status}"
+        )
+        return result
+
+    def query(self, requester: str, target: str, ref_hmac: str, now: datetime) -> dict:
+        gw = self._gateways.get(target)
+        resp = gw.query(requester, ref_hmac, now) if gw else not_found()
+        self.log.append(now, "query", requester, target, ref_digest(ref_hmac), resp.get("error", "ok"))
+        return resp
+
+    def broadcast(self, sender: str, messages: Iterable[Broadcast], now: datetime) -> int:
+        """Доставляет ночную рассылку адресатам; возвращает число принятых выпусков."""
+        delivered = 0
+        for msg in messages:
+            gw = self._gateways.get(msg.target_bank)
+            ok = gw is not None and gw.receive_broadcast(sender, msg, now)
+            delivered += ok
+            self.log.append(
+                now, "release", sender, msg.target_bank, ref_digest(msg.tx_ref_hmac), "ok" if ok else "not_found"
+            )
+        return delivered
