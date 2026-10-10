@@ -36,7 +36,7 @@ H1_HOLD_MIN = 60
 COMPRESSED_MEDIAN_MIN = 3.0
 RESULTS_DIR = Path("experiments/results")
 PREDS_DIR = RESULTS_DIR / "preds"
-MODES = ("isolation", "L1_s0.25", "L2_s0.25", "L3")
+MODES = ("isolation", "L3", "C_L3", "C_L2_s0.25", "C_L1_s0.25", "C_L1_s4")
 
 
 def active_accounts(trans: pl.DataFrame, participants: list[str]) -> pl.DataFrame:
