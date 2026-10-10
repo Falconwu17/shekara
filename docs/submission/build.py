@@ -170,7 +170,7 @@ ANNOTATION_RU = """# ШЕКАРА: межбанковское выявление
 
 **Готовность и внедрение.** Работающий прототип: шлюзы банков с правилом need-to-know и квотами, хаб с журналом, проверка при зачислении, трассировка и дерево оператора на реальном тестовом паттерне, дашборд; 20 автоматических проверок перед подачей пройдены. Открытый код: {repo}. TRL 4. Следующий этап — пилот с двумя банками в регуляторной песочнице НБК / АРРФР.
 
-**Команда.** [Имена авторов, роли, вуз]. Научный руководитель — Касымова Акмарал Хамзиевна.
+**Команда.** [ФИО авторов и роли]. Западно-Казахстанский аграрно-технический университет имени Жангир хана (Уральск). Научный руководитель — Касымова Акмарал Хамзиевна.
 """
 
 SUMMARY_EN = """# SHEKARA: cross-bank detection of money-mule networks without pooling customer data
@@ -187,7 +187,7 @@ SUMMARY_EN = """# SHEKARA: cross-bank detection of money-mule networks without p
 
 **Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 20 automated pre-submission checks passing. Open-source code: {repo}. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
 
-**Team.** [Authors, roles, university]. Supervisor: Akmaral Kassymova.
+**Team.** [Authors and roles]. Zhangir Khan West Kazakhstan Agrarian and Technical University (Oral). Supervisor: Akmaral Kassymova.
 """
 
 
