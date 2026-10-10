@@ -39,6 +39,7 @@ PREDS_DIR = RESULTS_DIR / "preds"
 RUNS_FILE = RESULTS_DIR / "runs.csv"
 K_FOLDS = 3
 RELEASE_DROP = 0.2
+EVAL_EVERY = 10
 
 # режим → (уровень, σ); None — без обмена выпусками
 MODES = {
@@ -75,7 +76,7 @@ def account_fold(bank: str, account: str) -> int:
 
 class Experiment:
     def __init__(self, seed: int, decision_path: Path = DECISION_FILE, banks_dir: Path = BANKS_DIR,
-                 full_days_file: Path = FULL_DAYS_FILE, epochs: int = 40, patience: int = 6, log=print):
+                 full_days_file: Path = FULL_DAYS_FILE, epochs: int = 400, patience: int = 10, log=print):
         self.d = json.loads(Path(decision_path).read_text(encoding="utf-8"))
         self.seed = seed
         self.epochs, self.patience = epochs, patience
@@ -147,7 +148,7 @@ class Experiment:
     def train(self, train: Batch, val: Batch, val_day: list[date], fold: int | None = None, tag: str = "") -> EdgeGNN:
         torch.manual_seed(self.seed * 100 + (fold if fold is not None else 9))
         model = EdgeGNN(train.x.shape[1], train.edge_attr.shape[1])
-        opt = torch.optim.Adam(model.parameters(), lr=3e-3, weight_decay=1e-5)
+        opt = torch.optim.Adam(model.parameters(), lr=2e-3, weight_decay=1e-5)
 
         edge_mask = torch.ones(len(train.edge_label), dtype=torch.bool)
         node_mask = torch.ones(len(train.node_label), dtype=torch.bool)
@@ -161,8 +162,8 @@ class Experiment:
         pw_e = torch.tensor(min(float((len(y_e) - y_e.sum()) / max(float(y_e.sum()), 1.0)), 50.0))
         pw_n = torch.tensor(min(float((len(y_n) - y_n.sum()) / max(float(y_n.sum()), 1.0)), 50.0))
 
-        best, best_state, bad = -1.0, None, 0
-        for epoch in range(self.epochs):
+        best, best_state, bad, t0 = -1.0, None, 0, time.time()
+        for step in range(self.epochs):
             model.train()
             opt.zero_grad()
             el, nl, _ = model(train.x, train.edge_index, train.edge_attr)
@@ -170,9 +171,11 @@ class Experiment:
                 nl[node_mask], y_n, pos_weight=pw_n
             )
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
-            if epoch % 2 == 1 or epoch == self.epochs - 1:
+            if (step + 1) % EVAL_EVERY == 0 or step == self.epochs - 1:
                 ap = average_precision(*self.eval_edges(model, val, val_day))
+                self.log(f"    {tag} шаг {step + 1}: loss {loss.item():.4f}, AP вал {ap:.4f}, {time.time() - t0:.0f} с")
                 if ap > best:
                     best, best_state, bad = ap, {k: v.clone() for k, v in model.state_dict().items()}, 0
                 else:
@@ -180,14 +183,15 @@ class Experiment:
                 if bad >= self.patience:
                     break
         model.load_state_dict(best_state)
-        self.log(f"  {tag} обучение: эпох {epoch + 1}, лучшая AP вал {best:.4f}")
+        self.log(f"  {tag} обучение: шагов {step + 1}, лучшая AP вал {best:.4f}, {time.time() - t0:.0f} с")
         return model
 
     @torch.no_grad()
     def predict(self, model: EdgeGNN, b: Batch):
         model.eval()
         el, nl, emb = model(b.x, b.edge_index, b.edge_attr)
-        return torch.sigmoid(el).numpy(), torch.sigmoid(nl).numpy(), emb.numpy()
+        # логиты, а не вероятности: сигмоида насыщается в float32 и даёт ничьи в ранжировании
+        return el.numpy(), nl.numpy(), emb.numpy()
 
     def edge_table(self, model: EdgeGNN, b: Batch, days: list[date]) -> pl.DataFrame:
         pe, _, _ = self.predict(model, b)
@@ -223,7 +227,8 @@ class Experiment:
                 pn = np.where(folds == k, pk, pn)
                 emb = np.where((folds == k)[:, None], ek, emb)
         own = ~batch.node_external
-        return {(b, a): (p, e) for b, a, p, e in zip(batch.node_bank[own], batch.node_account[own], pn[own], emb[own])}
+        p = 1 / (1 + np.exp(-pn.astype(np.float64)))
+        return {(b, a): (q, e) for b, a, q, e in zip(batch.node_bank[own], batch.node_account[own], p[own], emb[own])}
 
     def release_features(self, g: Graph, releases: dict, level: str, sigma: float, rng, drop: float = 0.0) -> np.ndarray:
         dim = 1 if level == "L1" else EMB_DIM
@@ -347,10 +352,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--modes", default="isolation,L3,L3_nocf,L2_s0.25,L1_s0.25,L1_s4,operator,oracle")
     parser.add_argument("--seed", type=int, default=1)
-    parser.add_argument("--epochs", type=int, default=40)
+    parser.add_argument("--epochs", type=int, default=400, help="шагов полного батча")
     args = parser.parse_args()
     torch.set_num_threads(torch.get_num_threads())
-    exp = Experiment(args.seed, epochs=args.epochs)
+    exp = Experiment(args.seed, epochs=args.epochs, log=lambda m: print(m, flush=True))
     rows = []
     for mode in args.modes.split(","):
         print(f"[{time.strftime('%H:%M:%S')}] режим {mode}, seed {args.seed}", flush=True)

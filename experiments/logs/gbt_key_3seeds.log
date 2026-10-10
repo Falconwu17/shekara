@@ -1,0 +1,100 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[17:53:29] режим isolation, seed 1
+  раунд 0 + 3 фолда: 48 с
+  isolation: F1 тест 0.3369, AP тест 0.2029, 81 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[17:54:50] режим L3, seed 1
+  L3: F1 тест 0.3596, AP тест 0.2918, 236 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[17:58:46] режим L3_nocf, seed 1
+  L3_nocf: F1 тест 0.3771, AP тест 0.2747, 105 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:00:31] режим operator, seed 1
+  operator: F1 тест 0.2399, AP тест 0.1535, 47 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:01:17] режим oracle, seed 1
+  oracle: F1 тест 0.3120, AP тест 0.2648, 50 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:02:09] режим isolation, seed 2
+  раунд 0 + 3 фолда: 41 с
+  isolation: F1 тест 0.4023, AP тест 0.3392, 74 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:03:23] режим L3, seed 2
+  L3: F1 тест 0.3940, AP тест 0.3052, 237 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:07:20] режим L3_nocf, seed 2
+  L3_nocf: F1 тест 0.3730, AP тест 0.3159, 104 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:09:04] режим operator, seed 2
+  operator: F1 тест 0.2428, AP тест 0.1618, 47 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:09:51] режим oracle, seed 2
+  oracle: F1 тест 0.2734, AP тест 0.2220, 52 с
+D:\shekara\model\gbt.py:305: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[18:10:45] режим isolation, seed 3
+  раунд 0 + 3 фолда: 55 с
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\shekara\model\gbt.py", line 312, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "D:\shekara\model\gbt.py", line 302, in main
+    rows.append(exp.run_mode(mode))
+                ~~~~~~~~~~~~^^^^^^
+  File "D:\shekara\model\gbt.py", line 248, in run_mode
+    mm = mats_for(end, night)
+  File "D:\shekara\model\gbt.py", line 190, in <lambda>
+    make = lambda end, night, **kw: self.local_mats(end)
+                                    ~~~~~~~~~~~~~~~^^^^^
+  File "D:\shekara\model\gbt.py", line 155, in local_mats
+    graphs = [self.local_graph(b, end) for b in self.participants]
+              ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\shekara\model\train_rounds.py", line 98, in local_graph
+    self._graphs[key] = build_graph(self.frames[bank], end_day, owner=bank)
+                        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\shekara\data\features.py", line 182, in build_graph
+    edge_index=np.stack([edges["src"].to_numpy(), edges["dst"].to_numpy()]).astype(np.int64),
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 1.52 MiB for an array with shape (2, 99427) and data type int64
