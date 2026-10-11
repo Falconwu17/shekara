@@ -73,6 +73,7 @@ class Simulator:
         self.lock = threading.RLock()
         self.mode = "C_L3"
         self.speed = 600.0
+        self.loop_forever = False  # публичный стенд: после трёх дней начинать заново
         self._thread: threading.Thread | None = None
         self.reset()
 
@@ -131,7 +132,12 @@ class Simulator:
         self._night(until.date())
         self.clock = until
         if self.clock >= self.end:
-            self.running = False
+            if self.loop_forever:
+                self.reset()
+                self.running = True
+                self._event("mode", text="Тестовые дни пройдены — проигрывание начато заново")
+            else:
+                self.running = False
 
     def _event(self, kind: str, **kw) -> None:
         self.seq += 1

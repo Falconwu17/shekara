@@ -92,3 +92,27 @@ def test_root_serves_web_app():
     r = c.get("/")
     assert r.status_code == 200 and "ШЕКАРА" in r.text and "app.js" in r.text
     assert c.get("/app.js").status_code == 200
+
+
+def test_public_mode_requires_tokens(monkeypatch):
+    import online.api as api_mod
+
+    monkeypatch.setattr(api_mod, "OPERATOR_TOKEN", "op-secret")
+    c, _ = client()
+    assert c.get("/v1/config").json()["operator_token_required"] is True
+    assert c.get("/v1/operator/incidents/x/tree", headers={"X-Role": "operator"}).status_code == 403
+    r = c.get("/v1/operator/incidents/x/tree", headers={"X-Role": "operator", "X-Operator-Token": "op-secret"})
+    assert r.status_code == 200
+
+
+def test_rate_limit():
+    import pytest
+    from fastapi import HTTPException
+
+    from online.api import RateLimit
+
+    lim = RateLimit(2)
+    lim.check("1.1.1.1"); lim.check("1.1.1.1")
+    with pytest.raises(HTTPException):
+        lim.check("1.1.1.1")
+    lim.check("2.2.2.2")

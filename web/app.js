@@ -4,7 +4,9 @@
 const $ = (s, r = document) => r.querySelector(s);
 const view = $("#view");
 const NS = "http://www.w3.org/2000/svg";
-const S = { state: null, seq: 0, events: [], bank: null, account: null, role: "", page: "network", timer: null, results: null };
+const S = { state: null, seq: 0, events: [], bank: null, account: null, role: "", page: "network", timer: null, results: null, cfg: {} };
+const store = { get: k => { try { return sessionStorage.getItem(k) || localStorage.getItem(k) || ""; } catch (e) { return ""; } },
+  set: (k, v, persist) => { try { (persist ? localStorage : sessionStorage).setItem(k, v); } catch (e) { } } };
 
 const fmtNum = v => v == null ? "—" : Number(v).toLocaleString("ru-RU");
 const fmt3 = v => v == null ? "—" : Number(v).toFixed(3).replace(".", ",");
@@ -19,6 +21,9 @@ const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (c
 
 async function api(path, opts = {}) {
   const headers = { "Content-Type": "application/json", ...(S.role ? { "X-Role": S.role } : {}) };
+  const adm = store.get("shekara-admin"), op = store.get("shekara-operator");
+  if (adm) headers["X-Admin-Token"] = adm;
+  if (op) headers["X-Operator-Token"] = op;
   const r = await fetch(path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
   const body = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(body.detail || `${r.status}`);
@@ -35,6 +40,7 @@ function scoreCell(v, thr) {
 async function pollState() {
   try {
     const s = await api("/v1/sim/state");
+    if (s.seq < S.seq) { S.seq = 0; S.events = []; }  // стенд начал проигрывание заново
     S.state = s;
     $("#clock").innerHTML = `${s.clock.slice(8, 10)}.${s.clock.slice(5, 7)} ${s.clock.slice(11, 16)}<small>${s.running ? "идёт" : "пауза"}</small>`;
     $("#prog").style.width = `${(s.progress * 100).toFixed(1)}%`;
@@ -233,8 +239,10 @@ async function pageOperator() {
   view.innerHTML = `<div class="head"><h1>Оператор · антифрод-центр</h1>
       <div class="selector"><span class="muted">Роль:</span><div class="seg"><button type="button" id="r0" class="${S.role ? "" : "on"}">Банк</button><button type="button" id="r1" class="${S.role ? "on" : ""}">Оператор</button></div></div></div>
     <div class="note">Дерево цепочки с суммами доступно только роли «оператор». По мягкому инциденту оператор видит лишь факт и число звеньев.</div>
+    ${S.cfg.operator_token_required ? `<div class="selector"><label for="optok" class="muted">Токен оператора</label><input id="optok" type="password" value="${esc(store.get("shekara-operator"))}" style="border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 10px"><button class="btn" id="opsave" type="button">Войти</button></div>` : ""}
     <div class="grid g2e"><div class="panel"><h2>Инциденты</h2><div class="scroll"><table class="t" id="incs"></table></div></div>
     <div class="panel" id="treep"><h2>Дерево цепочки</h2><div class="empty">Выберите инцидент.</div></div></div>`;
+  if ($("#opsave")) $("#opsave").onclick = () => { store.set("shekara-operator", $("#optok").value); S.role = "operator"; render(); };
   $("#r0").onclick = () => { S.role = ""; render(); };
   $("#r1").onclick = () => { S.role = "operator"; render(); };
   const tick = async () => {
@@ -348,9 +356,22 @@ function drawPrivacy() {
   $("#priv").innerHTML = ""; $("#priv").appendChild(s);
 }
 
+/* ---------- публичный режим ---------- */
+function applyConfig() {
+  const locked = S.cfg.admin_required && !store.get("shekara-admin");
+  for (const id of ["#play", "#speed", "#mode", "#reset"]) $(id).hidden = locked;
+  let badge = $("#demobadge");
+  if (locked && !badge) {
+    $(".bar").insertAdjacentHTML("beforeend", `<span id="demobadge" class="chip c-ok">стенд идёт сам · ×${S.state?.speed ?? ""}</span><button class="btn" id="adminbtn" type="button">Ключ администратора</button>`);
+    $("#adminbtn").onclick = () => { const k = prompt("Ключ администратора стенда"); if (k) { store.set("shekara-admin", k, true); location.reload(); } };
+  }
+}
+
 /* ---------- старт ---------- */
 (async function start() {
+  try { S.cfg = await api("/v1/config"); } catch (e) { }
   await pollState();
+  applyConfig();
   if (!location.hash) location.hash = "#/network"; else route();
   setInterval(pollState, 1000); setInterval(pollEvents, 1000);
 })();

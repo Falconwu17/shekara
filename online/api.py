@@ -12,14 +12,18 @@
 from __future__ import annotations
 
 import argparse
+import hmac
+import os
 import sys
+import time as _time
+from collections import defaultdict, deque
 from datetime import date, datetime
 from typing import Literal, Sequence
 
 import numpy as np
 from pathlib import Path
 
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel
 
 from online.alerts import AlertQueue, alert_budget
@@ -118,6 +122,43 @@ class SignatureIn(BaseModel):
 
 WEB_DIR = Path(__file__).resolve().parents[1] / "web"
 
+# Публичный режим (сервер в интернете): если переменные заданы, управление временем требует
+# X-Admin-Token, а роль «оператор» — X-Operator-Token. Локально они не заданы — всё открыто.
+ADMIN_TOKEN = os.environ.get("SHEKARA_ADMIN_TOKEN", "")
+OPERATOR_TOKEN = os.environ.get("SHEKARA_OPERATOR_TOKEN", "")
+ACTION_LIMIT_PER_MIN = int(os.environ.get("SHEKARA_ACTION_LIMIT", "30"))
+
+
+def _same(a: str, b: str) -> bool:
+    return hmac.compare_digest(a.encode("utf-8"), b.encode("utf-8"))
+
+
+def require_admin(token: str) -> None:
+    if ADMIN_TOKEN and not _same(token or "", ADMIN_TOKEN):
+        raise HTTPException(403, "управление временем стенда — только с ключом администратора")
+
+
+def require_operator(role: str, token: str) -> None:
+    if role != "operator":
+        raise HTTPException(403, "доступно только роли «оператор»")
+    if OPERATOR_TOKEN and not _same(token or "", OPERATOR_TOKEN):
+        raise HTTPException(403, "неверный токен оператора")
+
+
+class RateLimit:
+    """Скользящее окно в минуту на IP — для действий банков (запрос выпуска, инцидент)."""
+
+    def __init__(self, per_min: int):
+        self.per_min, self.hits = per_min, defaultdict(deque)
+
+    def check(self, ip: str) -> None:
+        now, q = _time.monotonic(), self.hits[ip]
+        while q and now - q[0] > 60:
+            q.popleft()
+        if len(q) >= self.per_min:
+            raise HTTPException(429, "слишком много действий подряд — подождите минуту")
+        q.append(now)
+
 
 def create_app(net: Network | None = None, sim=None) -> FastAPI:
     """`sim` — стенд online.sim.Simulator (его сеть и часы); без него — только протокол."""
@@ -191,7 +232,9 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
         return desk.my_segment(incident_id)
 
     @app.get("/v1/operator/incidents/{incident_id}/tree")
-    def operator_tree(incident_id: str, x_role: str = Header(default="")):
+    def operator_tree(incident_id: str, x_role: str = Header(default=""), x_operator_token: str = Header(default="")):
+        if OPERATOR_TOKEN:
+            require_operator(x_role, x_operator_token)
         try:
             return net.operator.tree(incident_id, role=x_role)
         except PermissionError as e:
@@ -232,6 +275,13 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
 
         return collect()
 
+    limit = RateLimit(ACTION_LIMIT_PER_MIN)
+
+    @app.get("/v1/config")
+    def config():
+        return {"admin_required": bool(ADMIN_TOKEN), "operator_token_required": bool(OPERATOR_TOKEN),
+                "public": bool(ADMIN_TOKEN or OPERATOR_TOKEN)}
+
     if sim is not None:
         def need_bank(bank: str):
             if bank not in sim.feeds:
@@ -242,7 +292,8 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
             return sim.state()
 
         @app.post("/v1/sim/control")
-        def sim_control(body: ControlIn):
+        def sim_control(body: ControlIn, x_admin_token: str = Header(default="")):
+            require_admin(x_admin_token)
             sim.control(body.action, body.speed, body.mode)
             return sim.state()
 
@@ -270,27 +321,27 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
             return sim.account_card(bank, account)
 
         @app.post("/v1/banks/{bank}/transfers/{row_no}/query")
-        def query_counterparty(bank: str, row_no: int):
+        def query_counterparty(bank: str, row_no: int, request: Request):
             need_bank(bank)
+            limit.check(request.client.host if request.client else "?")
             return sim.query_counterparty(bank, row_no)
 
         @app.post("/v1/banks/{bank}/accounts/{account}/incident")
-        def bank_incident(bank: str, account: str, body: BankIncidentIn):
+        def bank_incident(bank: str, account: str, body: BankIncidentIn, request: Request):
             need_bank(bank)
+            limit.check(request.client.host if request.client else "?")
             with sim.lock:
                 return sim.open_incident(bank, account, body.kind)
 
         @app.get("/v1/operator/incidents")
-        def operator_incidents(x_role: str = Header(default="")):
-            if x_role != "operator":
-                raise HTTPException(403, "список инцидентов доступен только роли «оператор»")
+        def operator_incidents(x_role: str = Header(default=""), x_operator_token: str = Header(default="")):
+            require_operator(x_role, x_operator_token)
             with sim.lock:
                 return {"incidents": sorted(sim.incidents.values(), key=lambda i: i["t"], reverse=True)[:200]}
 
         @app.get("/v1/operator/incidents/{incident_id}/full-tree")
-        def operator_full_tree(incident_id: str, x_role: str = Header(default="")):
-            if x_role != "operator":
-                raise HTTPException(403, "дерево инцидента доступно только роли «оператор»")
+        def operator_full_tree(incident_id: str, x_role: str = Header(default=""), x_operator_token: str = Header(default="")):
+            require_operator(x_role, x_operator_token)
             return sim.incident_tree(incident_id)
 
     if WEB_DIR.exists():
@@ -325,7 +376,10 @@ def main() -> int:
         print(f"Готово за {(datetime.now() - t0).seconds} с: {len(sim.participants)} банков, "
               f"{len(sim.timeline)} переводов тестовых дней. Откройте http://{args.host}:{args.port}", flush=True)
         app = create_app(sim=sim)
-    uvicorn.run(app, host=args.host, port=args.port)
+        if os.environ.get("SHEKARA_AUTOPLAY"):
+            sim.loop_forever = True
+            sim.control("play", speed=float(os.environ.get("SHEKARA_SPEED", "600")))
+    uvicorn.run(app, host=args.host, port=args.port, proxy_headers=True, forwarded_allow_ips="*")
     return 0
 
 

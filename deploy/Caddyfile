@@ -1,0 +1,13 @@
+# SHEKARA_DOMAIN: имя сервера (например 158-101-12-34.sslip.io или shekara.duckdns.org) —
+# Caddy сам получит сертификат Let's Encrypt. Значение ":80" — без HTTPS, по IP.
+{$SHEKARA_DOMAIN} {
+	encode gzip zstd
+	reverse_proxy app:8000
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+}

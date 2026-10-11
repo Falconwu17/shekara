@@ -1,0 +1,45 @@
+# Продакшн-стенд ШЕКАРЫ (Oracle Cloud, Ubuntu ARM): приложение + Caddy с автоматическим HTTPS.
+# Запуск из корня репозитория на сервере:
+#   docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env up -d --build
+services:
+  app:
+    build: ..
+    image: shekara:latest
+    restart: unless-stopped
+    command: ["python", "-m", "online.api", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      SHEKARA_ADMIN_TOKEN: ${SHEKARA_ADMIN_TOKEN}
+      SHEKARA_OPERATOR_TOKEN: ${SHEKARA_OPERATOR_TOKEN}
+      SHEKARA_AUTOPLAY: "1"
+      SHEKARA_SPEED: ${SHEKARA_SPEED:-600}
+      SHEKARA_ACTION_LIMIT: "30"
+    volumes:
+      - ../data/processed:/app/data/processed:ro
+      - ../experiments/results:/app/experiments/results:ro
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/v1/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 90s
+      retries: 3
+
+  caddy:
+    image: caddy:2.8
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SHEKARA_DOMAIN: ${SHEKARA_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

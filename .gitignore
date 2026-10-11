@@ -37,3 +37,7 @@ experiments/results/check_preds/
 # Итоговые таблицы результатов — в репозитории (жюри видит цифры)
 !experiments/results/*.csv
 experiments/results/case_candidates.csv
+
+# Ключи продакшн-стенда
+deploy/.env
+deploy/.env.*
