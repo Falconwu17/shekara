@@ -12,4 +12,4 @@
 
 **Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 22 automated pre-submission checks passing. Open-source code: https://github.com/Falconwu17/shekara. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
 
-**Team.** [Authors and roles]. Zhangir Khan West Kazakhstan Agrarian and Technical University (Oral). Supervisor: Akmaral Kassymova.
+**Team.** Sagir Dzhussupov — sole author (full-stack: protocol, model, experiment, demo). Zhangir Khan West Kazakhstan Agrarian and Technical University (Oral). Supervisor: Akmaral Kassymova.
