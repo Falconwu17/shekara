@@ -17,6 +17,7 @@ p, максимум и среднее баллов E по входящим и и
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 from dataclasses import dataclass
@@ -26,7 +27,7 @@ import lightgbm as lgb
 import numpy as np
 import polars as pl
 
-from data.features import Graph
+from data.features import NODE_FEATURES, Graph
 from model.train_rounds import (
     K_FOLDS, PREDS_DIR, RELEASE_DROP, RESULTS_DIR, Experiment, account_fold, summarize,
 )
@@ -94,6 +95,38 @@ def make_mats(g: Graph, participants: list[str], extra: np.ndarray | None = None
     return Mats(g, nx, np.hstack([g.edge_attr, nx[s], nx[d]]).astype(np.float32))
 
 
+_EDGE_NAMES = {"log_paid": "сумма перевода", "log_recv": "сумма зачисления", "fx": "разные валюты",
+               "interbank": "межбанковский", "tod_sin": "время суток (sin)", "tod_cos": "время суток (cos)",
+               "log_gap": "интервал с прошлой операцией отправителя"}
+_NODE_NAMES = {"external": "в чужом банке", "log_in_deg": "входящих переводов", "log_out_deg": "исходящих переводов",
+               "log_cp_1d": "контрагентов за день", "log_cp_3d": "контрагентов за 3 дня",
+               "new_cp_in_share": "доля входящих от новых контрагентов", "fwd_10m_share": "доля вывода за 10 мин",
+               "fwd_60m_share": "доля вывода за 60 мин", "log_fan_in_day": "fan-in за день",
+               "log_fan_out_day": "fan-out за день", "interbank_out_share": "доля межбанковских исходящих",
+               "days_seen": "дней в окне"}
+_H_NAMES = ["балл «транзитный»", "макс. балл входящих", "средний балл входящих", "макс. балл исходящих",
+            "средний балл исходящих", "доля вывода за 10 мин", "доля новых контрагентов", "доля межбанковских исходящих"]
+
+
+def feature_names(extra_dim: int = 0) -> list[str]:
+    """Читаемые имена столбцов матрицы перевода из make_mats (для объяснения алерта)."""
+    from data.features import CURRENCIES, EDGE_FEATURE_COLUMNS, NODE_FEATURES, PAYMENT_FORMATS
+
+    edge = []
+    for c in EDGE_FEATURE_COLUMNS:
+        if c.startswith("pf"):
+            edge.append(f"формат: {PAYMENT_FORMATS[int(c[2:])]}")
+        elif c.startswith("cur"):
+            edge.append(f"валюта: {CURRENCIES[int(c[3:])]}")
+        else:
+            edge.append(_EDGE_NAMES[c])
+    node = [_NODE_NAMES[c] for c in NODE_FEATURES] + ["банк — участник ШЕКАРЫ"]
+    if extra_dim:
+        rel = (["выпуск: балл"] if extra_dim == 2 else [f"выпуск: {h}" for h in _H_NAMES]) + ["выпуск получен"]
+        node += rel + [f"соседи-отправители, {r}" for r in rel] + [f"соседи-получатели, {r}" for r in rel] + ["макс. выпуск соседей"]
+    return edge + [f"отправитель: {n}" for n in node] + [f"получатель: {n}" for n in node]
+
+
 def proba(model: lgb.LGBMClassifier, X: np.ndarray) -> np.ndarray:
     return model.predict_proba(X)[:, 1] if len(X) else np.zeros(0)
 
@@ -127,6 +160,25 @@ def train_rows(m: Mats, day: date) -> TrainRows:
 
 
 class GBTExperiment(Experiment):
+    explain_rows: set[int] | None = None  # переводы, для которых сохранить вклад признаков
+
+    def explain(self, models: Models, mats: list[Mats], days: list[date], top: int = 6) -> list[dict]:
+        out = []
+        for m in mats:
+            mask = np.isin(m.g.edge_row_no, list(self.explain_rows)) & np.isin(m.g.edge_day, days)
+            if not mask.any():
+                continue
+            X = m.ex[mask]
+            contrib = models.edge.booster_.predict(X, pred_contrib=True)
+            names = feature_names(m.nx.shape[1] - len(NODE_FEATURES) - 1)
+            score = proba(models.edge, X)
+            for i, (row_no, c) in enumerate(zip(m.g.edge_row_no[mask], contrib)):
+                order = np.argsort(-np.abs(c[:-1]))[:top]
+                out.append({"row_no": int(row_no), "view": m.g.owner or "pooled", "score": float(score[i]),
+                            "bias": float(c[-1]),
+                            "top": [{"feature": names[j] if j < len(names) else f"f{j}", "contrib": float(c[j])} for j in order]})
+        return out
+
     def train_windows(self) -> list[tuple[date, date]]:
         """(день, ночь выпусков) для обучения: дни 2…6, выпуски ночи d − 1."""
         return [(d, d - timedelta(days=1)) for d in self.train_days[1:]]
@@ -251,6 +303,12 @@ class GBTExperiment(Experiment):
             nodes.append(self.mats_nodes(model, mm, end))
         test_v = pl.concat(tests_t)
         test_t = edge_scores(test_v)
+        if self.explain_rows:
+            expl = self.explain(model, val_mats, va_days)
+            for end, days, night in tests:
+                expl += self.explain(model, mats_for(end, night), days)
+            (PREDS_DIR / f"{mode}_s{self.seed}_explain.json").write_text(
+                json.dumps(expl, ensure_ascii=False, indent=1), encoding="utf-8")
         PREDS_DIR.mkdir(parents=True, exist_ok=True)
         val_v.write_parquet(PREDS_DIR / f"{mode}_s{self.seed}_val_views.parquet")
         test_v.write_parquet(PREDS_DIR / f"{mode}_s{self.seed}_test_views.parquet")

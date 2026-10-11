@@ -59,23 +59,23 @@ with tab_scene:
                 "время": s["time"], "откуда": s["from_bank"] + (" ●" if s["from_participant"] else ""),
                 "куда": s["to_bank"] + (" ●" if s["to_participant"] else ""), "сумма": money(s["amount_kzt"]),
                 "канал": s["channel"],
-                "изоляция: отправитель": pct(s["isolation_sender"]), "ШЕКАРА: отправитель": pct(s["L3_sender"]),
-                "изоляция: получатель": pct(s["isolation_receiver"]), "ШЕКАРА: получатель": pct(s["L3_receiver"]),
+                "изоляция: отправитель": pct(s["isolation_sender"]), "ШЕКАРА: отправитель": pct(s["C_L3_sender"]),
+                "изоляция: получатель": pct(s["isolation_receiver"]), "ШЕКАРА: получатель": pct(s["C_L3_receiver"]),
                 "выпуск о получателе: транзит / макс. входящий": (
                     f"{pct(s.get('release_about_receiver'))} / {pct(s.get('release_in_max'))}"
                     if s.get("release_night") else "—"),
             })
         st.dataframe(pl.DataFrame(rows), use_container_width=True, hide_index=True)
         st.caption(f"● — банк-участник ШЕКАРЫ. Порог алерта (выбран на валидации): изоляция {thr['isolation']:.2f}, "
-                   f"ШЕКАРА {thr['L3']:.2f}.")
+                   f"ШЕКАРА {thr['C_L3']:.2f}.")
         pp = [s for s in case["steps"] if s["from_participant"] and s["to_participant"]]
         for s in pp:
-            iso, she = s["isolation_sender"], s["L3_sender"]
+            iso, she = s["isolation_sender"], s["C_L3_sender"]
             st.markdown(
                 f"**{s['time']} · банк {s['from_bank']} → банк {s['to_bank']}, {money(s['amount_kzt'])}.** "
                 f"Банк {s['from_bank']} сам видит балл исходящего перевода: изоляция **{pct(iso)}**"
                 f"{' (алерт)' if s['isolation_alert_sender'] else ' (нет алерта)'}, ШЕКАРА **{pct(she)}**"
-                f"{' (алерт)' if s['L3_alert_sender'] else ' (нет алерта)'}. "
+                f"{' (алерт)' if s['C_L3_alert_sender'] else ' (нет алерта)'}. "
                 f"Ночью {s.get('release_night')} банк {s['to_bank']} разослал выпуск о получателе: балл «транзитный» "
                 f"**{pct(s.get('release_about_receiver'))}**, максимальный балл его входящих **{pct(s.get('release_in_max'))}**."
             )
@@ -96,12 +96,27 @@ with tab_bank:
             "банк контрагента": s["to_bank"] if s["from_bank"] == bank else s["from_bank"],
             "сумма": money(s["amount_kzt"]),
             "балл (изоляция)": pct(s["isolation_sender"] if s["from_bank"] == bank else s["isolation_receiver"]),
-            "балл (ШЕКАРА)": pct(s["L3_sender"] if s["from_bank"] == bank else s["L3_receiver"]),
+            "балл (ШЕКАРА)": pct(s["C_L3_sender"] if s["from_bank"] == bank else s["C_L3_receiver"]),
         } for s in mine]), use_container_width=True, hide_index=True)
+        st.markdown("**Почему такой балл** — вклад признаков в балл перевода (модель изоляции и модель с выпусками; "
+                    "положительный вклад повышает риск)")
+        for s in mine:
+            side = "sender" if s["from_bank"] == bank else "receiver"
+            iso_e, l3_e = s.get(f"isolation_{side}_explain"), s.get(f"L3_{side}_explain")
+            if not (iso_e or l3_e):
+                continue
+            with st.expander(f"{s['time']} · {s['from_bank']} → {s['to_bank']} · {money(s['amount_kzt'])}"):
+                cols = st.columns(2)
+                for col, title, e in ((cols[0], "Изоляция", iso_e), (cols[1], "С выпусками соседей (L3)", l3_e)):
+                    with col:
+                        st.caption(title)
+                        if e:
+                            st.dataframe(pl.DataFrame([{"признак": x["feature"], "вклад": round(x["contrib"], 2)} for x in e]),
+                                         use_container_width=True, hide_index=True)
         q = case["queues"]
         st.markdown("**Место своих счетов паттерна в ночной очереди** (бюджет — 0,1% активных счетов)")
         rows = []
-        for mode, label in (("isolation", "изоляция"), ("L3", "ШЕКАРА")):
+        for mode, label in (("isolation", "изоляция"), ("C_L3", "ШЕКАРА")):
             for r in q.get(mode, []):
                 if r["bank"] == bank:
                     rows.append({"режим": label, "счёт": r["account"], "ночь": r["end_day"], "место": r["rank"],

@@ -30,7 +30,7 @@ from protocol.tokens import new_pair_key
 from trace.incident import IncidentDesk, Operator
 
 CASE_FILE = RESULTS_DIR / "demo_case.json"
-MODES = ("isolation", "L3")
+MODES = ("isolation", "L3", "C_L3")  # C_L3 — главный режим ШЕКАРЫ (model/combine.py)
 # Курсы только для отображения сумм в тенге (приблизительно, на 2026 год — проверить).
 KZT_RATE = {"US Dollar": 480, "Euro": 520, "UK Pound": 610, "Swiss Franc": 540, "Yuan": 66, "Yen": 3.2,
             "Rupee": 5.7, "Ruble": 5.5, "Australian Dollar": 315, "Canadian Dollar": 350, "Mexican Peso": 26,
@@ -51,11 +51,22 @@ def view_scores(mode: str, seed: int) -> pl.DataFrame:
 
 
 def thresholds(seed: int) -> dict[str, float]:
-    runs = pl.read_csv(RESULTS_DIR / "runs.csv").filter(pl.col("seed") == seed)
-    return dict(zip(runs["mode"], runs["threshold"]))
+    """Порог F1 каждого режима — с валидации (как в метриках)."""
+    from model.train_rounds import best_threshold
+
+    out = {}
+    for m in MODES:
+        v = pl.read_parquet(PREDS_DIR / f"{m}_s{seed}_val.parquet")
+        out[m] = best_threshold(v["score"].to_numpy(), v["label"].to_numpy())
+    return out
 
 
 def node_scores(mode: str, seed: int) -> pl.DataFrame:
+    if mode.startswith("C_"):  # сочетание: среднее балла изоляции и модели с выпусками (model/combine.py)
+        iso, other = node_scores("isolation", seed), node_scores(mode[2:], seed)
+        key = ["bank", "account", "end_day"]
+        return iso.join(other.select(*key, pl.col("score").alias("_s")), on=key).with_columns(
+            ((pl.col("score") + pl.col("_s")) / 2).alias("score")).drop("_s")
     return pl.read_parquet(PREDS_DIR / f"{mode}_s{seed}_nodes.parquet")
 
 
@@ -69,6 +80,12 @@ def build_case(seed: int = 1, pattern_id: int | None = None) -> dict:
            .filter(pl.col("day").is_in(list(full_days))).sort("time"))
     thr = thresholds(seed)
     views = {m: view_scores(m, seed) for m in MODES}
+    explain = {}
+    for m in MODES:
+        f = PREDS_DIR / f"{m}_s{seed}_explain.json"
+        if f.exists():
+            for e in json.loads(f.read_text(encoding="utf-8")):
+                explain[(m, e["row_no"], e["view"])] = e["top"]
     release_nodes = node_scores("isolation", seed)  # балл раунда 0 = выпуск L1 банка-владельца
 
     steps = []
@@ -86,6 +103,10 @@ def build_case(seed: int = 1, pattern_id: int | None = None) -> dict:
                 s = v.filter(pl.col("view") == bank)["score"]
                 step[f"{m}_{side}"] = float(s[0]) if len(s) else None
             step[f"{m}_alert_sender"] = step[f"{m}_sender"] is not None and step[f"{m}_sender"] >= thr.get(m, 1.0)
+            for side, bank in (("sender", r["from_bank"]), ("receiver", r["to_bank"])):
+                top = explain.get((m, r["row_no"], bank))
+                if top:
+                    step[f"{m}_{side}_explain"] = top
         if step["from_participant"] and step["to_participant"]:
             night = r["time"].date() - timedelta(days=1)
             rel = release_nodes.filter((pl.col("bank") == r["to_bank"]) & (pl.col("account") == r["receiver_account"])
@@ -128,10 +149,10 @@ def protocol_trace(steps: list[dict], participants: list[str]) -> dict:
         desks[b] = IncidentDesk(gw, "I2", active)
         hub.register(gw, desks[b])
 
-    trigger = next((s for s in pp if s.get("L3_alert_sender")), pp[0])
+    trigger = next((s for s in pp if s.get("C_L3_alert_sender")), pp[0])
     t = datetime.strptime(trigger["time"], "%Y/%m/%d %H:%M")
     events = []
-    out = {"trigger_row": trigger["row_no"], "trigger_alerted_by_shekara": bool(trigger.get("L3_alert_sender"))}
+    out = {"trigger_row": trigger["row_no"], "trigger_alerted_by_shekara": bool(trigger.get("C_L3_alert_sender"))}
     for kind in ("soft", "confirmed"):
         src = desks[trigger["from_bank"]]
         iid = src.open(trigger["from_account"], kind, now=t, anchor=t)
@@ -185,7 +206,7 @@ def main() -> int:
     print(f"Паттерн {case['pattern_id']} ({case['pattern_type']}): {len(case['steps'])} переводов, между участниками {len(pp)}")
     for s in pp:
         print(f"  {s['time']} {s['from_bank']}→{s['to_bank']} {s['amount_kzt']:,} ₸: отправитель видит "
-              f"изоляция {s['isolation_sender']}, ШЕКАРА {s['L3_sender']}; выпуск о получателе {s.get('release_about_receiver')}")
+              f"изоляция {s['isolation_sender']:.3f}, ШЕКАРА {s['C_L3_sender']:.3f}; выпуск о получателе {s.get('release_about_receiver')}")
     print(f"Журнал хаба: {case['protocol']['audit']['entries']} записей, verify={case['protocol']['audit']['verify']}")
     print(f"→ {CASE_FILE}")
     return 0
