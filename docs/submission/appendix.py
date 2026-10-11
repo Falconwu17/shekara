@@ -141,6 +141,22 @@ def coverage_table(v: pl.DataFrame | None) -> str:
     return head + "\n" + "\n".join(lines)
 
 
+def cascade_table() -> str:
+    f = RES / "cascade.csv"
+    if not f.exists():
+        return NA
+    c = (pl.read_csv(f).group_by("model", "incidents_mode", "trace_min")
+         .agg(pl.col("links_known_to_operator", "links_traced_by_incident", "false_soft_share",
+                     "incoming_per_bank_day_mean").mean(), pl.col("links").first()).sort("model", "incidents_mode", "trace_min"))
+    head = ("| Модель | Режим | Окно Δt | Звеньев известно оператору | из них по инциденту | Ложных мягких инцидентов | "
+            "Входящих инцидентов на банк в сутки |\n|---|---|---|---|---|---|---|")
+    lines = [f"| {LABELS.get(r['model'], r['model'])} | {r['incidents_mode']} | {r['trace_min'] // 60} ч | "
+             f"{pct(r['links_known_to_operator'], 1)} | {pct(r['links_traced_by_incident'], 1)} | "
+             f"{pct(r['false_soft_share']) if r['false_soft_share'] is not None else '—'} | {fmt(r['incoming_per_bank_day_mean'], 1)} |"
+             for r in c.iter_rows(named=True)]
+    return head + "\n" + "\n".join(lines) + f"\n\nЗвеньев отмывания между участниками в тесте: {c['links'][0]}."
+
+
 def data_section() -> str:
     d = json.loads((RES.parents[1] / "data" / "split_decision.json").read_text(encoding="utf-8"))
     st = load_json("stats.json")
@@ -231,6 +247,12 @@ TEMPLATE = """# ШЕКАРА — техническое приложение
 
 {retention_table}
 
+**Каскад инцидентов** (`trace/cascade.py`, среднее по 3 seed). I0 — без инцидентов: звено известно, только если банк-получатель сам поднял алерт; I1 — подтверждённые аналитиком через 60 мин; I2 — плюс мягкие (квота 0,02% активных счетов). Окно Δt = 1 ч задано протоколом; 6 и 24 ч показаны потому, что в AMLworld деньги лежат на транзитном счёте в среднем ≈ 21 ч.
+
+{cascade_table}
+
+Вывод: на медленных синтетических цепочках AMLworld каскад добавляет оператору лишь 1–3% звеньев даже при окне 24 ч, а около двух третей мягких инцидентов не содержат отмывания. Польза каскада — на быстрых цепочках (минуты), которых в AMLworld нет; её проверка — задача пилота.
+
 **Цена H1** (честные клиенты под временной задержкой, медианный seed):
 
 {h1_table}
@@ -276,7 +298,7 @@ def main() -> int:
     v = views_summary()
     text = TEMPLATE.format(
         repo=REPO_URL, data=data_section(), main_table=main_table(v), privacy_table=privacy_table(v),
-        paired_table=paired_table(), retention_table=retention_table(), h1_table=h1_table(), coverage_table=coverage_table(v),
+        paired_table=paired_table(), retention_table=retention_table(), h1_table=h1_table(), coverage_table=coverage_table(v), cascade_table=cascade_table(),
         lat_query=fmt(n["lat_query_ms"], 3), lat_inbound=fmt(n["lat_inbound_ms"], 2),
     )
     (OUT / "tech_appendix_ru.md").write_text(text, encoding="utf-8")
