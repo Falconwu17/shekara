@@ -192,3 +192,12 @@ def test_signed_head_verifies_and_detects_forgery():
     assert not verify_head(head["public_key"], head["seq"], "f" * 64, head["signature"])
     other = Hub()
     assert not verify_head(other.public_key, head["seq"], head["hash"], head["signature"])
+
+
+def test_batch_append_keeps_chain_valid():
+    log = AuditLog()
+    log.append(t("20:00"), "query", "A", "B")
+    log.append_many([(t("20:01"), "release", "B", "A", "h1", "ok"), (t("20:02"), "release", "B", "C", "h2", "ok")])
+    log.append(t("20:03"), "query", "C", "B")
+    assert log.verify() and log.count() == 4
+    assert [e["seq"] for e in log.page(0, 2)] == [4, 3]

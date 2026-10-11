@@ -103,9 +103,11 @@ class Gateway:
         self._queries: Counter[tuple[str, date]] = Counter()
         self._releases: dict[str, Release] = {}
         self._external: dict[tuple[str, str], Release] = {}
+        self.transfers: list[Transfer] = []  # все свои переводы в порядке строк базы банка
 
         for row, ref in zip(rows, compute_tx_refs(rows)):
             t = self._own_side(row, ref)
+            self.transfers.append(t)
             bank = t.counterparty_bank
             if bank == bank_id or bank not in self._keys:
                 continue  # внутренний перевод или банк вне ШЕКАРЫ
@@ -126,6 +128,9 @@ class Gateway:
                 ref, row.receiver_account, row.from_bank, row.sender_account, time, False, row.amount_paid
             )
         raise ValueError(f"в базе банка {self.bank_id} чужой перевод: {row}")
+
+    def is_partner(self, bank: str) -> bool:
+        return bank in self._keys
 
     def ref_hmac(self, t: Transfer) -> str:
         return tx_ref_hmac(self._keys[t.counterparty_bank], CHANNEL, t.tx_ref)

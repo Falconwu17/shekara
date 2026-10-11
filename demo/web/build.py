@@ -75,6 +75,18 @@ def retention() -> dict:
     return out
 
 
+def results() -> dict:
+    """Итоги эксперимента для приложения (online/api.py, /v1/results)."""
+    views = views_summary()
+    stats = json.loads((RES / "stats.json").read_text(encoding="utf-8"))["structure_train_days"]
+    checks = (RES / "checks.md").read_text(encoding="utf-8")
+    return {"views": views, "privacy": privacy_points(views), "coverage": coverage(), "paired": paired(),
+            "retention": retention(), "latency": json.loads((RES / "latency.json").read_text(encoding="utf-8")),
+            "checks": {"passed": checks.count("✅"), "total": checks.count("✅") + checks.count("❌")},
+            "stats": {"share_seen": stats["pattern_share_seen_by_one_bank"], "interbank": stats["laundering_interbank_share"],
+                      "prior": stats["patterns_with_prior_interbank_accounts"], "dwell_h": stats["dwell_minutes"]["median"] / 60}}
+
+
 def main() -> int:
     case = json.loads((RES / "demo_case.json").read_text(encoding="utf-8"))
     views = views_summary()

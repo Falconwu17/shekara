@@ -3,7 +3,7 @@
 # Окружение — .venv на диске D (py -m venv .venv; .venv\Scripts\python -m pip install -r requirements.txt).
 PY ?= .venv/Scripts/python.exe
 
-.PHONY: stats data case experiment metrics demo test
+.PHONY: stats data case experiment metrics demo app test
 
 stats:
 	$(PY) -m data.stats
@@ -23,6 +23,9 @@ metrics:
 
 demo:
 	$(PY) -m demo.replay
+
+app:
+	$(PY) -m online.api
 
 test:
 	$(PY) -m pytest

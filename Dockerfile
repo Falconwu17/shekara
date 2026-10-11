@@ -13,9 +13,9 @@ COPY trace/ trace/
 COPY online/ online/
 COPY data/__init__.py data/amlworld.py data/split.py data/stats.py data/labels.py data/channel_map.py data/
 COPY data/split_decision.json data/
-COPY demo/__init__.py demo/pick_case.py demo/
+COPY demo/ demo/
 COPY dashboard/ dashboard/
-COPY demo/web/shekara.html demo/web/shekara.html
+COPY web/ web/
 
 EXPOSE 8000 8501
-CMD ["python", "-m", "online.api", "--banks", "006,011,01292", "--host", "0.0.0.0"]
+CMD ["python", "-m", "online.api", "--host", "0.0.0.0"]

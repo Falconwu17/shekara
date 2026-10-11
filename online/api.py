@@ -20,7 +20,6 @@ import numpy as np
 from pathlib import Path
 
 from fastapi import FastAPI, Header, HTTPException
-from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from online.alerts import AlertQueue, alert_budget
@@ -100,7 +99,30 @@ def _release_json(r: Release | None):
     return {"level": r.level, "date": r.date.isoformat(), "value": v.tolist() if isinstance(v, np.ndarray) else v}
 
 
-def create_app(net: Network) -> FastAPI:
+class ControlIn(BaseModel):
+    action: Literal["play", "pause", "reset"] | None = None
+    speed: float | None = None
+    mode: str | None = None
+
+
+class BankIncidentIn(BaseModel):
+    kind: Literal["soft", "confirmed"] = "confirmed"
+
+
+class SignatureIn(BaseModel):
+    seq: int
+    hash: str
+    signature: str
+    public_key: str
+
+
+WEB_DIR = Path(__file__).resolve().parents[1] / "web"
+
+
+def create_app(net: Network | None = None, sim=None) -> FastAPI:
+    """`sim` — стенд online.sim.Simulator (его сеть и часы); без него — только протокол."""
+    if sim is not None:
+        net = sim.net
     app = FastAPI(title="ШЕКАРА", description="Протокол межбанковского обмена оценками риска (docs/SHEKARA.md, раздел 3.5)")
 
     def _hops(sender: str, desk: IncidentDesk, iid: str, account: str, now: datetime) -> list[dict]:
@@ -133,13 +155,6 @@ def create_app(net: Network) -> FastAPI:
             eps = e if np.isfinite(e) else None  # None — без шума, гарантии нет
         return {"releases": len(body.scores), "messages": len(msgs), "delivered": delivered,
                 "epsilon_30d_first_account": eps, "noise_multiplier": noise_multiplier(body.level, body.sigma) if body.level != "L3" else None}
-
-    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
-    def web_demo():
-        page = Path(__file__).resolve().parents[1] / "demo" / "web" / "shekara.html"
-        if not page.exists():
-            raise HTTPException(404, "соберите демо: py -m demo.web.build")
-        return HTMLResponse(page.read_text(encoding="utf-8"))
 
     @app.get("/v1/health")
     def health():
@@ -201,6 +216,87 @@ def create_app(net: Network) -> FastAPI:
     def audit_verify():
         return {"ok": net.hub.log.verify(), "entries": len(net.hub.log.entries())}
 
+    @app.get("/v1/audit/entries")
+    def audit_entries(offset: int = 0, limit: int = 50):
+        return {"total": net.hub.log.count(), "entries": net.hub.log.page(offset, min(limit, 200))}
+
+    @app.post("/v1/audit/verify-signature")
+    def audit_verify_signature(body: SignatureIn):
+        from protocol.hub import verify_head
+
+        return {"ok": verify_head(body.public_key, body.seq, body.hash, body.signature)}
+
+    @app.get("/v1/results")
+    def results():
+        from demo.web.build import results as collect
+
+        return collect()
+
+    if sim is not None:
+        def need_bank(bank: str):
+            if bank not in sim.feeds:
+                raise HTTPException(404, f"банк {bank} не участник")
+
+        @app.get("/v1/sim/state")
+        def sim_state():
+            return sim.state()
+
+        @app.post("/v1/sim/control")
+        def sim_control(body: ControlIn):
+            sim.control(body.action, body.speed, body.mode)
+            return sim.state()
+
+        @app.get("/v1/sim/events")
+        def sim_events(since: int = 0):
+            return {"events": sim.events_since(since)}
+
+        @app.get("/v1/banks")
+        def banks():
+            return {"banks": [sim.bank_overview(b) for b in sim.participants]}
+
+        @app.get("/v1/banks/{bank}/feed")
+        def bank_feed(bank: str):
+            need_bank(bank)
+            return {"bank": bank, "feed": sim.bank_feed(bank), "overview": sim.bank_overview(bank)}
+
+        @app.get("/v1/banks/{bank}/queue")
+        def bank_queue(bank: str):
+            need_bank(bank)
+            return {"bank": bank, "queue": sim.bank_queue(bank), "overview": sim.bank_overview(bank)}
+
+        @app.get("/v1/banks/{bank}/accounts/{account}")
+        def account(bank: str, account: str):
+            need_bank(bank)
+            return sim.account_card(bank, account)
+
+        @app.post("/v1/banks/{bank}/transfers/{row_no}/query")
+        def query_counterparty(bank: str, row_no: int):
+            need_bank(bank)
+            return sim.query_counterparty(bank, row_no)
+
+        @app.post("/v1/banks/{bank}/accounts/{account}/incident")
+        def bank_incident(bank: str, account: str, body: BankIncidentIn):
+            need_bank(bank)
+            with sim.lock:
+                return sim.open_incident(bank, account, body.kind)
+
+        @app.get("/v1/operator/incidents")
+        def operator_incidents(x_role: str = Header(default="")):
+            if x_role != "operator":
+                raise HTTPException(403, "список инцидентов доступен только роли «оператор»")
+            with sim.lock:
+                return {"incidents": sorted(sim.incidents.values(), key=lambda i: i["t"], reverse=True)[:200]}
+
+        @app.get("/v1/operator/incidents/{incident_id}/full-tree")
+        def operator_full_tree(incident_id: str, x_role: str = Header(default="")):
+            if x_role != "operator":
+                raise HTTPException(403, "дерево инцидента доступно только роли «оператор»")
+            return sim.incident_tree(incident_id)
+
+    if WEB_DIR.exists():
+        from fastapi.staticfiles import StaticFiles
+
+        app.mount("/", StaticFiles(directory=WEB_DIR, html=True), name="web")
     return app
 
 
@@ -210,12 +306,26 @@ def main() -> int:
     from data.split import load_bank_keys
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--banks", required=True, help="банки-участники через запятую")
+    parser.add_argument("--banks", default="", help="банки-участники через запятую (по умолчанию — все 30)")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument("--protocol-only", action="store_true", help="только протокол, без стенда-симуляции")
     args = parser.parse_args()
-    rows = {b: load_bank_keys(b) for b in args.banks.split(",")}
-    uvicorn.run(create_app(Network(rows)), host=args.host, port=args.port)
+    banks = [b for b in args.banks.split(",") if b] or None
+    if args.protocol_only:
+        rows = {b: load_bank_keys(b) for b in banks}
+        app = create_app(Network(rows))
+    else:
+        from online.sim import Simulator
+
+        t0 = datetime.now()
+        print("Загружаю банки, баллы и строю шлюзы...", flush=True)
+        sim = Simulator(lambda rows: Network(rows), seed=args.seed, banks=banks)
+        print(f"Готово за {(datetime.now() - t0).seconds} с: {len(sim.participants)} банков, "
+              f"{len(sim.timeline)} переводов тестовых дней. Откройте http://{args.host}:{args.port}", flush=True)
+        app = create_app(sim=sim)
+    uvicorn.run(app, host=args.host, port=args.port)
     return 0
 
 

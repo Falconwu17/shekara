@@ -1,15 +1,16 @@
-# Стенд ШЕКАРЫ: API протокола и офлайн-дашборд.
-# Нужны локально подготовленные data/processed/banks (make data) и experiments/results (make experiment / demo).
-#   docker compose up --build   →  API: http://localhost:8000/docs, дашборд: http://localhost:8501
+# Стенд ШЕКАРЫ: приложение и API (http://localhost:8000) и аналитический дашборд Streamlit (:8501).
+# Нужны локально подготовленные data/processed (make data) и experiments/results (эксперимент).
+#   docker compose up --build
 services:
   api:
     build: .
     image: shekara:latest
-    command: ["python", "-m", "online.api", "--banks", "${SHEKARA_BANKS:-006,011,01292}", "--host", "0.0.0.0"]
+    command: ["python", "-m", "online.api", "--host", "0.0.0.0"]
     ports:
       - "8000:8000"
     volumes:
       - ./data/processed:/app/data/processed:ro
+      - ./experiments/results:/app/experiments/results:ro
 
   dashboard:
     image: shekara:latest

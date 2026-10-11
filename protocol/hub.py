@@ -54,6 +54,27 @@ class AuditLog:
         self._db.commit()
         return h
 
+    def append_many(self, items: list[tuple]) -> None:
+        """Пакетная запись (одна транзакция): ночная рассылка даёт десятки тысяч записей."""
+        with self._lock:
+            seq, prev = self.head()
+            batch = []
+            for ts, kind, src, dst, ref_hash, detail in items:
+                values = (ts.isoformat(), kind, src, dst, ref_hash, detail)
+                prev = _entry_hash(prev, values)
+                seq += 1
+                batch.append((seq, *values, batch[-1][-1] if batch else self.head()[1], prev))
+            self._db.executemany("INSERT INTO audit VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", batch)
+            self._db.commit()
+
+    def count(self) -> int:
+        return self._db.execute("SELECT COUNT(*) FROM audit").fetchone()[0]
+
+    def page(self, offset: int, limit: int) -> list[dict]:
+        cur = self._db.execute(f"SELECT seq, {', '.join(_FIELDS)}, hash FROM audit ORDER BY seq DESC LIMIT ? OFFSET ?",
+                               (limit, offset))
+        return [dict(zip(("seq", *_FIELDS, "hash"), r)) for r in cur]
+
     def entries(self) -> list[dict]:
         cur = self._db.execute(f"SELECT {', '.join(_FIELDS)} FROM audit ORDER BY seq")
         return [dict(zip(_FIELDS, r)) for r in cur]
@@ -124,12 +145,12 @@ class Hub:
 
     def broadcast(self, sender: str, messages: Iterable[Broadcast], now: datetime) -> int:
         """Доставляет ночную рассылку адресатам; возвращает число принятых выпусков."""
-        delivered = 0
+        delivered, log = 0, []
         for msg in messages:
             gw = self._gateways.get(msg.target_bank)
             ok = gw is not None and gw.receive_broadcast(sender, msg, now)
             delivered += ok
-            self.log.append(
-                now, "release", sender, msg.target_bank, ref_digest(msg.tx_ref_hmac), "ok" if ok else "not_found"
-            )
+            log.append((now, "release", sender, msg.target_bank, ref_digest(msg.tx_ref_hmac), "ok" if ok else "not_found"))
+        if log:
+            self.log.append_many(log)
         return delivered
