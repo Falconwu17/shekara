@@ -85,3 +85,14 @@ def test_incident_mode_off_and_unknown_bank():
     r = c.post("/v1/incidents", json={"origin_bank": "B", "account": "b1", "kind": "soft", "now": "2022-09-01T20:00:00"})
     assert r.json() == {"error": "mode_off"}
     assert c.get("/v1/banks/Z/alerts", params={"day": "2022-09-01"}).status_code == 404
+
+
+def test_root_serves_web_demo_when_built():
+    from pathlib import Path
+
+    c, _ = client()
+    r = c.get("/")
+    built = (Path(__file__).resolve().parents[1] / "demo" / "web" / "shekara.html").exists()
+    assert r.status_code == (200 if built else 404)
+    if built:
+        assert "ШЕКАРА" in r.text

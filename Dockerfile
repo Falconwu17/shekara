@@ -15,6 +15,7 @@ COPY data/__init__.py data/amlworld.py data/split.py data/stats.py data/labels.p
 COPY data/split_decision.json data/
 COPY demo/__init__.py demo/pick_case.py demo/
 COPY dashboard/ dashboard/
+COPY demo/web/shekara.html demo/web/shekara.html
 
 EXPOSE 8000 8501
 CMD ["python", "-m", "online.api", "--banks", "006,011,01292", "--host", "0.0.0.0"]

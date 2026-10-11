@@ -1,0 +1,466 @@
+<title>ШЕКАРА</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Пограничная карта: банки — вертикальные полосы с пунктирными границами, переводы идут сквозь них во времени. */
+:root {
+  --paper: #EEF2F2; --surface: #FFFFFF; --ink: #0E1F26; --ink-2: #4A5A61; --ink-3: #7A8A90;
+  --line: #D3DCDD; --lane: #E3EAEB; --sky: #0C6B9C; --sky-soft: #D7EAF4;
+  --amber: #A65F00; --amber-soft: #FBEBD3; --risk: #B03A24; --risk-soft: #F7DED8; --ok: #2B7A57;
+  --display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0B1417; --surface: #11201F; --ink: #E4EDEE; --ink-2: #A3B4B8; --ink-3: #74878C;
+  --line: #24363A; --lane: #142528; --sky: #5DB7E4; --sky-soft: #10324A;
+  --amber: #E7A33B; --amber-soft: #3A2A10; --risk: #E86F59; --risk-soft: #3D1C17; --ok: #5FC193; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #0B1417; --surface: #11201F; --ink: #E4EDEE; --ink-2: #A3B4B8; --ink-3: #74878C;
+  --line: #24363A; --lane: #142528; --sky: #5DB7E4; --sky-soft: #10324A;
+  --amber: #E7A33B; --amber-soft: #3A2A10; --risk: #E86F59; --risk-soft: #3D1C17; --ok: #5FC193; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--paper); color: var(--ink); font: 400 16px/1.55 var(--body); padding-inline: clamp(16px, 4vw, 48px); padding-block: 0 48px }
+.wrap { max-width: 1240px; margin-inline: auto; display: flex; flex-direction: column; gap: 72px }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; text-wrap: balance; margin: 0 }
+h2 { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.2; letter-spacing: -0.01em }
+h3 { font-size: 15px; letter-spacing: 0.02em }
+p { margin: 0 }
+.eyebrow { font: 500 12px/1 var(--body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky) }
+.lede { color: var(--ink-2); max-width: 64ch; font-size: 17px }
+.mono { font-family: var(--mono); font-size: 0.86em }
+.num { font-variant-numeric: tabular-nums }
+section { display: flex; flex-direction: column; gap: 24px }
+.section-head { display: flex; flex-direction: column; gap: 10px }
+button, .chip { font: inherit; cursor: pointer }
+:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px }
+
+/* шапка */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; margin-inline: calc(-1 * clamp(16px, 4vw, 48px)); padding-inline: clamp(16px, 4vw, 48px) }
+.brand { font: 700 18px/1 var(--display); letter-spacing: 0.06em }
+.brand span { color: var(--sky) }
+nav.top-nav { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px }
+nav.top-nav a { color: var(--ink-2); text-decoration: none }
+nav.top-nav a:hover { color: var(--ink) }
+
+/* герой */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding-top: 40px }
+.hero h1 { font-size: clamp(30px, 4.6vw, 54px); line-height: 1.08; letter-spacing: -0.02em; max-width: 20ch }
+.hero h1 em { font-style: normal; color: var(--sky) }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 28px; color: var(--ink-2); font-size: 14px }
+.facts b { color: var(--ink); font-weight: 600 }
+
+/* карта границ */
+.board { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden }
+.board-map { min-width: 0; overflow-x: auto; border-right: 1px solid var(--line) }
+.board-map svg { display: block; min-width: 640px; width: 100% }
+.board-side { display: flex; flex-direction: column; gap: 18px; padding: 22px }
+.controls { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--line); grid-column: 1 / -1; flex-wrap: wrap }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 12px; font-size: 14px }
+.btn:hover { border-color: var(--ink-3) }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+#scrub { flex: 1; min-width: 160px; accent-color: var(--sky) }
+.step-count { font: 500 13px var(--mono); color: var(--ink-2) }
+.step-time { font: 500 13px var(--mono); color: var(--ink-3) }
+.step-route { font: 500 20px/1.25 var(--display) }
+.step-amount { font-size: 15px; color: var(--ink-2) }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 999px }
+.tag.risk { background: var(--risk-soft); color: var(--risk) }
+.tag.sky { background: var(--sky-soft); color: var(--sky) }
+.tag.amber { background: var(--amber-soft); color: var(--amber) }
+.meters { display: flex; flex-direction: column; gap: 14px }
+.meter { display: grid; grid-template-columns: 92px minmax(0, 1fr) 52px; align-items: center; gap: 10px; font-size: 13px }
+.meter .bar { position: relative; height: 10px; background: var(--lane); border-radius: 5px }
+.meter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; transition: width .35s ease }
+.meter .thr { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink) }
+.meter .val { font: 500 13px var(--mono); text-align: right }
+.side-note { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 14px }
+
+/* банки */
+.chips { display: flex; gap: 8px; flex-wrap: wrap }
+.chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 6px 14px; font-size: 14px }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+.bankview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0 }
+.rows { display: flex; flex-direction: column }
+.row { display: grid; grid-template-columns: 112px minmax(0, 1fr) 76px 76px; gap: 10px; align-items: baseline; padding-block: 9px; border-top: 1px solid var(--line); font-size: 14px }
+.row.head { color: var(--ink-3); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; border-top: 0 }
+.row .r { text-align: right; font-family: var(--mono); font-size: 13px }
+.row .r.hit { color: var(--amber); font-weight: 600 }
+.contrib { display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 4px 12px; font-size: 13px; align-items: center }
+.contrib .cbar { height: 8px; border-radius: 4px }
+.muted { color: var(--ink-3) }
+
+/* протокол */
+.proto { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface) }
+.proto > div { padding: 20px; display: flex; flex-direction: column; gap: 8px; border-left: 1px solid var(--line) }
+.proto > div:first-child { border-left: 0 }
+.proto .k { font: 500 12px var(--mono); color: var(--ink-3) }
+.tree svg { display: block; width: 100%; height: auto }
+
+/* результаты */
+.results { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px }
+.bars { display: flex; flex-direction: column; gap: 10px }
+.barrow { display: grid; grid-template-columns: 220px minmax(0, 1fr) 60px; gap: 12px; align-items: center; font-size: 14px }
+.barrow .track { position: relative; height: 22px; background: var(--lane); border-radius: 4px }
+.barrow .b { position: absolute; inset: 0 auto 0 0; border-radius: 4px; transition: width .4s ease }
+.barrow .err { position: absolute; top: 9px; height: 4px; background: var(--ink); opacity: .55; border-radius: 2px }
+.barrow .v { font: 500 13px var(--mono); text-align: right }
+.barrow.main .lbl { font-weight: 600 }
+.verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
+.verdict { border-top: 3px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-2) }
+.verdict b { font: 600 22px/1.2 var(--display); color: var(--ink) }
+.verdict.yes { border-color: var(--ok) } .verdict.no { border-color: var(--amber) } .verdict.info { border-color: var(--sky) }
+#privacy svg { display: block; width: 100%; height: auto }
+.tip { font-size: 13px; color: var(--ink-2); min-height: 20px }
+table.t { width: 100%; border-collapse: collapse; font-size: 14px }
+table.t th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid var(--line) }
+table.t td { padding: 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums }
+table.t td.r, table.t th.r { text-align: right }
+.scroll { overflow-x: auto }
+
+footer.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 24px; color: var(--ink-2); font-size: 14px }
+footer.foot a { color: var(--sky) }
+
+@media (max-width: 960px) {
+  .board, .bankview, .results { grid-template-columns: minmax(0, 1fr) }
+  .board-map { border-right: 0; border-bottom: 1px solid var(--line) }
+  .proto, .verdicts { grid-template-columns: minmax(0, 1fr) }
+  .proto > div { border-left: 0; border-top: 1px solid var(--line) } .proto > div:first-child { border-top: 0 }
+  .barrow { grid-template-columns: 140px minmax(0, 1fr) 52px }
+  nav.top-nav { display: none }
+}
+@media (max-width: 520px) {
+  .row { grid-template-columns: 88px minmax(0, 1fr) 58px 58px; font-size: 13px }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand">ШЕКА<span>РА</span></div>
+  <nav class="top-nav">
+    <a href="#map">Схема</a><a href="#banks">Вид банка</a><a href="#protocol">Протокол</a><a href="#results">Результаты</a>
+  </nav>
+</header>
+
+<section class="hero" id="map">
+  <div class="section-head">
+    <p class="eyebrow">Межбанковский поиск сетей дропов · AMLworld, тестовые дни</p>
+    <h1>Дроп прячется на стыке банков. ШЕКАРА делает стык <em>видимым</em>, а клиентские данные остаются в банке.</h1>
+    <p class="lede">Ниже — реальный паттерн отмывания из тестовых дней бенчмарка IBM AMLworld: тринадцать дропов сводят деньги на один счёт-сборщик. Пунктир — граница банков. Каждый перевод проходит через протокол ШЕКАРЫ, рядом — балл изолированного банка и балл ШЕКАРЫ.</p>
+  </div>
+  <div class="facts" id="facts"></div>
+  <div class="board">
+    <div class="board-map"><svg id="lanes" role="img" aria-label="Переводы паттерна между банками во времени"></svg></div>
+    <aside class="board-side" id="side" aria-live="polite"></aside>
+    <div class="controls">
+      <button class="btn primary" id="play" type="button">▶ Проиграть</button>
+      <button class="btn" id="prev" type="button" aria-label="Предыдущий перевод">←</button>
+      <button class="btn" id="next" type="button" aria-label="Следующий перевод">→</button>
+      <input type="range" id="scrub" min="0" max="0" value="0" aria-label="Шаг паттерна">
+      <span class="step-count" id="count"></span>
+    </div>
+  </div>
+</section>
+
+<section id="banks">
+  <div class="section-head">
+    <p class="eyebrow">Need-to-know</p>
+    <h2>Что видит каждый банк</h2>
+    <p class="lede">Банк видит только переводы своих клиентов и балл, который считает сам. О соседе он знает лишь то, что пришло в выпуске по ссылке на реальный перевод. Полную цепочку собирает только оператор.</p>
+  </div>
+  <div class="chips" id="bankchips" role="group" aria-label="Выбор банка"></div>
+  <div class="bankview">
+    <div class="panel"><h3 id="bv-title"></h3><div class="rows" id="bv-rows"></div></div>
+    <div class="panel"><h3>Почему такой балл</h3><p class="muted" id="bv-why-note"></p><div id="bv-why"></div></div>
+  </div>
+</section>
+
+<section id="protocol">
+  <div class="section-head">
+    <p class="eyebrow">Протокол</p>
+    <h2>Инцидент идёт по ссылке, дерево видит только оператор</h2>
+  </div>
+  <div class="proto" id="proto"></div>
+  <div class="panel tree"><h3>Дерево подтверждённого инцидента · вид оператора</h3><div id="tree"></div></div>
+</section>
+
+<section id="results">
+  <div class="section-head">
+    <p class="eyebrow">Результаты · 5,08 млн переводов, 30 банков-участников, 3 запуска</p>
+    <h2>Банк со своим графом вдвое сильнее центрального оператора. Обмен добавляет ещё 12%.</h2>
+  </div>
+  <div class="verdicts" id="verdicts"></div>
+  <div class="results">
+    <div class="panel">
+      <h3>PR-AUC на межбанковских переводах</h3>
+      <div class="chips" id="slicechips" role="group" aria-label="Срез"></div>
+      <div class="bars" id="bars"></div>
+      <p class="muted" id="bars-note"></p>
+    </div>
+    <div class="panel" id="privacy">
+      <h3>Цена приватности: раскрытие ↔ качество ↔ ε</h3>
+      <div id="privacy-chart"></div>
+      <p class="tip" id="privacy-tip">Наведите на точку. Регулятор выбирает, где остановиться.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Охват сети и деньги на счёте</h3>
+    <div class="scroll"><table class="t" id="extra"></table></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Джусупов Сагир Едгеевич · ЗКАТУ имени Жангир хана, Уральск · научный руководитель Касымова А. Х. · конкурс АБРК 2026</div>
+  <div><a href="https://github.com/Falconwu17/shekara" target="_blank" rel="noopener">github.com/Falconwu17/shekara</a></div>
+</footer>
+</div>
+
+<script>
+const D = {"case": {"pattern_id": 235, "pattern_type": "SCATTER-GATHER", "seed": 1, "thresholds": {"isolation": 0.22918433722562143, "L3": 0.36859858218167846, "C_L3": 0.24623173854596975}, "participants_in_pattern": ["006", "011", "01292"], "steps": [{"row_no": 3411042, "time": "2022/09/07 07:07", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "011852", "to_account": "80C8BC8F0", "amount": "16818.22", "currency": "Euro", "amount_kzt": 8745474, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411047, "time": "2022/09/07 11:17", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "0239604", "to_account": "80E62A630", "amount": "9970.77", "currency": "Swiss Franc", "amount_kzt": 5384216, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411050, "time": "2022/09/07 11:38", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "0011899", "to_account": "804844840", "amount": "18348.21", "currency": "US Dollar", "amount_kzt": 8807141, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411052, "time": "2022/09/07 15:13", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "001411", "to_account": "802371D80", "amount": "13201.33", "currency": "US Dollar", "amount_kzt": 6336638, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411054, "time": "2022/09/07 16:42", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "006276", "to_account": "80D551FF0", "amount": "18150.36", "currency": "US Dollar", "amount_kzt": 8712173, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411057, "time": "2022/09/07 17:24", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "0013184", "to_account": "805C26F90", "amount": "1383051.53", "currency": "Rupee", "amount_kzt": 7883394, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411061, "time": "2022/09/07 17:48", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "006", "to_account": "80A1FB9F0", "amount": "9499.91", "currency": "Australian Dollar", "amount_kzt": 2992472, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.5276024135636567, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 3.837445882564305}, {"feature": "получатель: дней в окне", "contrib": 1.3406535346939306}, {"feature": "сумма перевода", "contrib": 1.2482100599421015}, {"feature": "отправитель: исходящих переводов", "contrib": 1.1527873618324893}, {"feature": "получатель: fan-in за день", "contrib": 1.1380227604667208}, {"feature": "получатель: доля межбанковских исходящих", "contrib": 0.9430720881331629}], "L3_sender": null, "L3_receiver": 0.08912821772502114, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 3.1217703598517805}, {"feature": "сумма перевода", "contrib": 2.201882564010602}, {"feature": "получатель: fan-in за день", "contrib": 1.279695499731584}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.9343441126435782}, {"feature": "отправитель: исходящих переводов", "contrib": 0.7389205720926212}, {"feature": "получатель: дней в окне", "contrib": 0.6840548603208803}], "C_L3_sender": null, "C_L3_receiver": 0.3083653156443389, "C_L3_alert_sender": false}, {"row_no": 3411065, "time": "2022/09/07 19:11", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "0013029", "to_account": "804F47D50", "amount": "543759.49", "currency": "Rupee", "amount_kzt": 3099429, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411068, "time": "2022/09/07 20:22", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "006129", "to_account": "807809890", "amount": "4585.89", "currency": "US Dollar", "amount_kzt": 2201227, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411071, "time": "2022/09/08 01:11", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "011", "to_account": "80031A110", "amount": "3575.56", "currency": "Euro", "amount_kzt": 1859291, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.08461220388647352, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 3.1463649655645116}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.928392637217602}, {"feature": "валюта: Euro", "contrib": 0.6815235786220727}, {"feature": "отправитель: исходящих переводов", "contrib": 0.5876922957979234}, {"feature": "получатель: входящих переводов", "contrib": 0.4285597598817853}, {"feature": "получатель: доля межбанковских исходящих", "contrib": 0.4016995804507246}], "L3_sender": null, "L3_receiver": 0.000954585119815225, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.205636699106091}, {"feature": "формат: ACH", "contrib": 2.0886516794320116}, {"feature": "получатель: соседи-получатели, выпуск: доля вывода за 10 мин", "contrib": -0.6930347383958806}, {"feature": "получатель: входящих переводов", "contrib": 0.4972954724924246}, {"feature": "отправитель: дней в окне", "contrib": -0.4632327295577105}, {"feature": "получатель: дней в окне", "contrib": -0.4234266191297434}], "C_L3_sender": null, "C_L3_receiver": 0.04278339450314437, "C_L3_alert_sender": false}, {"row_no": 3411074, "time": "2022/09/08 09:08", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "022828", "to_account": "80104ABA0", "amount": "6741.71", "currency": "US Dollar", "amount_kzt": 3236021, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411077, "time": "2022/09/08 09:43", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "023537", "to_account": "802929810", "amount": "8422.84", "currency": "US Dollar", "amount_kzt": 4042963, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411080, "time": "2022/09/08 14:57", "from_bank": "0011030", "from_account": "80CB65920", "to_bank": "015863", "to_account": "807D147A0", "amount": "2127.62", "currency": "Euro", "amount_kzt": 1106362, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": false, "isolation_sender": null, "isolation_receiver": null, "isolation_alert_sender": false, "L3_sender": null, "L3_receiver": null, "L3_alert_sender": false, "C_L3_sender": null, "C_L3_receiver": null, "C_L3_alert_sender": false}, {"row_no": 3411045, "time": "2022/09/08 20:32", "from_bank": "011852", "from_account": "80C8BC8F0", "to_bank": "01292", "to_account": "80AE68D00", "amount": "19707.31", "currency": "US Dollar", "amount_kzt": 9459509, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.994961882039745, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 3.803009171189273}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 3.7679370280533115}, {"feature": "сумма перевода", "contrib": 2.3875657100069745}, {"feature": "валюта: US Dollar", "contrib": 2.05546264356834}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 1.1743333080023208}, {"feature": "получатель: дней в окне", "contrib": 0.928913216665978}], "L3_sender": null, "L3_receiver": 0.9716423934674795, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "получатель: доля входящих от новых контрагентов", "contrib": 4.2918283109664825}, {"feature": "формат: ACH", "contrib": 3.041628989758176}, {"feature": "сумма перевода", "contrib": 2.2193036728587696}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 1.4815637844351421}, {"feature": "получатель: дней в окне", "contrib": 1.426454490107651}, {"feature": "получатель: fan-in за день", "contrib": 0.727371836406449}], "C_L3_sender": null, "C_L3_receiver": 0.9833021377536122, "C_L3_alert_sender": false}, {"row_no": 3411049, "time": "2022/09/09 01:37", "from_bank": "0239604", "from_account": "80E62A630", "to_bank": "01292", "to_account": "80AE68D00", "amount": "10068.92", "currency": "US Dollar", "amount_kzt": 4833082, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.773374850688785, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.181163867298066}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.4444550150245044}, {"feature": "валюта: US Dollar", "contrib": 2.3558733992450627}, {"feature": "сумма перевода", "contrib": 2.2229342336771847}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.7336286097085833}, {"feature": "отправитель: исходящих переводов", "contrib": 0.6947874124312791}], "L3_sender": null, "L3_receiver": 0.003405642103985484, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.371824819722213}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.357153033353981}, {"feature": "сумма перевода", "contrib": 0.8163070376257638}, {"feature": "отправитель: исходящих переводов", "contrib": 0.7165364223708548}, {"feature": "получатель: fan-in за день", "contrib": -0.683574247838522}, {"feature": "получатель: дней в окне", "contrib": -0.5134845415219634}], "C_L3_sender": null, "C_L3_receiver": 0.38839024639638525, "C_L3_alert_sender": false}, {"row_no": 3411051, "time": "2022/09/09 05:18", "from_bank": "0011899", "from_account": "804844840", "to_bank": "01292", "to_account": "80AE68D00", "amount": "16942.48", "currency": "US Dollar", "amount_kzt": 8132390, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.7536058115421145, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.183944307775692}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.6235921267975146}, {"feature": "сумма перевода", "contrib": 2.2861229267786345}, {"feature": "валюта: US Dollar", "contrib": 2.0546708126137334}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.8327665779328346}, {"feature": "отправитель: исходящих переводов", "contrib": 0.7277390799522245}], "L3_sender": null, "L3_receiver": 0.02008890585183012, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.5139643684564073}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.5175319965090381}, {"feature": "отправитель: исходящих переводов", "contrib": 0.8136396352756231}, {"feature": "сумма перевода", "contrib": 0.7137804639613534}, {"feature": "получатель: fan-in за день", "contrib": -0.7025386281706235}, {"feature": "сумма зачисления", "contrib": 0.7020979821517233}], "C_L3_sender": null, "C_L3_receiver": 0.3868473586969723, "C_L3_alert_sender": false}, {"row_no": 3411053, "time": "2022/09/09 08:51", "from_bank": "001411", "from_account": "802371D80", "to_bank": "01292", "to_account": "80AE68D00", "amount": "11699.21", "currency": "US Dollar", "amount_kzt": 5615621, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.7066183845695868, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.141364059295688}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.5351182081526735}, {"feature": "валюта: US Dollar", "contrib": 2.2795755272312563}, {"feature": "сумма перевода", "contrib": 2.034156681682736}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.8131525182993707}, {"feature": "получатель: контрагентов за 3 дня", "contrib": -0.6885230124721969}], "L3_sender": null, "L3_receiver": 0.005615175710948195, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.366685815073465}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.2856427742628396}, {"feature": "отправитель: исходящих переводов", "contrib": 0.7286187066753604}, {"feature": "сумма перевода", "contrib": 0.6547149240815451}, {"feature": "получатель: fan-in за день", "contrib": -0.649510805267614}, {"feature": "получатель: дней в окне", "contrib": -0.45144783611931494}], "C_L3_sender": null, "C_L3_receiver": 0.3561167801402675, "C_L3_alert_sender": false}, {"row_no": 3411055, "time": "2022/09/09 17:32", "from_bank": "006276", "from_account": "80D551FF0", "to_bank": "01292", "to_account": "80AE68D00", "amount": "15492.23", "currency": "US Dollar", "amount_kzt": 7436270, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.8697534469050013, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.27975136212038}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.647215869199387}, {"feature": "валюта: US Dollar", "contrib": 2.288557365947334}, {"feature": "сумма перевода", "contrib": 2.269667429897004}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.9173282384455497}, {"feature": "получатель: исходящих переводов", "contrib": -0.7456318046734145}], "L3_sender": null, "L3_receiver": 0.012640597330797958, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.4628502090823763}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.4598938518274547}, {"feature": "сумма перевода", "contrib": 0.9413767890864108}, {"feature": "получатель: fan-in за день", "contrib": -0.8488437396276342}, {"feature": "отправитель: исходящих переводов", "contrib": 0.779041924943521}, {"feature": "сумма зачисления", "contrib": 0.5014433618734293}], "C_L3_sender": null, "C_L3_receiver": 0.44119702211789963, "C_L3_alert_sender": false}, {"row_no": 3411059, "time": "2022/09/09 19:27", "from_bank": "0013184", "from_account": "805C26F90", "to_bank": "01292", "to_account": "80AE68D00", "amount": "21254.73", "currency": "US Dollar", "amount_kzt": 10202270, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.891978760338733, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.045144965915685}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 3.2198475180300252}, {"feature": "валюта: US Dollar", "contrib": 2.2493122923958455}, {"feature": "сумма перевода", "contrib": 1.7937035558728085}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.9428690677408957}, {"feature": "получатель: дней в окне", "contrib": 0.9402766926141389}], "L3_sender": null, "L3_receiver": 0.004351249908682156, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.205612554703537}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.028028661757511}, {"feature": "получатель: fan-in за день", "contrib": -0.8499023787100745}, {"feature": "отправитель: исходящих переводов", "contrib": 0.48343497142955955}, {"feature": "сумма зачисления", "contrib": 0.4726079862396155}, {"feature": "сумма перевода", "contrib": 0.39131073935574023}], "C_L3_sender": null, "C_L3_receiver": 0.4481650051237076, "C_L3_alert_sender": false}, {"row_no": 3411063, "time": "2022/09/10 04:14", "from_bank": "006", "from_account": "80A1FB9F0", "to_bank": "01292", "to_account": "80AE68D00", "amount": "6616.04", "currency": "US Dollar", "amount_kzt": 3175699, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": true, "to_participant": true, "isolation_sender": 0.9999994944555741, "isolation_receiver": 0.9669192429364125, "isolation_alert_sender": true, "isolation_sender_explain": [{"feature": "получатель: доля входящих от новых контрагентов", "contrib": 6.113115654354761}, {"feature": "формат: ACH", "contrib": 4.976460852016391}, {"feature": "сумма перевода", "contrib": 3.7368783598359276}, {"feature": "валюта: US Dollar", "contrib": 3.398280789351834}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 1.949531162414299}, {"feature": "получатель: исходящих переводов", "contrib": 1.7282139375116181}], "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.21706000998309}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.7910263351183224}, {"feature": "сумма перевода", "contrib": 2.3626567637761555}, {"feature": "валюта: US Dollar", "contrib": 2.2458437594414504}, {"feature": "получатель: fan-in за день", "contrib": -1.5173917332877949}, {"feature": "время суток (cos)", "contrib": 1.0007236743832153}], "L3_sender": 0.9999999106177413, "L3_receiver": 0.0008074418807321732, "L3_alert_sender": true, "L3_sender_explain": [{"feature": "получатель: доля входящих от новых контрагентов", "contrib": 7.027962223346147}, {"feature": "формат: ACH", "contrib": 5.314874085538661}, {"feature": "отправитель: доля вывода за 10 мин", "contrib": 3.836267345114183}, {"feature": "сумма перевода", "contrib": 3.270302415872191}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 3.0118945777498305}, {"feature": "получатель: fan-in за день", "contrib": 2.2198134157220832}], "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.092379173552063}, {"feature": "получатель: fan-in за день", "contrib": -1.095526246903162}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.011885319718312}, {"feature": "сумма перевода", "contrib": 0.7910153494655301}, {"feature": "отправитель: исходящих переводов", "contrib": 0.6954493151695874}, {"feature": "отправитель: дней в окне", "contrib": -0.436971292582027}], "C_L3_sender": 0.9999997025366577, "C_L3_receiver": 0.4838633424085723, "C_L3_alert_sender": true, "release_about_receiver": 2.6166458720388737e-09, "release_night": "2022-09-09", "release_in_max": 0.994961882039745}, {"row_no": 3411067, "time": "2022/09/10 05:52", "from_bank": "0013029", "from_account": "804F47D50", "to_bank": "01292", "to_account": "80AE68D00", "amount": "8383.91", "currency": "US Dollar", "amount_kzt": 4024277, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.735732164800685, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.21361113617695}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.8516150314677677}, {"feature": "валюта: US Dollar", "contrib": 2.2514290683708627}, {"feature": "получатель: fan-in за день", "contrib": -2.2417182320115723}, {"feature": "сумма перевода", "contrib": 2.184053823766492}, {"feature": "отправитель: исходящих переводов", "contrib": 0.7468566502701789}], "L3_sender": null, "L3_receiver": 0.0008108168854806391, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.164392759109003}, {"feature": "получатель: fan-in за день", "contrib": -1.011937556998175}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 0.9474288263196069}, {"feature": "отправитель: исходящих переводов", "contrib": 0.6553278264296412}, {"feature": "сумма перевода", "contrib": 0.5219819521189453}, {"feature": "получатель: дней в окне", "contrib": -0.35189162680108954}], "C_L3_sender": null, "C_L3_receiver": 0.36827149084308286, "C_L3_alert_sender": false}, {"row_no": 3411069, "time": "2022/09/10 08:42", "from_bank": "006129", "from_account": "807809890", "to_bank": "01292", "to_account": "80AE68D00", "amount": "4028.18", "currency": "US Dollar", "amount_kzt": 1933526, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.0003441312884212938, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "получатель: fan-in за день", "contrib": -2.516647830114146}, {"feature": "формат: ACH", "contrib": 2.3807593249829466}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.3333699890965878}, {"feature": "отправитель: контрагентов за день", "contrib": 0.6630058712570536}, {"feature": "сумма перевода", "contrib": -0.5665677685271694}, {"feature": "отправитель: исходящих переводов", "contrib": 0.49364323911202196}], "L3_sender": null, "L3_receiver": 0.000858019419527202, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 1.8276529058930233}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.4243043069680918}, {"feature": "получатель: дней в окне", "contrib": -0.40557643132213544}, {"feature": "отправитель: исходящих переводов", "contrib": 0.38422419796406515}, {"feature": "получатель: fan-in за день", "contrib": -0.35428963364380606}, {"feature": "получатель: входящих переводов", "contrib": -0.28315100074921923}], "C_L3_sender": null, "C_L3_receiver": 0.0006010753539742479, "C_L3_alert_sender": false}, {"row_no": 3411073, "time": "2022/09/10 09:13", "from_bank": "011", "from_account": "80031A110", "to_bank": "01292", "to_account": "80AE68D00", "amount": "3992.11", "currency": "US Dollar", "amount_kzt": 1916213, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": true, "to_participant": true, "isolation_sender": 0.08318697385042037, "isolation_receiver": 0.00018833246608066632, "isolation_alert_sender": false, "isolation_sender_explain": [{"feature": "формат: ACH", "contrib": 2.6387575838271182}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.448542546923432}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.8902894888495392}, {"feature": "сумма перевода", "contrib": -0.5022681858031033}, {"feature": "получатель: входящих переводов", "contrib": 0.415512611513721}, {"feature": "сумма зачисления", "contrib": 0.39743470981304296}], "isolation_receiver_explain": [{"feature": "получатель: fan-in за день", "contrib": -2.545261025488306}, {"feature": "формат: ACH", "contrib": 2.395347768798832}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.287839701390879}, {"feature": "отправитель: контрагентов за день", "contrib": 0.6643581991940423}, {"feature": "сумма перевода", "contrib": -0.5910816270589956}, {"feature": "отправитель: исходящих переводов", "contrib": 0.48501760067011496}], "L3_sender": 0.026223052310076895, "L3_receiver": 0.0017381871906551184, "L3_alert_sender": false, "L3_sender_explain": [{"feature": "получатель: входящих переводов", "contrib": 3.0758714568415924}, {"feature": "формат: ACH", "contrib": 2.701363115180353}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.6551753275771746}, {"feature": "сумма перевода", "contrib": -1.3920533623403768}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 1.0771117402288584}, {"feature": "отправитель: соседи-получатели, выпуск: доля новых контрагентов", "contrib": -0.4479601571073196}], "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 1.8571556497478467}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.3653853841810595}, {"feature": "отправитель: дней в окне", "contrib": 0.4331208866853688}, {"feature": "отправитель: исходящих переводов", "contrib": 0.38643391513729647}, {"feature": "получатель: fan-in за день", "contrib": -0.35858539320812455}, {"feature": "получатель: дней в окне", "contrib": -0.33001146127852354}], "C_L3_sender": 0.05470501308024863, "C_L3_receiver": 0.0009632598283678923, "C_L3_alert_sender": false, "release_about_receiver": 2.6166458720388737e-09, "release_night": "2022-09-09", "release_in_max": 0.994961882039745}, {"row_no": 3411076, "time": "2022/09/10 12:14", "from_bank": "022828", "from_account": "80104ABA0", "to_bank": "01292", "to_account": "80AE68D00", "amount": "6741.71", "currency": "US Dollar", "amount_kzt": 3236021, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.8915145774795538, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "получатель: доля входящих от новых контрагентов", "contrib": 3.9782598719614244}, {"feature": "формат: ACH", "contrib": 3.972282039601286}, {"feature": "получатель: fan-in за день", "contrib": -2.443559885751595}, {"feature": "валюта: US Dollar", "contrib": 2.3978659578841497}, {"feature": "сумма перевода", "contrib": 2.188144279907656}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 1.1274064194179019}], "L3_sender": null, "L3_receiver": 0.002422365468177792, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.9946755026065477}, {"feature": "формат: ACH", "contrib": 1.7428460587244536}, {"feature": "получатель: fan-in за день", "contrib": -1.1337258478516214}, {"feature": "сумма перевода", "contrib": 0.5996825038986162}, {"feature": "интервал с прошлой операцией отправителя", "contrib": 0.5208284274198534}, {"feature": "отправитель: дней в окне", "contrib": 0.42859850437004976}], "C_L3_sender": null, "C_L3_receiver": 0.44696847147386576, "C_L3_alert_sender": false}, {"row_no": 3411078, "time": "2022/09/10 17:11", "from_bank": "023537", "from_account": "802929810", "to_bank": "01292", "to_account": "80AE68D00", "amount": "7697.08", "currency": "US Dollar", "amount_kzt": 3694598, "channel": "межбанковский перевод по реквизитам (клиринг)", "from_participant": false, "to_participant": true, "isolation_sender": null, "isolation_receiver": 0.6791860538296532, "isolation_alert_sender": false, "isolation_receiver_explain": [{"feature": "формат: ACH", "contrib": 4.2678469102092595}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 2.815313391572114}, {"feature": "получатель: fan-in за день", "contrib": -2.426845902559105}, {"feature": "сумма перевода", "contrib": 2.348483738182581}, {"feature": "валюта: US Dollar", "contrib": 2.2653951896691558}, {"feature": "получатель: исходящих переводов", "contrib": -0.755018235458425}], "L3_sender": null, "L3_receiver": 0.0011857569936188788, "L3_alert_sender": false, "L3_receiver_explain": [{"feature": "формат: ACH", "contrib": 2.1841219147811803}, {"feature": "получатель: fan-in за день", "contrib": -1.0652416331190064}, {"feature": "получатель: доля входящих от новых контрагентов", "contrib": 1.0425290503135047}, {"feature": "сумма перевода", "contrib": 0.791631439656305}, {"feature": "отправитель: исходящих переводов", "contrib": 0.6827547899932682}, {"feature": "получатель: соседи-отправители, выпуск: доля новых контрагентов", "contrib": -0.2748837174697307}], "C_L3_sender": null, "C_L3_receiver": 0.34018590541163607, "C_L3_alert_sender": false}], "protocol": {"trigger_row": 3411063, "trigger_alerted_by_shekara": true, "soft_tree": {"incident_id": "006-1", "kind": "soft", "links": 2}, "soft_segments": {"006": {"incident_id": "006-1", "bank": "006", "kind": "soft", "links": [{"account": "80A1FB9F0", "hop_no": 0, "anchor": "2022-09-10T04:14:00", "in_bank": null, "in_ref": null, "out": [{"bank": "01292", "tx_ref_hmac": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc", "amount": "6616.04", "time": "2022-09-10T04:14:00"}]}]}, "01292": {"incident_id": "006-1", "bank": "01292", "kind": "soft", "links": [{"account": "80AE68D00", "hop_no": 1, "anchor": "2022-09-10T04:14:00", "in_bank": "006", "in_ref": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc", "out": []}]}}, "confirmed_tree": {"incident_id": "006-2", "kind": "confirmed", "edges": [{"from": ["006", "80A1FB9F0"], "to": ["01292", "80AE68D00"], "amount": "6616.04", "time": "2022-09-10T04:14:00"}]}, "confirmed_segments": {"006": {"incident_id": "006-2", "bank": "006", "kind": "confirmed", "links": [{"account": "80A1FB9F0", "hop_no": 0, "anchor": "2022-09-10T04:14:00", "in_bank": null, "in_ref": null, "out": [{"bank": "01292", "tx_ref_hmac": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc", "amount": "6616.04", "time": "2022-09-10T04:14:00"}]}]}, "01292": {"incident_id": "006-2", "bank": "01292", "kind": "confirmed", "links": [{"account": "80AE68D00", "hop_no": 1, "anchor": "2022-09-10T04:14:00", "in_bank": "006", "in_ref": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc", "out": []}]}}, "events": [{"bank": "006", "event": "открыт soft-инцидент", "incident": "006-1"}, {"bank": "01292", "event": "шаг 1: входящий инцидент по ссылке", "incident": "006-1", "result": "80AE68D00"}, {"bank": "006", "event": "открыт confirmed-инцидент", "incident": "006-2"}, {"bank": "01292", "event": "шаг 1: входящий инцидент по ссылке", "incident": "006-2", "result": "80AE68D00"}], "audit": {"entries": 2, "verify": true, "head": "dec4fc4d1bb40d2cb991809d3796a3a53391b8fd780c4ea904b9f1f6e342e943", "sample": [{"ts": "2022-09-10T04:14:00", "kind": "incident_soft", "src": "006", "dst": "01292", "ref_hash": "1d7827c223492e91d3b1a0a81c7631f0bcbe04dab56196cff5218857cac9857a", "detail": "hop=1;ok"}, {"ts": "2022-09-10T04:14:00", "kind": "incident_confirmed", "src": "006", "dst": "01292", "ref_hash": "1d7827c223492e91d3b1a0a81c7631f0bcbe04dab56196cff5218857cac9857a", "detail": "hop=1;ok"}]}}, "queues": {"isolation": [{"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-07", "rank": 826, "accounts": 1164, "budget": 2, "score": 4.3120351562820795e-15}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-08", "rank": 530, "accounts": 1164, "budget": 2, "score": 1.983047023455952e-08}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-09", "rank": 391, "accounts": 1166, "budget": 2, "score": 7.21584696769473e-08}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-10", "rank": 877, "accounts": 1166, "budget": 2, "score": 1.343009262174854e-62}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-07", "rank": 799, "accounts": 1010, "budget": 2, "score": 5.390408156030408e-288}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-08", "rank": 40, "accounts": 1010, "budget": 2, "score": 0.0008029258546164618}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-09", "rank": 23, "accounts": 1013, "budget": 2, "score": 0.0022424707318928}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-10", "rank": 127, "accounts": 1013, "budget": 2, "score": 1.629463102872068e-05}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-07", "rank": 957, "accounts": 996, "budget": 1, "score": 0.0}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-08", "rank": 287, "accounts": 997, "budget": 1, "score": 2.8994859853080555e-07}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-09", "rank": 537, "accounts": 997, "budget": 1, "score": 2.6166458720388737e-09}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-10", "rank": 267, "accounts": 1000, "budget": 1, "score": 3.783301331006022e-07}], "L3": [{"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-07", "rank": 470, "accounts": 1164, "budget": 2, "score": 1.4542353010403874e-18}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-08", "rank": 65, "accounts": 1164, "budget": 2, "score": 1.694801629118181e-07}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-09", "rank": 50, "accounts": 1166, "budget": 2, "score": 8.210863380204454e-07}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-10", "rank": 28, "accounts": 1166, "budget": 2, "score": 3.06814512028937e-05}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-07", "rank": 663, "accounts": 1010, "budget": 2, "score": 3.260260628076851e-121}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-08", "rank": 141, "accounts": 1010, "budget": 2, "score": 4.32623089908637e-09}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-09", "rank": 148, "accounts": 1013, "budget": 2, "score": 2.688215159457733e-09}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-10", "rank": 67, "accounts": 1013, "budget": 2, "score": 3.621203717996734e-07}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-07", "rank": 736, "accounts": 996, "budget": 1, "score": 0.0}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-08", "rank": 918, "accounts": 997, "budget": 1, "score": 0.0}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-09", "rank": 903, "accounts": 997, "budget": 1, "score": 0.0}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-10", "rank": 865, "accounts": 1000, "budget": 1, "score": 0.0}], "C_L3": [{"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-07", "rank": 881, "accounts": 1164, "budget": 2, "score": 2.15674469579156e-15}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-08", "rank": 371, "accounts": 1164, "budget": 2, "score": 9.46553165731888e-08}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-09", "rank": 223, "accounts": 1166, "budget": 2, "score": 4.4662240384869635e-07}, {"bank": "006", "account": "80A1FB9F0", "end_day": "2022-09-10", "rank": 100, "accounts": 1166, "budget": 2, "score": 1.534072560144685e-05}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-07", "rank": 850, "accounts": 1010, "budget": 2, "score": 1.6301303140384255e-121}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-08", "rank": 64, "accounts": 1010, "budget": 2, "score": 0.00040146509042368047}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-09", "rank": 42, "accounts": 1013, "budget": 2, "score": 0.0011212367100539799}, {"bank": "011", "account": "80031A110", "end_day": "2022-09-10", "rank": 154, "accounts": 1013, "budget": 2, "score": 8.328375700260177e-06}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-07", "rank": 862, "accounts": 996, "budget": 1, "score": 0.0}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-08", "rank": 315, "accounts": 997, "budget": 1, "score": 1.4497429926540278e-07}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-09", "rank": 568, "accounts": 997, "budget": 1, "score": 1.3083229360194369e-09}, {"bank": "01292", "account": "80AE68D00", "end_day": "2022-09-10", "rank": 290, "accounts": 1000, "budget": 1, "score": 1.891650665503011e-07}]}}, "views": {"L1_s0.25": {"pp_receiver": {"ap": 0.33043381311750125, "sd": 0.040757180646114555, "f1": 0.41472716738745197, "pos": 98}, "pp_max": {"ap": 0.513301335095134, "sd": 0.12340339868986626, "f1": 0.5601119868490393, "pos": 98}, "external": {"ap": 0.2569830069797891, "sd": 0.026201910329673034, "f1": 0.3357249255056813, "pos": 421}, "pp_sender": {"ap": 0.6470277443818285, "sd": 0.0157654877779199, "f1": 0.6863482148250252, "pos": 98}, "all_max": {"ap": 0.3024572927001648, "sd": 0.047248562073657366, "f1": 0.40021860784472524, "pos": 519}}, "L1_s0.5": {"pp_sender": {"ap": 0.6395397752468365, "sd": 0.02649489198740895, "f1": 0.6678621964998239, "pos": 98}, "pp_max": {"ap": 0.5128802149161386, "sd": 0.12775778670929913, "f1": 0.5958794311119534, "pos": 98}, "pp_receiver": {"ap": 0.33751574390305844, "sd": 0.07317126240268688, "f1": 0.42451141172261014, "pos": 98}, "all_max": {"ap": 0.3089038471999661, "sd": 0.042237160877362685, "f1": 0.4092124926605938, "pos": 519}, "external": {"ap": 0.2644033271847756, "sd": 0.01835446223259667, "f1": 0.351052409165753, "pos": 421}}, "C_L2_s0.5": {"pp_max": {"ap": 0.5943133590666659, "sd": 0.008847433571425001, "f1": 0.6042437441421119, "pos": 98}, "pp_sender": {"ap": 0.6522808654060085, "sd": 0.012302816167869218, "f1": 0.6615275941623248, "pos": 98}, "pp_receiver": {"ap": 0.3500756128214131, "sd": 0.024289703213930522, "f1": 0.39167041866204605, "pos": 98}, "external": {"ap": 0.27937109648075603, "sd": 0.009620402636137712, "f1": 0.3634710306135056, "pos": 421}, "all_max": {"ap": 0.33977894033580247, "sd": 0.007927187435611603, "f1": 0.42072362468492797, "pos": 519}}, "C_L1_s4": {"pp_max": {"ap": 0.5683954042528581, "sd": 0.0348762355732734, "f1": 0.6125251226504843, "pos": 98}, "pp_sender": {"ap": 0.6479724922144486, "sd": 0.010884396304810199, "f1": 0.6665311033162183, "pos": 98}, "external": {"ap": 0.27454616289950284, "sd": 0.009145517365015903, "f1": 0.34528569269596815, "pos": 421}, "all_max": {"ap": 0.33192498821767075, "sd": 0.012379467477434814, "f1": 0.42091505022908704, "pos": 519}, "pp_receiver": {"ap": 0.3441703528235556, "sd": 0.024152668817226434, "f1": 0.43000776047441774, "pos": 98}}, "C_L3": {"pp_receiver": {"ap": 0.3816563003280815, "sd": 0.014961829266402635, "f1": 0.45701804196797174, "pos": 98}, "pp_sender": {"ap": 0.6723330943866661, "sd": 0.0041353663529981, "f1": 0.6909800285367104, "pos": 98}, "external": {"ap": 0.29089261041125586, "sd": 0.010874607984473627, "f1": 0.37322922302378325, "pos": 421}, "all_max": {"ap": 0.35418658426985905, "sd": 0.012303060176322947, "f1": 0.4244399872880926, "pos": 519}, "pp_max": {"ap": 0.6297383255822031, "sd": 0.01994140945180225, "f1": 0.6373684210526316, "pos": 98}}, "C_L1_s0.25": {"pp_max": {"ap": 0.5648566053289125, "sd": 0.03500453061946254, "f1": 0.6051269142467446, "pos": 98}, "all_max": {"ap": 0.32991911527785217, "sd": 0.01545700663797375, "f1": 0.42420489438913184, "pos": 519}, "external": {"ap": 0.27329805499979837, "sd": 0.013259221891746812, "f1": 0.35309717035930627, "pos": 421}, "pp_receiver": {"ap": 0.34040738339565185, "sd": 0.017558672722209952, "f1": 0.4570965074951503, "pos": 98}, "pp_sender": {"ap": 0.652808485746816, "sd": 0.0069682212797805435, "f1": 0.6772493367866107, "pos": 98}}, "C_F": {"pp_max": {"ap": 0.5886364125660446, "sd": 0.03168347639425254, "f1": 0.6115950874480364, "pos": 98}, "pp_sender": {"ap": 0.6426067158236336, "sd": 0.002412762485165381, "f1": 0.6722902494331066, "pos": 98}, "external": {"ap": 0.2700683397464116, "sd": 0.005917457928829299, "f1": 0.3592310706666086, "pos": 421}, "all_max": {"ap": 0.33173301755866874, "sd": 0.00979727605462725, "f1": 0.40988715033884165, "pos": 519}, "pp_receiver": {"ap": 0.34870925629910277, "sd": 0.033773616143605856, "f1": 0.44706682784086027, "pos": 98}}, "L2_s0.25": {"all_max": {"ap": 0.3110832531583729, "sd": 0.004463549991886671, "f1": 0.37571938334310734, "pos": 519}, "pp_receiver": {"ap": 0.29602481096985295, "sd": 0.027576941939224962, "f1": 0.2535014357877969, "pos": 98}, "external": {"ap": 0.24537847622484266, "sd": 0.004116764756754564, "f1": 0.31826491902774584, "pos": 421}, "pp_max": {"ap": 0.5843299980577595, "sd": 0.017758448261388927, "f1": 0.5921364146072762, "pos": 98}, "pp_sender": {"ap": 0.6333964078248231, "sd": 0.014484047610078177, "f1": 0.6160714285714285, "pos": 98}}, "C_L3_nocf": {"pp_max": {"ap": 0.6094917981443753, "sd": 0.014525184502268024, "f1": 0.6000268528464018, "pos": 98}, "all_max": {"ap": 0.35750683612256706, "sd": 0.0012133616225010046, "f1": 0.42903459798503024, "pos": 519}, "external": {"ap": 0.2985392897441115, "sd": 0.0036790010346492933, "f1": 0.3763826123465616, "pos": 421}, "pp_sender": {"ap": 0.6699222876568273, "sd": 0.0007319813407814051, "f1": 0.6864943344008583, "pos": 98}, "pp_receiver": {"ap": 0.3593483719154023, "sd": 0.0078649914867256, "f1": 0.466156267104543, "pos": 98}}, "C_L1_s0.1": {"all_max": {"ap": 0.33361210455005325, "sd": 0.008855985274029553, "f1": 0.4147883181995257, "pos": 519}, "pp_max": {"ap": 0.5750944833711774, "sd": 0.03282965536277129, "f1": 0.6063842285040443, "pos": 98}, "pp_sender": {"ap": 0.6494248114006838, "sd": 0.0062208358207774695, "f1": 0.6747148342726418, "pos": 98}, "pp_receiver": {"ap": 0.342652359569864, "sd": 0.012608842868951952, "f1": 0.4454839029723782, "pos": 98}, "external": {"ap": 0.27466187863591635, "sd": 0.0054618985327134885, "f1": 0.3458910327367169, "pos": 421}}, "isolation": {"external": {"ap": 0.25424149901436527, "sd": 0.006143013486014332, "f1": 0.3383833811941119, "pos": 421}, "pp_max": {"ap": 0.5618035791896276, "sd": 0.026143708005586505, "f1": 0.6070381454444628, "pos": 98}, "pp_receiver": {"ap": 0.33135118969943994, "sd": 0.023397653567187135, "f1": 0.43907507264277007, "pos": 98}, "all_max": {"ap": 0.3145660466176265, "sd": 0.0033509060417142083, "f1": 0.40472714300834295, "pos": 519}, "pp_sender": {"ap": 0.6411031177578411, "sd": 0.005284969322747702, "f1": 0.6805728088336784, "pos": 98}}, "C_L1_s2": {"all_max": {"ap": 0.3310549533434281, "sd": 0.011779793567185594, "f1": 0.4274656603498583, "pos": 519}, "external": {"ap": 0.2757590725675528, "sd": 0.008694619279020781, "f1": 0.3630738437295406, "pos": 421}, "pp_receiver": {"ap": 0.34414842124119743, "sd": 0.019589093187264137, "f1": 0.431686354942275, "pos": 98}, "pp_max": {"ap": 0.5627291439529537, "sd": 0.03350959387509858, "f1": 0.6110561671806837, "pos": 98}, "pp_sender": {"ap": 0.6570714397662559, "sd": 0.0062088507703588905, "f1": 0.6691498739772289, "pos": 98}}, "L1_s0.1": {"pp_receiver": {"ap": 0.32122318013076817, "sd": 0.018413708336676764, "f1": 0.38151464897733556, "pos": 98}, "external": {"ap": 0.26132419698332204, "sd": 0.015590298997746032, "f1": 0.3379006642809929, "pos": 421}, "pp_sender": {"ap": 0.637061064944942, "sd": 0.018285251957994617, "f1": 0.6634391739688082, "pos": 98}, "all_max": {"ap": 0.31473865955585073, "sd": 0.02372362258452995, "f1": 0.3911417367684884, "pos": 519}, "pp_max": {"ap": 0.5407894342110994, "sd": 0.06402829823993259, "f1": 0.5670139974092704, "pos": 98}}, "C_L1_s0.5": {"pp_receiver": {"ap": 0.340335782395917, "sd": 0.019526946778069126, "f1": 0.38738045258598636, "pos": 98}, "pp_sender": {"ap": 0.6495551898176712, "sd": 0.007665461527945796, "f1": 0.6622671324018629, "pos": 98}, "pp_max": {"ap": 0.5622489711012193, "sd": 0.03283802031847674, "f1": 0.6097666847531199, "pos": 98}, "all_max": {"ap": 0.3291969173250145, "sd": 0.013112477963444157, "f1": 0.42144442532118415, "pos": 519}, "external": {"ap": 0.2726624389849614, "sd": 0.012597009431926005, "f1": 0.3656347884169333, "pos": 421}}, "L3_nocf": {"pp_max": {"ap": 0.6178093215034118, "sd": 0.007800574786171801, "f1": 0.605221426497264, "pos": 98}, "pp_receiver": {"ap": 0.39926057504342766, "sd": 0.0029714748571223176, "f1": 0.33651255883852443, "pos": 98}, "all_max": {"ap": 0.3394235487899932, "sd": 0.003834137598820343, "f1": 0.4100907757467484, "pos": 519}, "external": {"ap": 0.272418672980196, "sd": 0.0065017481864716575, "f1": 0.33654990639471866, "pos": 421}, "pp_sender": {"ap": 0.6411440152090192, "sd": 0.01343099859910938, "f1": 0.6613723888435056, "pos": 98}}, "oracle": {"pp_max": {"ap": 0.3375784347399864, "sd": 0.018487450828026677, "f1": 0.33834586466165417, "pos": 98}, "all_max": {"ap": 0.2103751204470796, "sd": 0.011547487391136188, "f1": 0.2486315984820734, "pos": 519}, "external": {"ap": 0.1895168082288913, "sd": 0.01211238164478244, "f1": 0.22701477285651542, "pos": 421}}, "L1_s2": {"external": {"ap": 0.2622827774448579, "sd": 0.01729315728500543, "f1": 0.3603641380628284, "pos": 421}, "pp_sender": {"ap": 0.6508022836156776, "sd": 0.009093200707768562, "f1": 0.6465039673086929, "pos": 98}, "pp_receiver": {"ap": 0.3335831842647697, "sd": 0.06681489281175769, "f1": 0.3928455194528069, "pos": 98}, "all_max": {"ap": 0.3056824971920258, "sd": 0.04288139071154685, "f1": 0.4164891970597275, "pos": 519}, "pp_max": {"ap": 0.5078695709614651, "sd": 0.1245838412710215, "f1": 0.6041863307484299, "pos": 98}}, "L1_s4": {"pp_sender": {"ap": 0.6356302284412884, "sd": 0.027682194810495307, "f1": 0.6559716155979475, "pos": 98}, "all_max": {"ap": 0.30800799407298224, "sd": 0.045291642115838936, "f1": 0.41071674598338986, "pos": 519}, "pp_receiver": {"ap": 0.3431857940170279, "sd": 0.06260920992558144, "f1": 0.43379860457368213, "pos": 98}, "pp_max": {"ap": 0.5245658684930724, "sd": 0.11151402903781463, "f1": 0.5672932377643402, "pos": 98}, "external": {"ap": 0.2608086833923558, "sd": 0.021695439996447304, "f1": 0.34244006916290526, "pos": 421}}, "F": {"all_max": {"ap": 0.3174596634730962, "sd": 0.022832289436725495, "f1": 0.39352810229509716, "pos": 519}, "pp_receiver": {"ap": 0.34571734889867584, "sd": 0.04287113819498824, "f1": 0.3444746468002282, "pos": 98}, "pp_sender": {"ap": 0.629704831112594, "sd": 0.005111741608075004, "f1": 0.6776892955438583, "pos": 98}, "external": {"ap": 0.2588344910694873, "sd": 0.010567292865848964, "f1": 0.34392297527901344, "pos": 421}, "pp_max": {"ap": 0.5652797528724415, "sd": 0.06711534684507993, "f1": 0.5913961439498079, "pos": 98}}, "C_L2_s0.25": {"all_max": {"ap": 0.34359000141703766, "sd": 0.006224807835613074, "f1": 0.4234037175666315, "pos": 519}, "pp_receiver": {"ap": 0.3294104913349865, "sd": 0.013181959902089787, "f1": 0.458575893888092, "pos": 98}, "pp_max": {"ap": 0.5981483715581707, "sd": 0.007488111951182819, "f1": 0.6065727375262576, "pos": 98}, "pp_sender": {"ap": 0.6706138353695031, "sd": 0.0017981048980766571, "f1": 0.6673423310573313, "pos": 98}, "external": {"ap": 0.28231830357146254, "sd": 0.006368811425880687, "f1": 0.3655017778026923, "pos": 421}}, "C_L2_s0.1": {"pp_max": {"ap": 0.6050741636404405, "sd": 0.01726790493635191, "f1": 0.621804760760584, "pos": 98}, "external": {"ap": 0.2825033404487072, "sd": 0.011600368746788752, "f1": 0.3583136065108155, "pos": 421}, "pp_sender": {"ap": 0.6703869024580585, "sd": 0.01427158356229368, "f1": 0.6769660568008243, "pos": 98}, "pp_receiver": {"ap": 0.3500169467711431, "sd": 0.00487366596271807, "f1": 0.4368293074940474, "pos": 98}, "all_max": {"ap": 0.34398561738137573, "sd": 0.011921176296975002, "f1": 0.40434112235804215, "pos": 519}}, "L3_r2": {"pp_sender": {"ap": 0.6401880941101696, "sd": 0.0187777665950144, "f1": 0.6339904648728178, "pos": 98}, "pp_receiver": {"ap": 0.31263709606238116, "sd": 0.009765594252397978, "f1": 0.3821804995028368, "pos": 98}, "all_max": {"ap": 0.31873740864065764, "sd": 0.00917595863419481, "f1": 0.4000751032336023, "pos": 519}, "external": {"ap": 0.25463302071794075, "sd": 0.010451449392706575, "f1": 0.33583198537631015, "pos": 421}, "pp_max": {"ap": 0.5901450573487121, "sd": 0.020915909845554245, "f1": 0.5791046092415956, "pos": 98}}, "L2_s0.5": {"external": {"ap": 0.2540207594080869, "sd": 0.01378076405045289, "f1": 0.3380427139000289, "pos": 421}, "pp_receiver": {"ap": 0.32989932070607747, "sd": 0.04390217601676092, "f1": 0.3962401612959459, "pos": 98}, "pp_sender": {"ap": 0.6130788467321389, "sd": 0.04816210698123463, "f1": 0.6063626814157396, "pos": 98}, "pp_max": {"ap": 0.5740669638301205, "sd": 0.027319271876927287, "f1": 0.5608009413811187, "pos": 98}, "all_max": {"ap": 0.3145454209409051, "sd": 0.014769723956703557, "f1": 0.40398448633759515, "pos": 519}}, "operator": {"external": {"ap": 0.1217456894735207, "sd": 0.02338191087182144, "f1": 0.2062318519099741, "pos": 421}, "all_max": {"ap": 0.1616187773483003, "sd": 0.025699163019677597, "f1": 0.24471853786635075, "pos": 519}, "pp_max": {"ap": 0.39708369809823774, "sd": 0.006229983039177525, "f1": 0.3838813368746241, "pos": 98}}, "L2_s0.1": {"pp_receiver": {"ap": 0.3127368086167009, "sd": 0.03493257208599514, "f1": 0.3660255088826518, "pos": 98}, "pp_max": {"ap": 0.5834992891671089, "sd": 0.047945282542754916, "f1": 0.5733231689907607, "pos": 98}, "external": {"ap": 0.24048898450170142, "sd": 0.007176228937661078, "f1": 0.3155598828459025, "pos": 421}, "pp_sender": {"ap": 0.6401666638806315, "sd": 0.011184989709973904, "f1": 0.6045627139744787, "pos": 98}, "all_max": {"ap": 0.30571013736829206, "sd": 0.015178108061411281, "f1": 0.37742790212932215, "pos": 519}}, "L3": {"pp_receiver": {"ap": 0.3617991328251206, "sd": 0.04472962534692496, "f1": 0.3835323262751307, "pos": 98}, "pp_sender": {"ap": 0.6489672708936497, "sd": 0.006862980819378499, "f1": 0.6607912828696949, "pos": 98}, "all_max": {"ap": 0.32801854102463085, "sd": 0.01706192818678809, "f1": 0.39344887372783593, "pos": 519}, "pp_max": {"ap": 0.6342127548090939, "sd": 0.015669273019164973, "f1": 0.6042442828257064, "pos": 98}, "external": {"ap": 0.2559920324705887, "sd": 0.015508841571605078, "f1": 0.324668594470966, "pos": 421}}, "C_L3_r2": {"pp_max": {"ap": 0.6048583215074445, "sd": 0.012100861997498179, "f1": 0.6220604495499306, "pos": 98}, "external": {"ap": 0.2921465539631254, "sd": 0.005215847789490905, "f1": 0.3620182460414454, "pos": 421}, "pp_receiver": {"ap": 0.34690890514614203, "sd": 0.017195546280564612, "f1": 0.40425182196684123, "pos": 98}, "all_max": {"ap": 0.35093825572674436, "sd": 0.002115339649132829, "f1": 0.4291280338527755, "pos": 519}, "pp_sender": {"ap": 0.6666259281227712, "sd": 0.006647723789812055, "f1": 0.6487268578201107, "pos": 98}}}, "privacy": [{"mode": "C_L1_s4", "level": "L1", "sigma": 4.0, "eps": 7.508152212196165, "eps_week": 2.5242629560940406, "ap": 0.33192498821767075}, {"mode": "C_L1_s2", "level": "L1", "sigma": 2.0, "eps": 16.89130442439233, "eps_week": 5.298525912188081, "ap": 0.3310549533434281}, {"mode": "C_L1_s0.5", "level": "L1", "sigma": 0.5, "eps": 112.56521769756932, "eps_week": 27.194103648752325, "ap": 0.3291969173250145}, {"mode": "C_L1_s0.25", "level": "L1", "sigma": 0.25, "eps": 345.13043539513865, "eps_week": 70.38820729750465, "ap": 0.32991911527785217}, {"mode": "C_L1_s0.1", "level": "L1", "sigma": 0.1, "eps": 1762.8260884878464, "eps_week": 295.9705182437616, "ap": 0.33361210455005325}, {"mode": "C_L2_s0.5", "level": "L2", "sigma": 0.5, "eps": 345.13043539513865, "eps_week": 70.38820729750465, "ap": 0.33977894033580247}, {"mode": "C_L2_s0.25", "level": "L2", "sigma": 0.25, "eps": 1170.2608707902773, "eps_week": 204.7764145950093, "ap": 0.34359000141703766}, {"mode": "C_L2_s0.1", "level": "L2", "sigma": 0.1, "eps": 6525.652176975692, "eps_week": 991.9410364875231, "ap": 0.34398561738137573}], "coverage": [{"n": 100, "mode": "C_F", "ap": 0.38015504313612025, "seeds": 3}, {"n": 100, "mode": "C_L1_s4", "ap": 0.3770324350211938, "seeds": 3}, {"n": 100, "mode": "C_L3", "ap": 0.392351659121186, "seeds": 3}, {"n": 100, "mode": "F", "ap": 0.29309425156799973, "seeds": 3}, {"n": 100, "mode": "L1_s4", "ap": 0.3422617972748678, "seeds": 3}, {"n": 100, "mode": "L3", "ap": 0.3231610698607124, "seeds": 3}, {"n": 100, "mode": "isolation", "ap": 0.3595970002759745, "seeds": 3}, {"n": 200, "mode": "C_F", "ap": 0.4332072201612497, "seeds": 2}, {"n": 200, "mode": "C_L1_s4", "ap": 0.4561987828703663, "seeds": 2}, {"n": 200, "mode": "C_L3", "ap": 0.4468696254031703, "seeds": 2}, {"n": 200, "mode": "F", "ap": 0.3279347172528966, "seeds": 2}, {"n": 200, "mode": "L1_s4", "ap": 0.4527663670324396, "seeds": 2}, {"n": 200, "mode": "L3", "ap": 0.3668403200101391, "seeds": 2}, {"n": 200, "mode": "isolation", "ap": 0.3910928124794226, "seeds": 2}], "paired": {"isolation": {"diff": 0.019712844279749637, "sig": 0, "n": 3}, "operator": {"diff": 0.17972144942174184, "sig": 3, "n": 3}}, "retention": {"isolation": {"h0_15": 0.0851063829787234, "h1": 0.2978723404255319}, "C_L3": {"h0_15": 0.07801418439716311, "h1": 0.3049645390070922}}, "latency": {"query_ms_p50": 0.006799993570894003, "query_ms_p99": 0.008304005023092028, "queries": 1000, "queries_found": 1000, "inbound_ms_p50": 0.6640499996137805, "inbound_ms_p99": 1.5165299914951658, "note": "CPU ноутбука, один поток; сеть хаба не учитывается (в MVP — один процесс)"}, "checks": {"passed": 22, "total": 22}, "stats": {"share_seen": 0.2793430284110323, "interbank": 0.9822134387351779, "prior": 0.8227272727272728, "dwell_h": 20.708333333333332}};
+const C = D.case, steps = C.steps, thr = C.thresholds;
+const $ = id => document.getElementById(id);
+const pct = (v, d = 0) => v == null ? "—" : (v * 100).toFixed(d).replace(".", ",") + "%";
+const num = (v, d = 3) => v == null ? "—" : v.toFixed(d).replace(".", ",");
+const money = v => v.toLocaleString("ru-RU").replace(/,/g, " ") + " ₸";
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+
+/* полосы банков */
+const part = new Set(C.participants_in_pattern);
+const srcBank = steps[0].from_bank;
+const laneOf = b => b === srcBank ? "src" : part.has(b) ? b : "mules";
+const lanes = [
+  { id: "src", label: "Источник", sub: `внешний банк ${srcBank}` },
+  { id: "mules", label: "Дропы", sub: "внешние банки" },
+  ...C.participants_in_pattern.map(b => ({ id: b, label: `Банк ${b}`, sub: "участник ШЕКАРЫ", part: true })),
+];
+const muleBanks = new Set(steps.flatMap(s => [s.from_bank, s.to_bank]).filter(b => laneOf(b) === "mules"));
+lanes[1].sub = `${muleBanks.size} внешних банков`;
+
+$("facts").innerHTML = `
+  <span>Паттерн <b class="mono">№ ${C.pattern_id}</b> · ${C.pattern_type}</span>
+  <span><b>${steps.length}</b> переводов</span>
+  <span><b>${steps.filter(s => s.from_participant && s.to_participant).length}</b> между участниками</span>
+  <span>Один банк видит в среднем <b>${pct(D.stats.share_seen)}</b> схемы</span>
+  <span>Медиана звена в AMLworld <b>${D.stats.dwell_h.toFixed(0)} ч</b></span>`;
+
+const W = 760, topY = 74, rowH = 26, H = topY + steps.length * rowH + 24;
+const svg = $("lanes"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+const laneW = W / lanes.length, lx = id => (lanes.findIndex(l => l.id === id) + 0.5) * laneW;
+let arrows = [];
+function drawLanes() {
+  svg.innerHTML = "";
+  const defs = el("defs", {}, svg);
+  for (const [id, col] of [["a-ink", css("--ink-3")], ["a-sky", css("--sky")], ["a-risk", css("--risk")]]) {
+    const m = el("marker", { id, viewBox: "0 0 8 8", refX: 7, refY: 4, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, defs);
+    el("path", { d: "M0,0 L8,4 L0,8 z", fill: col }, m);
+  }
+  lanes.forEach((l, i) => {
+    el("rect", { x: i * laneW + 4, y: 8, width: laneW - 8, height: H - 16, rx: 10, fill: l.part ? css("--sky-soft") : css("--lane") }, svg);
+    const t = el("text", { x: (i + .5) * laneW, y: 32, "text-anchor": "middle", fill: css("--ink"), "font-family": "Unbounded, Golos Text, sans-serif", "font-size": 13, "font-weight": 500 }, svg); t.textContent = l.label;
+    const s = el("text", { x: (i + .5) * laneW, y: 50, "text-anchor": "middle", fill: css("--ink-2"), "font-family": "Golos Text, sans-serif", "font-size": 11 }, svg); s.textContent = l.sub;
+    if (i > 0) el("line", { x1: i * laneW, y1: 12, x2: i * laneW, y2: H - 12, stroke: css("--ink-3"), "stroke-width": 1.2, "stroke-dasharray": "5 5" }, svg);
+  });
+  let day = "";
+  arrows = steps.map((s, i) => {
+    const y = topY + i * rowH + 10, x1 = lx(laneOf(s.from_bank)), x2 = lx(laneOf(s.to_bank));
+    const d = s.time.slice(0, 10);
+    if (d !== day) { day = d; const t = el("text", { x: 10, y: y + 4, fill: css("--ink-3"), "font-family": "JetBrains Mono, monospace", "font-size": 10 }, svg); t.textContent = d.slice(5).replace("/", "."); }
+    const pp = s.from_participant && s.to_participant;
+    const g = el("g", { tabindex: 0, role: "button", "aria-label": `${s.time}: ${s.from_bank} → ${s.to_bank}` }, svg);
+    const dx = x2 > x1 ? -10 : 10;
+    const line = el("line", { x1, y1: y, x2: x2 + dx, y2: y, stroke: pp ? css("--sky") : css("--risk"), "stroke-width": pp ? 3 : 1.6, "marker-end": `url(#${pp ? "a-sky" : "a-risk"})` }, g);
+    el("circle", { cx: x1, cy: y, r: 3.5, fill: pp ? css("--sky") : css("--risk") }, g);
+    g.addEventListener("click", () => show(i)); g.addEventListener("keydown", e => { if (e.key === "Enter") show(i); });
+    g.style.cursor = "pointer";
+    return g;
+  });
+}
+
+let cur = 0, timer = null;
+function viewFor(s) {
+  if (s.to_participant) return { bank: s.to_bank, side: "receiver", who: "банк-получатель" };
+  if (s.from_participant) return { bank: s.from_bank, side: "sender", who: "банк-отправитель" };
+  return null;
+}
+function meter(label, v, t, color) {
+  const w = v == null ? 0 : Math.max(2, v * 100);
+  return `<div class="meter"><span>${label}</span><div class="bar"><div class="fill" style="width:${w}%;background:${color}"></div><div class="thr" style="left:${(t ?? 1) * 100}%" title="порог алерта"></div></div><span class="val">${num(v, 2)}</span></div>`;
+}
+function show(i) {
+  cur = Math.max(0, Math.min(steps.length - 1, i));
+  $("scrub").value = cur; $("count").textContent = `${cur + 1} / ${steps.length}`;
+  arrows.forEach((g, j) => { g.style.opacity = j === cur ? 1 : j < cur ? .6 : .3; });
+  const s = steps[cur], v = viewFor(s), pp = s.from_participant && s.to_participant;
+  let html = `<div><p class="step-time">${s.time}</p><p class="step-route">${s.from_bank} → ${s.to_bank}</p><p class="step-amount">${money(s.amount_kzt)} · ${s.channel}</p></div>`;
+  html += `<div>${pp ? '<span class="tag sky">между участниками</span>' : v ? '<span class="tag amber">участник ↔ внешний банк</span>' : '<span class="tag risk">вне сети участников</span>'}</div>`;
+  if (v) {
+    const iso = s[`isolation_${v.side}`], she = s[`C_L3_${v.side}`];
+    html += `<div class="meters"><p class="muted" style="font-size:13px">Балл перевода, который видит ${v.who} ${v.bank}</p>
+      ${meter("Изоляция", iso, thr.isolation, css("--ink-3"))}${meter("ШЕКАРА", she, thr.C_L3, css("--sky"))}</div>`;
+    if (pp && s.release_night) html += `<p class="side-note">Ночью ${s.release_night.slice(5)} банк ${s.to_bank} разослал выпуск о получателе: максимальный балл его входящих — <b class="mono">${num(s.release_in_max, 2)}</b>. Банк ${s.from_bank} получил его только потому, что его клиент уже переводил на этот счёт.</p>`;
+    else html += `<p class="side-note">Черта на шкале — порог алерта, подобранный на дне валидации под бюджет банка.</p>`;
+  } else {
+    html += `<p class="side-note">Оба конца перевода вне банков-участников. Этот перевод не видит ни один участник, и ШЕКАРА о нём ничего не знает — это честная граница метода.</p>`;
+  }
+  $("side").innerHTML = html;
+}
+$("scrub").max = steps.length - 1;
+$("scrub").addEventListener("input", e => { stop(); show(+e.target.value); });
+$("prev").onclick = () => { stop(); show(cur - 1); };
+$("next").onclick = () => { stop(); show(cur + 1); };
+function stop() { clearInterval(timer); timer = null; $("play").textContent = "▶ Проиграть"; }
+$("play").onclick = () => {
+  if (timer) return stop();
+  if (cur >= steps.length - 1) show(0);
+  $("play").textContent = "❚❚ Пауза";
+  timer = setInterval(() => { if (cur >= steps.length - 1) return stop(); show(cur + 1); }, 900);
+};
+
+/* вид банка */
+let bank = C.participants_in_pattern[C.participants_in_pattern.length - 1];
+function renderBank() {
+  $("bankchips").innerHTML = C.participants_in_pattern.map(b => `<button class="chip" type="button" aria-pressed="${b === bank}" data-b="${b}">Банк ${b}</button>`).join("");
+  $("bankchips").querySelectorAll(".chip").forEach(c => c.onclick = () => { bank = c.dataset.b; renderBank(); });
+  const mine = steps.filter(s => s.from_bank === bank || s.to_bank === bank);
+  $("bv-title").textContent = `Банк ${bank}: свои переводы паттерна (${mine.length})`;
+  let rows = `<div class="row head"><span>Время</span><span>Контрагент</span><span class="r">Изол.</span><span class="r">ШЕКАРА</span></div>`;
+  let why = null;
+  for (const s of mine) {
+    const side = s.from_bank === bank ? "sender" : "receiver";
+    const cp = side === "sender" ? `→ банк ${s.to_bank}` : `← банк ${s.from_bank}`;
+    const iso = s[`isolation_${side}`], she = s[`C_L3_${side}`];
+    const hi = iso != null && iso >= thr.isolation, hs = she != null && she >= thr.C_L3;
+    rows += `<div class="row"><span class="mono">${s.time.slice(5)}</span><span>${cp} · ${money(s.amount_kzt)}</span><span class="r${hi ? " hit" : ""}">${num(iso, 2)}</span><span class="r${hs ? " hit" : ""}">${num(she, 2)}</span></div>`;
+    const e = s[`L3_${side}_explain`];
+    if (e && !why) why = { s, e, side };
+  }
+  rows += `<p class="muted" style="font-size:13px;padding-top:10px">Выделены баллы выше порога алерта своей модели (изоляция ${num(thr.isolation, 2)}, ШЕКАРА ${num(thr.C_L3, 2)}).</p>`;
+  $("bv-rows").innerHTML = rows;
+  if (why) {
+    const max = Math.max(...why.e.map(x => Math.abs(x.contrib)));
+    $("bv-why-note").textContent = `Перевод ${why.s.time.slice(5)}: вклад признаков в балл модели с выпусками соседей. Вправо — повышает риск, влево — снижает.`;
+    $("bv-why").innerHTML = `<div class="contrib">${why.e.map(x => {
+      const w = Math.abs(x.contrib) / max * 100, col = x.contrib > 0 ? css("--risk") : css("--ok");
+      return `<span>${x.feature}</span><div class="cbar" style="width:${w}%;background:${col}" title="${x.contrib.toFixed(2)}"></div>`;
+    }).join("")}</div>`;
+  } else { $("bv-why-note").textContent = "Для переводов этого банка объяснение не сохранено."; $("bv-why").innerHTML = ""; }
+}
+
+/* протокол */
+function renderProtocol() {
+  const P = C.protocol, a = P.audit;
+  const soft = P.soft_tree || {}, conf = P.confirmed_tree || {};
+  $("proto").innerHTML = `
+    <div><span class="k">шаг 1 · банк ${steps.find(s => s.row_no === P.trigger_row)?.from_bank ?? ""}</span><h3>Открыт инцидент</h3><p class="muted">Мягкий — по высокому баллу при зачислении, подтверждённый — после решения аналитика. Квота — 0,02% активных счетов в сутки.</p></div>
+    <div><span class="k">шаг 2 · хаб</span><h3>Сосед получает только ссылку</h3><p class="muted">HMAC ссылки на перевод, тип и номер шага — без суммы, времени и балла. Сосед сам находит перевод в своей базе.</p></div>
+    <div><span class="k">шаг 3 · журнал</span><h3>${a.verify ? "Хэш-цепочка цела" : "Цепочка нарушена"}</h3><p class="muted">${a.entries} записей, голова <span class="mono">${String(a.head).slice(0, 12)}…</span>. По мягкому инциденту оператор видит лишь число звеньев: ${soft.links ?? "—"}.</p></div>`;
+  const edges = conf.edges || [];
+  if (!edges.length) { $("tree").innerHTML = '<p class="muted">Нет звеньев для дерева.</p>'; return; }
+  const key = n => n.join("|"), nodes = [...new Map(edges.flatMap(e => [e.from, e.to]).map(n => [key(n), n])).values()];
+  const depth = new Map(nodes.map(n => [key(n), 0]));
+  for (let k = 0; k < nodes.length; k++) for (const e of edges) depth.set(key(e.to), Math.max(depth.get(key(e.to)), depth.get(key(e.from)) + 1));
+  const cols = new Map(); for (const n of nodes) { const d = depth.get(key(n)); cols.set(d, [...(cols.get(d) || []), n]); }
+  const maxRows = Math.max(...[...cols.values()].map(c => c.length)), nCols = cols.size;
+  const w = 720, h = 40 + maxRows * 76, s2 = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Дерево цепочки у оператора" });
+  const pos = new Map();
+  for (const [d, list] of cols) list.forEach((n, i) => pos.set(key(n), {
+    x: 80 + d * ((w - 160) / Math.max(1, nCols - 1)), y: h / 2 + (i - (list.length - 1) / 2) * 76 }));
+  for (const e of edges) {
+    const a1 = pos.get(key(e.from)), b1 = pos.get(key(e.to));
+    el("path", { d: `M${a1.x + 50},${a1.y} C${(a1.x + b1.x) / 2},${a1.y} ${(a1.x + b1.x) / 2},${b1.y} ${b1.x - 50},${b1.y}`, fill: "none", stroke: css("--sky"), "stroke-width": 2.5 }, s2);
+    const t = el("text", { x: (a1.x + b1.x) / 2, y: (a1.y + b1.y) / 2 - 10, "text-anchor": "middle", fill: css("--ink-2"), "font-family": "JetBrains Mono, monospace", "font-size": 11 }, s2);
+    const st = steps.find(x => x.from_account === e.from[1] && x.to_account === e.to[1]);
+    t.textContent = `${st ? money(st.amount_kzt) : e.amount} · ${e.time.slice(5, 10).replace("-", ".")} ${e.time.slice(11, 16)}`;
+  }
+  for (const [k, p] of pos) {
+    const [b, acc] = k.split("|");
+    el("rect", { x: p.x - 50, y: p.y - 24, width: 100, height: 48, rx: 8, fill: css("--surface"), stroke: css("--ink-3") }, s2);
+    const t1 = el("text", { x: p.x, y: p.y - 4, "text-anchor": "middle", fill: css("--ink"), "font-family": "Golos Text, sans-serif", "font-size": 12, "font-weight": 600 }, s2); t1.textContent = `банк ${b}`;
+    const t2 = el("text", { x: p.x, y: p.y + 13, "text-anchor": "middle", fill: css("--ink-2"), "font-family": "JetBrains Mono, monospace", "font-size": 10 }, s2); t2.textContent = acc && acc !== "null" ? acc : "?";
+  }
+  $("tree").innerHTML = ""; $("tree").appendChild(s2);
+}
+
+/* результаты */
+const MODES = [["operator", "Центральный оператор (MITS)"], ["oracle", "Общий граф участников"], ["isolation", "Изолированный банк"],
+  ["C_L1_s0.25", "ШЕКАРА L1 · один балл"], ["C_L2_s0.25", "ШЕКАРА L2 · вектор с шумом"], ["C_L3", "ШЕКАРА L3 · полный сигнал"]];
+const SLICES = [["all_max", "Все переводы"], ["pp_sender", "Решает отправитель"], ["pp_receiver", "Решает получатель"], ["external", "Участник ↔ внешний"]];
+let slice = "all_max";
+function renderBars() {
+  $("slicechips").innerHTML = SLICES.map(([k, l]) => `<button class="chip" type="button" aria-pressed="${k === slice}" data-k="${k}">${l}</button>`).join("");
+  $("slicechips").querySelectorAll(".chip").forEach(c => c.onclick = () => { slice = c.dataset.k; renderBars(); });
+  const vals = MODES.map(([m, l]) => ({ m, l, x: D.views[m]?.[slice] })).filter(r => r.x);
+  const max = Math.max(...vals.map(r => r.x.ap + (r.x.sd || 0))) * 1.08;
+  $("bars").innerHTML = vals.map(r => {
+    const col = r.m.startsWith("C_") ? css("--sky") : r.m === "isolation" ? css("--ink-2") : css("--ink-3");
+    const w = r.x.ap / max * 100, lo = (r.x.ap - r.x.sd) / max * 100, hi = (r.x.ap + r.x.sd) / max * 100;
+    return `<div class="barrow${r.m === "C_L3" ? " main" : ""}"><span class="lbl">${r.l}</span><div class="track"><div class="b" style="width:${w}%;background:${col}"></div><div class="err" style="left:${lo}%;width:${Math.max(.5, hi - lo)}%"></div></div><span class="v">${num(r.x.ap)}</span></div>`;
+  }).join("");
+  const pos = D.views.isolation?.[slice]?.pos;
+  $("bars-note").textContent = `${pos ?? "—"} положительных переводов в тесте; черта — разброс по трём запускам. У оператора и общего графа нет сторон банка, поэтому в срезах «отправитель/получатель» их нет.`;
+}
+function renderVerdicts() {
+  const op = D.paired.operator, iso = D.paired.isolation;
+  $("verdicts").innerHTML = `
+    <div class="verdict yes"><b>F1 +${num(op.diff, 2)}</b>Банковский вид сильнее центрального оператора. Значимо в ${op.sig} из ${op.n} запусков.</div>
+    <div class="verdict no"><b>+${pct(D.views.C_L3.all_max.ap / D.views.isolation.all_max.ap - 1)}</b>Прирост PR-AUC от обмена во всех запусках, но пока не значим: значимо в ${iso.sig} из ${iso.n}. Половину даёт сочетание двух моделей банка.</div>
+    <div class="verdict info"><b>${D.checks.passed} из ${D.checks.total}</b>Автоматических проверок пройдено: ключи переводов, утечки меток, воспроизводимость.</div>`;
+}
+function renderPrivacy() {
+  const pts = D.privacy, iso = D.views.isolation.all_max.ap, l3 = D.views.C_L3.all_max.ap, ctl = D.views["C_L1_s4"]?.all_max.ap;
+  const w = 520, h = 300, m = { l: 52, r: 18, t: 18, b: 44 };
+  const xs = pts.map(p => Math.log10(p.eps)), x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
+  const ys = [...pts.map(p => p.ap), iso, l3], y0 = Math.floor(Math.min(...ys) * 100 - 1) / 100, y1 = Math.ceil(Math.max(...ys) * 100 + 1) / 100;
+  const X = v => m.l + (Math.log10(v) - x0) / (x1 - x0) * (w - m.l - m.r), Y = v => m.t + (1 - (v - y0) / (y1 - y0)) * (h - m.t - m.b);
+  const s = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Качество в зависимости от ε" });
+  for (let e = x0; e <= x1; e++) {
+    el("line", { x1: X(10 ** e), y1: m.t, x2: X(10 ** e), y2: h - m.b, stroke: css("--line") }, s);
+    const t = el("text", { x: X(10 ** e), y: h - m.b + 18, "text-anchor": "middle", fill: css("--ink-3"), "font-size": 11, "font-family": "JetBrains Mono, monospace" }, s); t.textContent = (10 ** e).toLocaleString("ru-RU");
+  }
+  for (let v = y0; v <= y1 + 1e-9; v += 0.01) {
+    el("line", { x1: m.l, y1: Y(v), x2: w - m.r, y2: Y(v), stroke: css("--line") }, s);
+    const t = el("text", { x: m.l - 8, y: Y(v) + 4, "text-anchor": "end", fill: css("--ink-3"), "font-size": 11, "font-family": "JetBrains Mono, monospace" }, s); t.textContent = v.toFixed(2).replace(".", ",");
+  }
+  const ax = el("text", { x: (w + m.l) / 2, y: h - 6, "text-anchor": "middle", fill: css("--ink-2"), "font-size": 12, "font-family": "Golos Text, sans-serif" }, s); ax.textContent = "ε за 30 дней (меньше — приватнее)";
+  for (const [v, lbl, col] of [[iso, "изоляция", css("--ink-3")], [l3, "L3 без шума", css("--sky")]]) {
+    el("line", { x1: m.l, y1: Y(v), x2: w - m.r, y2: Y(v), stroke: col, "stroke-dasharray": "5 4", "stroke-width": 1.5 }, s);
+    const t = el("text", { x: w - m.r - 4, y: Y(v) - 6, "text-anchor": "end", fill: col, "font-size": 11, "font-family": "Golos Text, sans-serif" }, s); t.textContent = `${lbl} ${num(v)}`;
+  }
+  for (const lvl of ["L1", "L2"]) {
+    const p = pts.filter(q => q.level === lvl).sort((a, b) => a.eps - b.eps);
+    const col = lvl === "L1" ? css("--amber") : css("--sky");
+    el("polyline", { points: p.map(q => `${X(q.eps)},${Y(q.ap)}`).join(" "), fill: "none", stroke: col, "stroke-width": 2 }, s);
+    for (const q of p) {
+      const c = el("circle", { cx: X(q.eps), cy: Y(q.ap), r: 6, fill: col, stroke: css("--surface"), "stroke-width": 2, tabindex: 0 }, s);
+      const tip = () => { $("privacy-tip").innerHTML = `<b>${q.level}, σ = ${String(q.sigma).replace(".", ",")}</b> · ${q.level === "L1" ? "один балл" : "8 чисел, int8"} · ε за 30 дней ≈ <span class="mono">${Math.round(q.eps).toLocaleString("ru-RU")}</span> (недельный выпуск ≈ <span class="mono">${q.eps_week.toFixed(1).replace(".", ",")}</span>) · PR-AUC <span class="mono">${num(q.ap)}</span>`; };
+      c.addEventListener("mouseenter", tip); c.addEventListener("focus", tip); c.style.cursor = "pointer";
+    }
+    const last = p[p.length - 1], lt = el("text", { x: X(last.eps) + 10, y: Y(last.ap) + 4, fill: col, "font-size": 12, "font-weight": 600, "font-family": "Golos Text, sans-serif" }, s); lt.textContent = lvl;
+  }
+  $("privacy-chart").innerHTML = ""; $("privacy-chart").appendChild(s);
+}
+function renderExtra() {
+  const cov = D.coverage, by = (n, m) => cov.find(r => r.n === n && r.mode === m)?.ap;
+  const ns = [...new Set(cov.map(r => r.n))].sort((a, b) => a - b);
+  const r = D.retention, lat = D.latency;
+  let rows = `<tr><th>Показатель</th><th class="r">N = 30</th>${ns.map(n => `<th class="r">N = ${n}</th>`).join("")}</tr>`;
+  rows += `<tr><td>Изоляция, PR-AUC</td><td class="r">${num(D.views.isolation.all_max.ap)}</td>${ns.map(n => `<td class="r">${num(by(n, "isolation"))}</td>`).join("")}</tr>`;
+  rows += `<tr><td>ШЕКАРА L3, PR-AUC</td><td class="r">${num(D.views.C_L3.all_max.ap)}</td>${ns.map(n => `<td class="r">${num(by(n, "C_L3"))}</td>`).join("")}</tr>`;
+  rows += `<tr><td>Контроль: выпуск-шум</td><td class="r">${num(D.views["C_L1_s4"]?.all_max.ap)}</td>${ns.map(n => `<td class="r">${num(by(n, "C_L1_s4"))}</td>`).join("")}</tr>`;
+  rows += `<tr><td colspan="${2 + ns.length}" class="muted">Деньги остаются на счёте (звено 3 мин, аналитик 15 мин): изоляция ${pct(r.isolation.h0_15)}, ШЕКАРА ${pct(r.C_L3.h0_15)}; с временной задержкой исходящих H1 — ${pct(r.C_L3.h1)}. Проверка при зачислении — ${lat.inbound_ms_p50.toFixed(1).replace(".", ",")} мс.</td></tr>`;
+  $("extra").innerHTML = rows;
+}
+
+cur = Math.max(0, steps.findIndex(s => s.from_participant && s.to_participant));
+function renderAll() { drawLanes(); show(cur); renderBank(); renderProtocol(); renderBars(); renderVerdicts(); renderPrivacy(); renderExtra(); }
+renderAll();
+const mq = matchMedia("(prefers-color-scheme: dark)");
+mq.addEventListener?.("change", renderAll);
+new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+</script>

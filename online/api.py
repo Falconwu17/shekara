@@ -17,7 +17,10 @@ from datetime import date, datetime
 from typing import Literal, Sequence
 
 import numpy as np
+from pathlib import Path
+
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from online.alerts import AlertQueue, alert_budget
@@ -130,6 +133,13 @@ def create_app(net: Network) -> FastAPI:
             eps = e if np.isfinite(e) else None  # None — без шума, гарантии нет
         return {"releases": len(body.scores), "messages": len(msgs), "delivered": delivered,
                 "epsilon_30d_first_account": eps, "noise_multiplier": noise_multiplier(body.level, body.sigma) if body.level != "L3" else None}
+
+    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+    def web_demo():
+        page = Path(__file__).resolve().parents[1] / "demo" / "web" / "shekara.html"
+        if not page.exists():
+            raise HTTPException(404, "соберите демо: py -m demo.web.build")
+        return HTMLResponse(page.read_text(encoding="utf-8"))
 
     @app.get("/v1/health")
     def health():

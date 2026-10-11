@@ -50,6 +50,8 @@ powershell -ExecutionPolicy Bypass -File experiments\run_after.ps1   # пров�
 
 ## Демо
 
+Веб-демонстрация (один файл, работает офлайн): `demo/web/shekara.html` — собирается командой `py -m demo.web.build`, её же отдаёт API по адресу `http://localhost:8000/`.
+
 ```powershell
 .venv\Scripts\streamlit run dashboard\app.py          # офлайн-дашборд: Сцена / Банк / Оператор / Эксперимент
 .venv\Scripts\python -m online.api --banks 006,011,01292   # API протокола: http://localhost:8000/docs

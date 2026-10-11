@@ -1,0 +1,466 @@
+<title>ШЕКАРА</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Пограничная карта: банки — вертикальные полосы с пунктирными границами, переводы идут сквозь них во времени. */
+:root {
+  --paper: #EEF2F2; --surface: #FFFFFF; --ink: #0E1F26; --ink-2: #4A5A61; --ink-3: #7A8A90;
+  --line: #D3DCDD; --lane: #E3EAEB; --sky: #0C6B9C; --sky-soft: #D7EAF4;
+  --amber: #A65F00; --amber-soft: #FBEBD3; --risk: #B03A24; --risk-soft: #F7DED8; --ok: #2B7A57;
+  --display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0B1417; --surface: #11201F; --ink: #E4EDEE; --ink-2: #A3B4B8; --ink-3: #74878C;
+  --line: #24363A; --lane: #142528; --sky: #5DB7E4; --sky-soft: #10324A;
+  --amber: #E7A33B; --amber-soft: #3A2A10; --risk: #E86F59; --risk-soft: #3D1C17; --ok: #5FC193; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #0B1417; --surface: #11201F; --ink: #E4EDEE; --ink-2: #A3B4B8; --ink-3: #74878C;
+  --line: #24363A; --lane: #142528; --sky: #5DB7E4; --sky-soft: #10324A;
+  --amber: #E7A33B; --amber-soft: #3A2A10; --risk: #E86F59; --risk-soft: #3D1C17; --ok: #5FC193; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--paper); color: var(--ink); font: 400 16px/1.55 var(--body); padding-inline: clamp(16px, 4vw, 48px); padding-block: 0 48px }
+.wrap { max-width: 1240px; margin-inline: auto; display: flex; flex-direction: column; gap: 72px }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; text-wrap: balance; margin: 0 }
+h2 { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.2; letter-spacing: -0.01em }
+h3 { font-size: 15px; letter-spacing: 0.02em }
+p { margin: 0 }
+.eyebrow { font: 500 12px/1 var(--body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky) }
+.lede { color: var(--ink-2); max-width: 64ch; font-size: 17px }
+.mono { font-family: var(--mono); font-size: 0.86em }
+.num { font-variant-numeric: tabular-nums }
+section { display: flex; flex-direction: column; gap: 24px }
+.section-head { display: flex; flex-direction: column; gap: 10px }
+button, .chip { font: inherit; cursor: pointer }
+:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px }
+
+/* шапка */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; margin-inline: calc(-1 * clamp(16px, 4vw, 48px)); padding-inline: clamp(16px, 4vw, 48px) }
+.brand { font: 700 18px/1 var(--display); letter-spacing: 0.06em }
+.brand span { color: var(--sky) }
+nav.top-nav { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px }
+nav.top-nav a { color: var(--ink-2); text-decoration: none }
+nav.top-nav a:hover { color: var(--ink) }
+
+/* герой */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding-top: 40px }
+.hero h1 { font-size: clamp(30px, 4.6vw, 54px); line-height: 1.08; letter-spacing: -0.02em; max-width: 20ch }
+.hero h1 em { font-style: normal; color: var(--sky) }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 28px; color: var(--ink-2); font-size: 14px }
+.facts b { color: var(--ink); font-weight: 600 }
+
+/* карта границ */
+.board { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden }
+.board-map { min-width: 0; overflow-x: auto; border-right: 1px solid var(--line) }
+.board-map svg { display: block; min-width: 640px; width: 100% }
+.board-side { display: flex; flex-direction: column; gap: 18px; padding: 22px }
+.controls { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--line); grid-column: 1 / -1; flex-wrap: wrap }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 12px; font-size: 14px }
+.btn:hover { border-color: var(--ink-3) }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+#scrub { flex: 1; min-width: 160px; accent-color: var(--sky) }
+.step-count { font: 500 13px var(--mono); color: var(--ink-2) }
+.step-time { font: 500 13px var(--mono); color: var(--ink-3) }
+.step-route { font: 500 20px/1.25 var(--display) }
+.step-amount { font-size: 15px; color: var(--ink-2) }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 999px }
+.tag.risk { background: var(--risk-soft); color: var(--risk) }
+.tag.sky { background: var(--sky-soft); color: var(--sky) }
+.tag.amber { background: var(--amber-soft); color: var(--amber) }
+.meters { display: flex; flex-direction: column; gap: 14px }
+.meter { display: grid; grid-template-columns: 92px minmax(0, 1fr) 52px; align-items: center; gap: 10px; font-size: 13px }
+.meter .bar { position: relative; height: 10px; background: var(--lane); border-radius: 5px }
+.meter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; transition: width .35s ease }
+.meter .thr { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink) }
+.meter .val { font: 500 13px var(--mono); text-align: right }
+.side-note { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 14px }
+
+/* банки */
+.chips { display: flex; gap: 8px; flex-wrap: wrap }
+.chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 6px 14px; font-size: 14px }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+.bankview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0 }
+.rows { display: flex; flex-direction: column }
+.row { display: grid; grid-template-columns: 112px minmax(0, 1fr) 76px 76px; gap: 10px; align-items: baseline; padding-block: 9px; border-top: 1px solid var(--line); font-size: 14px }
+.row.head { color: var(--ink-3); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; border-top: 0 }
+.row .r { text-align: right; font-family: var(--mono); font-size: 13px }
+.row .r.hit { color: var(--amber); font-weight: 600 }
+.contrib { display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 4px 12px; font-size: 13px; align-items: center }
+.contrib .cbar { height: 8px; border-radius: 4px }
+.muted { color: var(--ink-3) }
+
+/* протокол */
+.proto { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface) }
+.proto > div { padding: 20px; display: flex; flex-direction: column; gap: 8px; border-left: 1px solid var(--line) }
+.proto > div:first-child { border-left: 0 }
+.proto .k { font: 500 12px var(--mono); color: var(--ink-3) }
+.tree svg { display: block; width: 100%; height: auto }
+
+/* результаты */
+.results { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px }
+.bars { display: flex; flex-direction: column; gap: 10px }
+.barrow { display: grid; grid-template-columns: 220px minmax(0, 1fr) 60px; gap: 12px; align-items: center; font-size: 14px }
+.barrow .track { position: relative; height: 22px; background: var(--lane); border-radius: 4px }
+.barrow .b { position: absolute; inset: 0 auto 0 0; border-radius: 4px; transition: width .4s ease }
+.barrow .err { position: absolute; top: 9px; height: 4px; background: var(--ink); opacity: .55; border-radius: 2px }
+.barrow .v { font: 500 13px var(--mono); text-align: right }
+.barrow.main .lbl { font-weight: 600 }
+.verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
+.verdict { border-top: 3px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-2) }
+.verdict b { font: 600 22px/1.2 var(--display); color: var(--ink) }
+.verdict.yes { border-color: var(--ok) } .verdict.no { border-color: var(--amber) } .verdict.info { border-color: var(--sky) }
+#privacy svg { display: block; width: 100%; height: auto }
+.tip { font-size: 13px; color: var(--ink-2); min-height: 20px }
+table.t { width: 100%; border-collapse: collapse; font-size: 14px }
+table.t th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid var(--line) }
+table.t td { padding: 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums }
+table.t td.r, table.t th.r { text-align: right }
+.scroll { overflow-x: auto }
+
+footer.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 24px; color: var(--ink-2); font-size: 14px }
+footer.foot a { color: var(--sky) }
+
+@media (max-width: 960px) {
+  .board, .bankview, .results { grid-template-columns: minmax(0, 1fr) }
+  .board-map { border-right: 0; border-bottom: 1px solid var(--line) }
+  .proto, .verdicts { grid-template-columns: minmax(0, 1fr) }
+  .proto > div { border-left: 0; border-top: 1px solid var(--line) } .proto > div:first-child { border-top: 0 }
+  .barrow { grid-template-columns: 140px minmax(0, 1fr) 52px }
+  nav.top-nav { display: none }
+}
+@media (max-width: 520px) {
+  .row { grid-template-columns: 88px minmax(0, 1fr) 58px 58px; font-size: 13px }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand">ШЕКА<span>РА</span></div>
+  <nav class="top-nav">
+    <a href="#map">Схема</a><a href="#banks">Вид банка</a><a href="#protocol">Протокол</a><a href="#results">Результаты</a>
+  </nav>
+</header>
+
+<section class="hero" id="map">
+  <div class="section-head">
+    <p class="eyebrow">Межбанковский поиск сетей дропов · AMLworld, тестовые дни</p>
+    <h1>Дроп прячется на стыке банков. ШЕКАРА делает стык <em>видимым</em>, а клиентские данные остаются в банке.</h1>
+    <p class="lede">Ниже — реальный паттерн отмывания из тестовых дней бенчмарка IBM AMLworld: тринадцать дропов сводят деньги на один счёт-сборщик. Пунктир — граница банков. Каждый перевод проходит через протокол ШЕКАРЫ, рядом — балл изолированного банка и балл ШЕКАРЫ.</p>
+  </div>
+  <div class="facts" id="facts"></div>
+  <div class="board">
+    <div class="board-map"><svg id="lanes" role="img" aria-label="Переводы паттерна между банками во времени"></svg></div>
+    <aside class="board-side" id="side" aria-live="polite"></aside>
+    <div class="controls">
+      <button class="btn primary" id="play" type="button">▶ Проиграть</button>
+      <button class="btn" id="prev" type="button" aria-label="Предыдущий перевод">←</button>
+      <button class="btn" id="next" type="button" aria-label="Следующий перевод">→</button>
+      <input type="range" id="scrub" min="0" max="0" value="0" aria-label="Шаг паттерна">
+      <span class="step-count" id="count"></span>
+    </div>
+  </div>
+</section>
+
+<section id="banks">
+  <div class="section-head">
+    <p class="eyebrow">Need-to-know</p>
+    <h2>Что видит каждый банк</h2>
+    <p class="lede">Банк видит только переводы своих клиентов и балл, который считает сам. О соседе он знает лишь то, что пришло в выпуске по ссылке на реальный перевод. Полную цепочку собирает только оператор.</p>
+  </div>
+  <div class="chips" id="bankchips" role="group" aria-label="Выбор банка"></div>
+  <div class="bankview">
+    <div class="panel"><h3 id="bv-title"></h3><div class="rows" id="bv-rows"></div></div>
+    <div class="panel"><h3>Почему такой балл</h3><p class="muted" id="bv-why-note"></p><div id="bv-why"></div></div>
+  </div>
+</section>
+
+<section id="protocol">
+  <div class="section-head">
+    <p class="eyebrow">Протокол</p>
+    <h2>Инцидент идёт по ссылке, дерево видит только оператор</h2>
+  </div>
+  <div class="proto" id="proto"></div>
+  <div class="panel tree"><h3>Дерево подтверждённого инцидента · вид оператора</h3><div id="tree"></div></div>
+</section>
+
+<section id="results">
+  <div class="section-head">
+    <p class="eyebrow">Результаты · 5,08 млн переводов, 30 банков-участников, 3 запуска</p>
+    <h2>Банк со своим графом вдвое сильнее центрального оператора. Обмен добавляет ещё 12%.</h2>
+  </div>
+  <div class="verdicts" id="verdicts"></div>
+  <div class="results">
+    <div class="panel">
+      <h3>PR-AUC на межбанковских переводах</h3>
+      <div class="chips" id="slicechips" role="group" aria-label="Срез"></div>
+      <div class="bars" id="bars"></div>
+      <p class="muted" id="bars-note"></p>
+    </div>
+    <div class="panel" id="privacy">
+      <h3>Цена приватности: раскрытие ↔ качество ↔ ε</h3>
+      <div id="privacy-chart"></div>
+      <p class="tip" id="privacy-tip">Наведите на точку. Регулятор выбирает, где остановиться.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Охват сети и деньги на счёте</h3>
+    <div class="scroll"><table class="t" id="extra"></table></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Джусупов Сагир Едгеевич · ЗКАТУ имени Жангир хана, Уральск · научный руководитель Касымова А. Х. · конкурс АБРК 2026</div>
+  <div><a href="https://github.com/Falconwu17/shekara" target="_blank" rel="noopener">github.com/Falconwu17/shekara</a></div>
+</footer>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const C = D.case, steps = C.steps, thr = C.thresholds;
+const $ = id => document.getElementById(id);
+const pct = (v, d = 0) => v == null ? "—" : (v * 100).toFixed(d).replace(".", ",") + "%";
+const num = (v, d = 3) => v == null ? "—" : v.toFixed(d).replace(".", ",");
+const money = v => v.toLocaleString("ru-RU").replace(/,/g, " ") + " ₸";
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+
+/* полосы банков */
+const part = new Set(C.participants_in_pattern);
+const srcBank = steps[0].from_bank;
+const laneOf = b => b === srcBank ? "src" : part.has(b) ? b : "mules";
+const lanes = [
+  { id: "src", label: "Источник", sub: `внешний банк ${srcBank}` },
+  { id: "mules", label: "Дропы", sub: "внешние банки" },
+  ...C.participants_in_pattern.map(b => ({ id: b, label: `Банк ${b}`, sub: "участник ШЕКАРЫ", part: true })),
+];
+const muleBanks = new Set(steps.flatMap(s => [s.from_bank, s.to_bank]).filter(b => laneOf(b) === "mules"));
+lanes[1].sub = `${muleBanks.size} внешних банков`;
+
+$("facts").innerHTML = `
+  <span>Паттерн <b class="mono">№ ${C.pattern_id}</b> · ${C.pattern_type}</span>
+  <span><b>${steps.length}</b> переводов</span>
+  <span><b>${steps.filter(s => s.from_participant && s.to_participant).length}</b> между участниками</span>
+  <span>Один банк видит в среднем <b>${pct(D.stats.share_seen)}</b> схемы</span>
+  <span>Медиана звена в AMLworld <b>${D.stats.dwell_h.toFixed(0)} ч</b></span>`;
+
+const W = 760, topY = 74, rowH = 26, H = topY + steps.length * rowH + 24;
+const svg = $("lanes"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+const laneW = W / lanes.length, lx = id => (lanes.findIndex(l => l.id === id) + 0.5) * laneW;
+let arrows = [];
+function drawLanes() {
+  svg.innerHTML = "";
+  const defs = el("defs", {}, svg);
+  for (const [id, col] of [["a-ink", css("--ink-3")], ["a-sky", css("--sky")], ["a-risk", css("--risk")]]) {
+    const m = el("marker", { id, viewBox: "0 0 8 8", refX: 7, refY: 4, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, defs);
+    el("path", { d: "M0,0 L8,4 L0,8 z", fill: col }, m);
+  }
+  lanes.forEach((l, i) => {
+    el("rect", { x: i * laneW + 4, y: 8, width: laneW - 8, height: H - 16, rx: 10, fill: l.part ? css("--sky-soft") : css("--lane") }, svg);
+    const t = el("text", { x: (i + .5) * laneW, y: 32, "text-anchor": "middle", fill: css("--ink"), "font-family": "Unbounded, Golos Text, sans-serif", "font-size": 13, "font-weight": 500 }, svg); t.textContent = l.label;
+    const s = el("text", { x: (i + .5) * laneW, y: 50, "text-anchor": "middle", fill: css("--ink-2"), "font-family": "Golos Text, sans-serif", "font-size": 11 }, svg); s.textContent = l.sub;
+    if (i > 0) el("line", { x1: i * laneW, y1: 12, x2: i * laneW, y2: H - 12, stroke: css("--ink-3"), "stroke-width": 1.2, "stroke-dasharray": "5 5" }, svg);
+  });
+  let day = "";
+  arrows = steps.map((s, i) => {
+    const y = topY + i * rowH + 10, x1 = lx(laneOf(s.from_bank)), x2 = lx(laneOf(s.to_bank));
+    const d = s.time.slice(0, 10);
+    if (d !== day) { day = d; const t = el("text", { x: 10, y: y + 4, fill: css("--ink-3"), "font-family": "JetBrains Mono, monospace", "font-size": 10 }, svg); t.textContent = d.slice(5).replace("/", "."); }
+    const pp = s.from_participant && s.to_participant;
+    const g = el("g", { tabindex: 0, role: "button", "aria-label": `${s.time}: ${s.from_bank} → ${s.to_bank}` }, svg);
+    const dx = x2 > x1 ? -10 : 10;
+    const line = el("line", { x1, y1: y, x2: x2 + dx, y2: y, stroke: pp ? css("--sky") : css("--risk"), "stroke-width": pp ? 3 : 1.6, "marker-end": `url(#${pp ? "a-sky" : "a-risk"})` }, g);
+    el("circle", { cx: x1, cy: y, r: 3.5, fill: pp ? css("--sky") : css("--risk") }, g);
+    g.addEventListener("click", () => show(i)); g.addEventListener("keydown", e => { if (e.key === "Enter") show(i); });
+    g.style.cursor = "pointer";
+    return g;
+  });
+}
+
+let cur = 0, timer = null;
+function viewFor(s) {
+  if (s.to_participant) return { bank: s.to_bank, side: "receiver", who: "банк-получатель" };
+  if (s.from_participant) return { bank: s.from_bank, side: "sender", who: "банк-отправитель" };
+  return null;
+}
+function meter(label, v, t, color) {
+  const w = v == null ? 0 : Math.max(2, v * 100);
+  return `<div class="meter"><span>${label}</span><div class="bar"><div class="fill" style="width:${w}%;background:${color}"></div><div class="thr" style="left:${(t ?? 1) * 100}%" title="порог алерта"></div></div><span class="val">${num(v, 2)}</span></div>`;
+}
+function show(i) {
+  cur = Math.max(0, Math.min(steps.length - 1, i));
+  $("scrub").value = cur; $("count").textContent = `${cur + 1} / ${steps.length}`;
+  arrows.forEach((g, j) => { g.style.opacity = j === cur ? 1 : j < cur ? .6 : .3; });
+  const s = steps[cur], v = viewFor(s), pp = s.from_participant && s.to_participant;
+  let html = `<div><p class="step-time">${s.time}</p><p class="step-route">${s.from_bank} → ${s.to_bank}</p><p class="step-amount">${money(s.amount_kzt)} · ${s.channel}</p></div>`;
+  html += `<div>${pp ? '<span class="tag sky">между участниками</span>' : v ? '<span class="tag amber">участник ↔ внешний банк</span>' : '<span class="tag risk">вне сети участников</span>'}</div>`;
+  if (v) {
+    const iso = s[`isolation_${v.side}`], she = s[`C_L3_${v.side}`];
+    html += `<div class="meters"><p class="muted" style="font-size:13px">Балл перевода, который видит ${v.who} ${v.bank}</p>
+      ${meter("Изоляция", iso, thr.isolation, css("--ink-3"))}${meter("ШЕКАРА", she, thr.C_L3, css("--sky"))}</div>`;
+    if (pp && s.release_night) html += `<p class="side-note">Ночью ${s.release_night.slice(5)} банк ${s.to_bank} разослал выпуск о получателе: максимальный балл его входящих — <b class="mono">${num(s.release_in_max, 2)}</b>. Банк ${s.from_bank} получил его только потому, что его клиент уже переводил на этот счёт.</p>`;
+    else html += `<p class="side-note">Черта на шкале — порог алерта, подобранный на дне валидации под бюджет банка.</p>`;
+  } else {
+    html += `<p class="side-note">Оба конца перевода вне банков-участников. Этот перевод не видит ни один участник, и ШЕКАРА о нём ничего не знает — это честная граница метода.</p>`;
+  }
+  $("side").innerHTML = html;
+}
+$("scrub").max = steps.length - 1;
+$("scrub").addEventListener("input", e => { stop(); show(+e.target.value); });
+$("prev").onclick = () => { stop(); show(cur - 1); };
+$("next").onclick = () => { stop(); show(cur + 1); };
+function stop() { clearInterval(timer); timer = null; $("play").textContent = "▶ Проиграть"; }
+$("play").onclick = () => {
+  if (timer) return stop();
+  if (cur >= steps.length - 1) show(0);
+  $("play").textContent = "❚❚ Пауза";
+  timer = setInterval(() => { if (cur >= steps.length - 1) return stop(); show(cur + 1); }, 900);
+};
+
+/* вид банка */
+let bank = C.participants_in_pattern[C.participants_in_pattern.length - 1];
+function renderBank() {
+  $("bankchips").innerHTML = C.participants_in_pattern.map(b => `<button class="chip" type="button" aria-pressed="${b === bank}" data-b="${b}">Банк ${b}</button>`).join("");
+  $("bankchips").querySelectorAll(".chip").forEach(c => c.onclick = () => { bank = c.dataset.b; renderBank(); });
+  const mine = steps.filter(s => s.from_bank === bank || s.to_bank === bank);
+  $("bv-title").textContent = `Банк ${bank}: свои переводы паттерна (${mine.length})`;
+  let rows = `<div class="row head"><span>Время</span><span>Контрагент</span><span class="r">Изол.</span><span class="r">ШЕКАРА</span></div>`;
+  let why = null;
+  for (const s of mine) {
+    const side = s.from_bank === bank ? "sender" : "receiver";
+    const cp = side === "sender" ? `→ банк ${s.to_bank}` : `← банк ${s.from_bank}`;
+    const iso = s[`isolation_${side}`], she = s[`C_L3_${side}`];
+    const hi = iso != null && iso >= thr.isolation, hs = she != null && she >= thr.C_L3;
+    rows += `<div class="row"><span class="mono">${s.time.slice(5)}</span><span>${cp} · ${money(s.amount_kzt)}</span><span class="r${hi ? " hit" : ""}">${num(iso, 2)}</span><span class="r${hs ? " hit" : ""}">${num(she, 2)}</span></div>`;
+    const e = s[`L3_${side}_explain`];
+    if (e && !why) why = { s, e, side };
+  }
+  rows += `<p class="muted" style="font-size:13px;padding-top:10px">Выделены баллы выше порога алерта своей модели (изоляция ${num(thr.isolation, 2)}, ШЕКАРА ${num(thr.C_L3, 2)}).</p>`;
+  $("bv-rows").innerHTML = rows;
+  if (why) {
+    const max = Math.max(...why.e.map(x => Math.abs(x.contrib)));
+    $("bv-why-note").textContent = `Перевод ${why.s.time.slice(5)}: вклад признаков в балл модели с выпусками соседей. Вправо — повышает риск, влево — снижает.`;
+    $("bv-why").innerHTML = `<div class="contrib">${why.e.map(x => {
+      const w = Math.abs(x.contrib) / max * 100, col = x.contrib > 0 ? css("--risk") : css("--ok");
+      return `<span>${x.feature}</span><div class="cbar" style="width:${w}%;background:${col}" title="${x.contrib.toFixed(2)}"></div>`;
+    }).join("")}</div>`;
+  } else { $("bv-why-note").textContent = "Для переводов этого банка объяснение не сохранено."; $("bv-why").innerHTML = ""; }
+}
+
+/* протокол */
+function renderProtocol() {
+  const P = C.protocol, a = P.audit;
+  const soft = P.soft_tree || {}, conf = P.confirmed_tree || {};
+  $("proto").innerHTML = `
+    <div><span class="k">шаг 1 · банк ${steps.find(s => s.row_no === P.trigger_row)?.from_bank ?? ""}</span><h3>Открыт инцидент</h3><p class="muted">Мягкий — по высокому баллу при зачислении, подтверждённый — после решения аналитика. Квота — 0,02% активных счетов в сутки.</p></div>
+    <div><span class="k">шаг 2 · хаб</span><h3>Сосед получает только ссылку</h3><p class="muted">HMAC ссылки на перевод, тип и номер шага — без суммы, времени и балла. Сосед сам находит перевод в своей базе.</p></div>
+    <div><span class="k">шаг 3 · журнал</span><h3>${a.verify ? "Хэш-цепочка цела" : "Цепочка нарушена"}</h3><p class="muted">${a.entries} записей, голова <span class="mono">${String(a.head).slice(0, 12)}…</span>. По мягкому инциденту оператор видит лишь число звеньев: ${soft.links ?? "—"}.</p></div>`;
+  const edges = conf.edges || [];
+  if (!edges.length) { $("tree").innerHTML = '<p class="muted">Нет звеньев для дерева.</p>'; return; }
+  const key = n => n.join("|"), nodes = [...new Map(edges.flatMap(e => [e.from, e.to]).map(n => [key(n), n])).values()];
+  const depth = new Map(nodes.map(n => [key(n), 0]));
+  for (let k = 0; k < nodes.length; k++) for (const e of edges) depth.set(key(e.to), Math.max(depth.get(key(e.to)), depth.get(key(e.from)) + 1));
+  const cols = new Map(); for (const n of nodes) { const d = depth.get(key(n)); cols.set(d, [...(cols.get(d) || []), n]); }
+  const maxRows = Math.max(...[...cols.values()].map(c => c.length)), nCols = cols.size;
+  const w = 720, h = 40 + maxRows * 76, s2 = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Дерево цепочки у оператора" });
+  const pos = new Map();
+  for (const [d, list] of cols) list.forEach((n, i) => pos.set(key(n), {
+    x: 80 + d * ((w - 160) / Math.max(1, nCols - 1)), y: h / 2 + (i - (list.length - 1) / 2) * 76 }));
+  for (const e of edges) {
+    const a1 = pos.get(key(e.from)), b1 = pos.get(key(e.to));
+    el("path", { d: `M${a1.x + 50},${a1.y} C${(a1.x + b1.x) / 2},${a1.y} ${(a1.x + b1.x) / 2},${b1.y} ${b1.x - 50},${b1.y}`, fill: "none", stroke: css("--sky"), "stroke-width": 2.5 }, s2);
+    const t = el("text", { x: (a1.x + b1.x) / 2, y: (a1.y + b1.y) / 2 - 10, "text-anchor": "middle", fill: css("--ink-2"), "font-family": "JetBrains Mono, monospace", "font-size": 11 }, s2);
+    const st = steps.find(x => x.from_account === e.from[1] && x.to_account === e.to[1]);
+    t.textContent = `${st ? money(st.amount_kzt) : e.amount} · ${e.time.slice(5, 10).replace("-", ".")} ${e.time.slice(11, 16)}`;
+  }
+  for (const [k, p] of pos) {
+    const [b, acc] = k.split("|");
+    el("rect", { x: p.x - 50, y: p.y - 24, width: 100, height: 48, rx: 8, fill: css("--surface"), stroke: css("--ink-3") }, s2);
+    const t1 = el("text", { x: p.x, y: p.y - 4, "text-anchor": "middle", fill: css("--ink"), "font-family": "Golos Text, sans-serif", "font-size": 12, "font-weight": 600 }, s2); t1.textContent = `банк ${b}`;
+    const t2 = el("text", { x: p.x, y: p.y + 13, "text-anchor": "middle", fill: css("--ink-2"), "font-family": "JetBrains Mono, monospace", "font-size": 10 }, s2); t2.textContent = acc && acc !== "null" ? acc : "?";
+  }
+  $("tree").innerHTML = ""; $("tree").appendChild(s2);
+}
+
+/* результаты */
+const MODES = [["operator", "Центральный оператор (MITS)"], ["oracle", "Общий граф участников"], ["isolation", "Изолированный банк"],
+  ["C_L1_s0.25", "ШЕКАРА L1 · один балл"], ["C_L2_s0.25", "ШЕКАРА L2 · вектор с шумом"], ["C_L3", "ШЕКАРА L3 · полный сигнал"]];
+const SLICES = [["all_max", "Все переводы"], ["pp_sender", "Решает отправитель"], ["pp_receiver", "Решает получатель"], ["external", "Участник ↔ внешний"]];
+let slice = "all_max";
+function renderBars() {
+  $("slicechips").innerHTML = SLICES.map(([k, l]) => `<button class="chip" type="button" aria-pressed="${k === slice}" data-k="${k}">${l}</button>`).join("");
+  $("slicechips").querySelectorAll(".chip").forEach(c => c.onclick = () => { slice = c.dataset.k; renderBars(); });
+  const vals = MODES.map(([m, l]) => ({ m, l, x: D.views[m]?.[slice] })).filter(r => r.x);
+  const max = Math.max(...vals.map(r => r.x.ap + (r.x.sd || 0))) * 1.08;
+  $("bars").innerHTML = vals.map(r => {
+    const col = r.m.startsWith("C_") ? css("--sky") : r.m === "isolation" ? css("--ink-2") : css("--ink-3");
+    const w = r.x.ap / max * 100, lo = (r.x.ap - r.x.sd) / max * 100, hi = (r.x.ap + r.x.sd) / max * 100;
+    return `<div class="barrow${r.m === "C_L3" ? " main" : ""}"><span class="lbl">${r.l}</span><div class="track"><div class="b" style="width:${w}%;background:${col}"></div><div class="err" style="left:${lo}%;width:${Math.max(.5, hi - lo)}%"></div></div><span class="v">${num(r.x.ap)}</span></div>`;
+  }).join("");
+  const pos = D.views.isolation?.[slice]?.pos;
+  $("bars-note").textContent = `${pos ?? "—"} положительных переводов в тесте; черта — разброс по трём запускам. У оператора и общего графа нет сторон банка, поэтому в срезах «отправитель/получатель» их нет.`;
+}
+function renderVerdicts() {
+  const op = D.paired.operator, iso = D.paired.isolation;
+  $("verdicts").innerHTML = `
+    <div class="verdict yes"><b>F1 +${num(op.diff, 2)}</b>Банковский вид сильнее центрального оператора. Значимо в ${op.sig} из ${op.n} запусков.</div>
+    <div class="verdict no"><b>+${pct(D.views.C_L3.all_max.ap / D.views.isolation.all_max.ap - 1)}</b>Прирост PR-AUC от обмена во всех запусках, но пока не значим: значимо в ${iso.sig} из ${iso.n}. Половину даёт сочетание двух моделей банка.</div>
+    <div class="verdict info"><b>${D.checks.passed} из ${D.checks.total}</b>Автоматических проверок пройдено: ключи переводов, утечки меток, воспроизводимость.</div>`;
+}
+function renderPrivacy() {
+  const pts = D.privacy, iso = D.views.isolation.all_max.ap, l3 = D.views.C_L3.all_max.ap, ctl = D.views["C_L1_s4"]?.all_max.ap;
+  const w = 520, h = 300, m = { l: 52, r: 18, t: 18, b: 44 };
+  const xs = pts.map(p => Math.log10(p.eps)), x0 = Math.floor(Math.min(...xs)), x1 = Math.ceil(Math.max(...xs));
+  const ys = [...pts.map(p => p.ap), iso, l3], y0 = Math.floor(Math.min(...ys) * 100 - 1) / 100, y1 = Math.ceil(Math.max(...ys) * 100 + 1) / 100;
+  const X = v => m.l + (Math.log10(v) - x0) / (x1 - x0) * (w - m.l - m.r), Y = v => m.t + (1 - (v - y0) / (y1 - y0)) * (h - m.t - m.b);
+  const s = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Качество в зависимости от ε" });
+  for (let e = x0; e <= x1; e++) {
+    el("line", { x1: X(10 ** e), y1: m.t, x2: X(10 ** e), y2: h - m.b, stroke: css("--line") }, s);
+    const t = el("text", { x: X(10 ** e), y: h - m.b + 18, "text-anchor": "middle", fill: css("--ink-3"), "font-size": 11, "font-family": "JetBrains Mono, monospace" }, s); t.textContent = (10 ** e).toLocaleString("ru-RU");
+  }
+  for (let v = y0; v <= y1 + 1e-9; v += 0.01) {
+    el("line", { x1: m.l, y1: Y(v), x2: w - m.r, y2: Y(v), stroke: css("--line") }, s);
+    const t = el("text", { x: m.l - 8, y: Y(v) + 4, "text-anchor": "end", fill: css("--ink-3"), "font-size": 11, "font-family": "JetBrains Mono, monospace" }, s); t.textContent = v.toFixed(2).replace(".", ",");
+  }
+  const ax = el("text", { x: (w + m.l) / 2, y: h - 6, "text-anchor": "middle", fill: css("--ink-2"), "font-size": 12, "font-family": "Golos Text, sans-serif" }, s); ax.textContent = "ε за 30 дней (меньше — приватнее)";
+  for (const [v, lbl, col] of [[iso, "изоляция", css("--ink-3")], [l3, "L3 без шума", css("--sky")]]) {
+    el("line", { x1: m.l, y1: Y(v), x2: w - m.r, y2: Y(v), stroke: col, "stroke-dasharray": "5 4", "stroke-width": 1.5 }, s);
+    const t = el("text", { x: w - m.r - 4, y: Y(v) - 6, "text-anchor": "end", fill: col, "font-size": 11, "font-family": "Golos Text, sans-serif" }, s); t.textContent = `${lbl} ${num(v)}`;
+  }
+  for (const lvl of ["L1", "L2"]) {
+    const p = pts.filter(q => q.level === lvl).sort((a, b) => a.eps - b.eps);
+    const col = lvl === "L1" ? css("--amber") : css("--sky");
+    el("polyline", { points: p.map(q => `${X(q.eps)},${Y(q.ap)}`).join(" "), fill: "none", stroke: col, "stroke-width": 2 }, s);
+    for (const q of p) {
+      const c = el("circle", { cx: X(q.eps), cy: Y(q.ap), r: 6, fill: col, stroke: css("--surface"), "stroke-width": 2, tabindex: 0 }, s);
+      const tip = () => { $("privacy-tip").innerHTML = `<b>${q.level}, σ = ${String(q.sigma).replace(".", ",")}</b> · ${q.level === "L1" ? "один балл" : "8 чисел, int8"} · ε за 30 дней ≈ <span class="mono">${Math.round(q.eps).toLocaleString("ru-RU")}</span> (недельный выпуск ≈ <span class="mono">${q.eps_week.toFixed(1).replace(".", ",")}</span>) · PR-AUC <span class="mono">${num(q.ap)}</span>`; };
+      c.addEventListener("mouseenter", tip); c.addEventListener("focus", tip); c.style.cursor = "pointer";
+    }
+    const last = p[p.length - 1], lt = el("text", { x: X(last.eps) + 10, y: Y(last.ap) + 4, fill: col, "font-size": 12, "font-weight": 600, "font-family": "Golos Text, sans-serif" }, s); lt.textContent = lvl;
+  }
+  $("privacy-chart").innerHTML = ""; $("privacy-chart").appendChild(s);
+}
+function renderExtra() {
+  const cov = D.coverage, by = (n, m) => cov.find(r => r.n === n && r.mode === m)?.ap;
+  const ns = [...new Set(cov.map(r => r.n))].sort((a, b) => a - b);
+  const r = D.retention, lat = D.latency;
+  let rows = `<tr><th>Показатель</th><th class="r">N = 30</th>${ns.map(n => `<th class="r">N = ${n}</th>`).join("")}</tr>`;
+  rows += `<tr><td>Изоляция, PR-AUC</td><td class="r">${num(D.views.isolation.all_max.ap)}</td>${ns.map(n => `<td class="r">${num(by(n, "isolation"))}</td>`).join("")}</tr>`;
+  rows += `<tr><td>ШЕКАРА L3, PR-AUC</td><td class="r">${num(D.views.C_L3.all_max.ap)}</td>${ns.map(n => `<td class="r">${num(by(n, "C_L3"))}</td>`).join("")}</tr>`;
+  rows += `<tr><td>Контроль: выпуск-шум</td><td class="r">${num(D.views["C_L1_s4"]?.all_max.ap)}</td>${ns.map(n => `<td class="r">${num(by(n, "C_L1_s4"))}</td>`).join("")}</tr>`;
+  rows += `<tr><td colspan="${2 + ns.length}" class="muted">Деньги остаются на счёте (звено 3 мин, аналитик 15 мин): изоляция ${pct(r.isolation.h0_15)}, ШЕКАРА ${pct(r.C_L3.h0_15)}; с временной задержкой исходящих H1 — ${pct(r.C_L3.h1)}. Проверка при зачислении — ${lat.inbound_ms_p50.toFixed(1).replace(".", ",")} мс.</td></tr>`;
+  $("extra").innerHTML = rows;
+}
+
+cur = Math.max(0, steps.findIndex(s => s.from_participant && s.to_participant));
+function renderAll() { drawLanes(); show(cur); renderBank(); renderProtocol(); renderBars(); renderVerdicts(); renderPrivacy(); renderExtra(); }
+renderAll();
+const mq = matchMedia("(prefers-color-scheme: dark)");
+mq.addEventListener?.("change", renderAll);
+new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+</script>
