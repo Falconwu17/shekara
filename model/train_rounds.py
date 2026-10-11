@@ -231,7 +231,7 @@ class Experiment:
         return {(b, a): (q, e) for b, a, q, e in zip(batch.node_bank[own], batch.node_account[own], p[own], emb[own])}
 
     def release_features(self, g: Graph, releases: dict, level: str, sigma: float, rng, drop: float = 0.0) -> np.ndarray:
-        dim = 1 if level == "L1" else EMB_DIM
+        dim = 1 if level in ("L1", "F") else EMB_DIM
         out = np.zeros((g.num_nodes, dim + 1), dtype=np.float32)
         part = set(self.participants)
         for i in np.flatnonzero(g.x[:, 0] > 0.5):
@@ -239,7 +239,9 @@ class Experiment:
             if key[0] not in part or key not in releases or rng.random() < drop:
                 continue
             p, h = releases[key]
-            if level == "L1":
+            if level == "F":  # только факт выпуска: у счёта есть история в его банке до прошлой ночи
+                pass
+            elif level == "L1":
                 out[i, 0] = release_l1(float(p), sigma, rng)
             elif level == "L2":
                 out[i, :dim] = dequantize_l2(release_l2(h, sigma, rng))

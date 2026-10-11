@@ -51,7 +51,7 @@ def mode_spec(mode: str):
 
 
 def all_modes() -> list[str]:
-    return (["isolation", "operator", "oracle", "L3", "L3_nocf", "L3_r2"]
+    return (["isolation", "operator", "oracle", "F", "L3", "L3_nocf", "L3_r2"]
             + [f"L1_s{s:g}" for s in SIGMAS_L1] + [f"L2_s{s:g}" for s in SIGMAS_L2])
 
 

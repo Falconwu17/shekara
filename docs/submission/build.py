@@ -84,7 +84,7 @@ def paired(mode: str, vs: str):
     if not p.height:
         return None
     return {"diff": p["diff"].mean(), "lo": p["lo"].min(), "hi": p["hi"].max(), "seeds_positive": int((p["lo"] > 0).sum()),
-            "seeds": p.height}
+            "seeds_diff_positive": int((p["diff"] > 0).sum()), "seeds": p.height}
 
 
 def numbers() -> dict:
@@ -124,36 +124,45 @@ def rel_gain(n, slice_="all_max", col="ap", mode=MAIN):
 
 
 def results_ru(n) -> str:
-    g, gs = rel_gain(n), rel_gain(n, "pp_sender")
-    ret_line = (f"доля звеньев отмывания, на которых деньги ещё на счёте к решению аналитика (τ = 15 мин, сжатое время): "
-                f"{pct(n[f'ret|isolation|cmp15'], 1)} в изоляции и {pct(n[f'ret|{MAIN}|cmp15'], 1)} с ШЕКАРОЙ")
-    return (f"Один банк видит в среднем {pct(n['share_seen'])} схемы отмывания, {pct(n['interbank'])} переводов отмывания "
-            f"пересекают границу банков (AMLworld). На межбанковских переводах с участием 30 банков-участников "
-            f"({n['pos_all'] or NA} положительных в тесте) ШЕКАРА поднимает PR-AUC с {fmt(n['isolation|all_max|ap'])} "
-            f"до {fmt(n[f'{MAIN}|all_max|ap'])} ({pct(g)}), F1 — с {fmt(n['isolation|all_max|f1'])} до "
-            f"{fmt(n[f'{MAIN}|all_max|f1'])}; там, где решение принимает банк-отправитель, не видящий получателя "
-            f"в чужом банке, PR-AUC растёт с {fmt(n['isolation|pp_sender|ap'])} до {fmt(n[f'{MAIN}|pp_sender|ap'])} ({pct(gs)}). "
-            f"Центральный оператор, видящий только межбанковские потоки (подход MITS), даёт {fmt(n['operator|all_max|ap'])}. "
-            f"При минимальном раскрытии — одном зашумлённом балле — PR-AUC {fmt(n[f'{PRIVATE}|all_max|ap'])} "
-            f"(ε за 30 дней ≈ {fmt(n['eps_private'], 0)}); при строгой приватности (ε ≈ {fmt(n['eps_strict'], 1)}) — "
-            f"{fmt(n[f'{STRICT}|all_max|ap'])}. Проверка при зачислении — {fmt(n['lat_inbound_ms'], 1)} мс; {ret_line}.")
+    g = rel_gain(n)
+    pi, po = n.get("paired_main_iso") or {}, n.get("paired_main_op") or {}
+    cmp_iso, cmp_main = n[f"ret|isolation|cmp15"], n[f"ret|{MAIN}|cmp15"]
+    return (
+        f"Один банк видит в среднем {pct(n['share_seen'])} схемы отмывания, а {pct(n['interbank'])} переводов отмывания "
+        f"пересекают границу банков (AMLworld). (1) Модели на графах самих банков значимо сильнее центрального оператора, "
+        f"видящего только межбанковские потоки (подход MITS): PR-AUC {fmt(n['isolation|all_max|ap'])}–{fmt(n[f'{MAIN}|all_max|ap'])} "
+        f"против {fmt(n['operator|all_max|ap'])}, разность F1 +{fmt(po.get('diff'), 2)} (парный бутстреп по паттернам, "
+        f"значимо в {po.get('seeds_positive', NA)} из {po.get('seeds', NA)} запусков). (2) Обмен оценками при 30 участниках "
+        f"({n['pos_all'] or NA} положительных переводов в тесте, из них лишь около 19% — между двумя участниками) поднимает "
+        f"PR-AUC с {fmt(n['isolation|all_max|ap'])} до {fmt(n[f'{MAIN}|all_max|ap'])} ({pct(g)}) во всех трёх запусках, "
+        f"но прирост F1 (+{fmt(pi.get('diff'), 3)}) статистически не значим; около половины прироста даёт сочетание двух "
+        f"моделей банка, что показывает контроль с выпуском-шумом (PR-AUC {fmt(n[f'{STRICT}|all_max|ap'])}). "
+        f"(3) Цена приватности измерена: один зашумлённый балл (L1, ε за 30 дней ≈ {fmt(n['eps_private'], 0)}) по качеству "
+        f"не отличается от шума, польза появляется только при векторном выпуске (L2/L3) с большим ε. Проверка при "
+        f"зачислении — {fmt(n['lat_inbound_ms'], 1)} мс; при скорости цепочки 3 мин на звено и реакции аналитика 15 мин "
+        f"деньги остаются на счёте в {pct(cmp_iso, 0)} звеньев в изоляции и {pct(cmp_main, 0)} с ШЕКАРОЙ, а временная "
+        f"задержка исходящих для верхушки очереди (H1) — в {pct(n[f'ret|{MAIN}|h1'], 0)}.")
 
 
 def results_en(n) -> str:
     g = rel_gain(n)
     f = lambda v, d=3: NA if v is None else f"{v:.{d}f}"
     p = lambda v, d=0: NA if v is None else f"{v * 100:.{d}f}%"
-    return (f"A single bank sees on average {p(n['share_seen'])} of a laundering pattern, and {p(n['interbank'])} of "
-            f"laundering transfers cross a bank boundary (AMLworld). On cross-bank transfers involving the 30 "
-            f"participating banks ({n['pos_all'] or NA} positives in the test window), SHEKARA raises PR-AUC from "
-            f"{f(n['isolation|all_max|ap'])} to {f(n[f'{MAIN}|all_max|ap'])} ({p(g)}) and F1 from "
-            f"{f(n['isolation|all_max|f1'])} to {f(n[f'{MAIN}|all_max|f1'])}; where the sending bank decides without "
-            f"seeing the receiver at another bank, PR-AUC goes from {f(n['isolation|pp_sender|ap'])} to "
-            f"{f(n[f'{MAIN}|pp_sender|ap'])}. A central operator that sees only interbank flows (the MITS approach) "
-            f"reaches {f(n['operator|all_max|ap'])}. With the minimal disclosure — one noisy score — PR-AUC is "
-            f"{f(n[f'{PRIVATE}|all_max|ap'])} (30-day ε ≈ {f(n['eps_private'], 0)}); under strict privacy "
-            f"(ε ≈ {f(n['eps_strict'], 1)}) it is {f(n[f'{STRICT}|all_max|ap'])}. The incoming-credit check takes "
-            f"{f(n['lat_inbound_ms'], 1)} ms.")
+    pi, po = n.get("paired_main_iso") or {}, n.get("paired_main_op") or {}
+    return (
+        f"A single bank sees on average {p(n['share_seen'])} of a laundering pattern, and {p(n['interbank'])} of "
+        f"laundering transfers cross a bank boundary (AMLworld). (1) Models on each bank's own graph clearly beat a central "
+        f"operator that sees only interbank flows (the MITS approach): PR-AUC {f(n['isolation|all_max|ap'])}–"
+        f"{f(n[f'{MAIN}|all_max|ap'])} versus {f(n['operator|all_max|ap'])}, F1 +{f(po.get('diff'), 2)} (paired bootstrap "
+        f"over patterns, significant in {po.get('seeds', NA)} of {po.get('seeds', NA)} runs). (2) With 30 participating banks "
+        f"({n['pos_all'] or NA} positive test transfers, only ~19% of them between two participants) exchanging risk "
+        f"estimates raises PR-AUC from {f(n['isolation|all_max|ap'])} to {f(n[f'{MAIN}|all_max|ap'])} ({p(g)}) in all "
+        f"three runs, but the F1 gain (+{f(pi.get('diff'))}) is not statistically significant; about half of it comes from "
+        f"combining the bank's two models, as a noise-release control shows. (3) The price of privacy is measured: a single "
+        f"noisy score (L1, 30-day ε ≈ {f(n['eps_private'], 0)}) is indistinguishable from noise, and benefit appears only "
+        f"with vector releases (L2/L3) at large ε. The incoming-credit check takes {f(n['lat_inbound_ms'], 1)} ms; "
+        f"a temporary hold on outgoing payments for the top of the alert queue keeps money in place on "
+        f"{p(n[f'ret|{MAIN}|h1'])} of laundering hops.")
 
 
 ANNOTATION_RU = """# ШЕКАРА: межбанковское выявление сетей дропов без обмена клиентскими данными
@@ -200,7 +209,7 @@ def one_pager(n) -> str:
 
 **3. Решение.** «Не данные, а одна оценка риска прямого контрагента реального перевода». Ночью банк рассылает выпуски о своих счетах только банкам, с которыми у счёта были зачисленные переводы; при зачислении банк-получатель за {fmt(n['lat_inbound_ms'], 1)} мс проверяет перевод по своему графу и выпускам соседей; подозрительная цепочка трассируется по следующим банкам только по ссылкам на переводы. Полную цепочку видит только оператор.
 
-**4. Ценность.** PR-AUC на межбанковских переводах: изоляция {fmt(n['isolation|all_max|ap'])} → ШЕКАРА {fmt(n[f'{MAIN}|all_max|ap'])}; когда решает банк-отправитель — {fmt(n['isolation|pp_sender|ap'])} → {fmt(n[f'{MAIN}|pp_sender|ap'])}; центральный оператор межбанковских потоков (подход MITS) — {fmt(n['operator|all_max|ap'])}. Клиентские записи не покидают банк; минимальный режим — один зашумлённый балл (PR-AUC {fmt(n[f'{PRIVATE}|all_max|ap'])}). Регулятор выбирает точку на кривой «раскрытие ↔ качество ↔ ε».
+**4. Ценность (измерено на AMLworld, 3 запуска).** Модель на графе самого банка значимо сильнее центрального оператора межбанковских потоков (подход MITS): PR-AUC {fmt(n['isolation|all_max|ap'])} против {fmt(n['operator|all_max|ap'])}. Обмен оценками добавляет ещё {pct(rel_gain(n))} PR-AUC ({fmt(n['isolation|all_max|ap'])} → {fmt(n[f'{MAIN}|all_max|ap'])}) во всех запусках, но при 30 банках из 30 тыс. прирост пока не значим; польза есть при векторном выпуске (L2/L3), один балл (L1) не помогает — это цена приватности, которую выбирает регулятор. Клиентские записи не покидают банк; проверка при зачислении — {fmt(n['lat_inbound_ms'], 1)} мс; 20 автоматических проверок протокола пройдены.
 
 **5. Новизна.** В мире есть центральный граф потоков у оператора платёжной системы (Mastercard/Vocalink MITS) и обмен записями о клиентах (COSMIC в Сингапуре, TMNL в Нидерландах). ШЕКАРА проверяет третий путь для Казахстана: оценка риска только по ссылке на реальный перевод, данные остаются в банке, сравнение с подходом MITS и общим графом на одном бенчмарке, измеренная цена раскрытия в качестве и в ε.
 

@@ -28,7 +28,7 @@ from model.train_rounds import RESULTS_DIR, average_precision, best_threshold, f
 from model.view_eval import slices
 
 ROOT = Path("experiments/coverage")
-MODES = ("isolation", "L3", "L1_s4")
+MODES = ("isolation", "F", "L1_s4", "L3")
 OUT = RESULTS_DIR / "coverage.csv"
 
 
@@ -54,8 +54,9 @@ def evaluate(n: int, seed: int, participants: list[str]) -> list[dict]:
     full = pl.read_parquet(FULL_DAYS_FILE, columns=["row_no", "from_bank", "to_bank"])
     pp = full.filter(pl.col("from_bank").is_in(participants) & pl.col("to_bank").is_in(participants))["row_no"]
     load = lambda m, part: pl.read_parquet(preds / f"{m}_s{seed}_{part}_views.parquet")
+    have = lambda m: (preds / f"{m}_s{seed}_test_views.parquet").exists()
     variants = {"isolation": lambda p: load("isolation", p)}
-    for m in ("L3", "L1_s4"):
+    for m in [x for x in ("F", "L3", "L1_s4") if have(x)]:
         variants[m] = lambda p, m=m: load(m, p)
         variants[f"C_{m}"] = lambda p, m=m: combine(load("isolation", p), load(m, p))
     rows = []
@@ -75,6 +76,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", default="100,200")
     parser.add_argument("--seeds", default="1")
+    parser.add_argument("--modes", default=",".join(MODES))
     args = parser.parse_args()
     rows = pl.read_csv(OUT).to_dicts() if OUT.exists() else []
     for n in map(int, args.n.split(",")):
@@ -84,7 +86,7 @@ def main() -> int:
         for seed in map(int, args.seeds.split(",")):
             exp = gb.GBTExperiment(seed, decision_path=dec, banks_dir=ROOT / f"N{n}" / "banks",
                                    log=lambda m: print(m, flush=True))
-            for mode in MODES:
+            for mode in args.modes.split(","):
                 print(f"N={n} seed={seed} режим {mode}", flush=True)
                 exp.run_mode(mode)
             rows = [r for r in rows if not (r["n"] == n and r["seed"] == seed)] + evaluate(n, seed, participants)
