@@ -11,6 +11,16 @@
 | Уголовная ответственность за дропперство | **ст. 232-1 УК РК, с 16.09.2025**, от штрафа до 7 лет лишения свободы | ✅ | [gov.kz (КПСиСУ)](https://www.gov.kz/memleket/entities/qriim/press/news/details/1068462?lang=ru), [24.kz](https://24.kz/ru/news/social/730014-vstupila-v-silu-statya-ob-ugolovnoj-otvetstvennosti-za-dropperstvo), [nur.kz](https://www.nur.kz/society/2286675-novaya-ugolovnaya-statya-vstupila-v-silu-v-kazahstane-mozhno-lishitsya-svobody-na-7-let/) |
 | Антифрод-центр НБК | **работает с июля 2024**; за первые полгода — 17 802 случая, заблокировано ≈ 1,5 млрд ₸ (≈ 1,1 млрд на стороне банка-отправителя, 343 млн заморожены банками-получателями); к февралю 2026 — «помог сохранить 1,9 млрд ₸» | ✅ | [newtimes.kz](https://newtimes.kz/ekonomika/201431-perevody-na-1-5-mlrd-tenge-perekhvatila-novaia-sistema-natsbanka), [Zakon.kz](https://www.zakon.kz/mnenie/6506585-antifrodtsentr-pomog-sokhranit-19-mlrd-tenge-kazakhstantsam.html), [bes.media](https://bes.media/news/antifrod-tsentr-natsbanka-za-polgoda-zablokiroval-15-mlrd-tenge-6b48b6/) |
 
+## Ответственность банков (для слайда «Зачем это банку»)
+
+| Факт | Статус | Источник |
+|---|---|---|
+| С 20.08.2024 по мошенническим кредитам банк обязан приостановить взыскание, списать долг, вернуть удержанное (ст. 34 п. 15 Закона о банках) | ✅ | [Banker.kz, 15.10.2024](https://banker.kz/news/politseyskie-sko-napomnili-o-novykh-obyazannostyakh/) |
+| Поправки 2026: банки и платёжные организации будут обязаны возмещать ущерб пострадавшим; переводы лицам из баз Антифрод-центра — только с обязательной идентификацией отправителя | ⚠️ дата вступления и условия — сверить с текстом закона | [Alau.kz со ссылкой на BAQ.kz, 06.02.2026](https://alau.kz/otvetstvennost-na-bankah-v-kazahstane-usilivajut-zashhitu-ot-moshennichestva/) |
+| Банки обязаны приостанавливать операции по сообщению Антифрод-центра; счета дроппера блокируются во всех банках | ✅ | [Bizmedia.kz, 26.05.2026](https://bizmedia.kz/2026-05-26-millionnye-iski-blok-schetov-i-realnyj-srok-kak-v-kazahstane-nakazyvayut-za-dropperstvo/) |
+| В 2025 году суды удовлетворили более 2 000 исков к дропперам (неосновательное обогащение) | ✅ | там же |
+| Ст. 232-1 УК наказывает дроппера, а не банк | ✅ | gov.kz (выше) |
+
 ## Исправления к docs/SHEKARA.md (раздел 2.2)
 
 - Число случаев за 2024 год — «более 17 тыс.» (24.kz, 31.12.2024), а не «≈ 22 тыс.».
