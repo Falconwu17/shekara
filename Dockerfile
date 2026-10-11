@@ -6,7 +6,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
 RUN pip install --no-cache-dir "numpy>=1.26" "polars>=1.0" "duckdb>=0.10" "pyarrow>=15" \
-    "fastapi>=0.110" "uvicorn>=0.29" "streamlit>=1.33"
+    "fastapi>=0.110" "uvicorn>=0.29" "streamlit>=1.33" "pynacl>=1.5"
 
 COPY protocol/ protocol/
 COPY trace/ trace/

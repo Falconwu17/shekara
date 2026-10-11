@@ -180,3 +180,15 @@ def test_hub_broadcast_delivers_release_to_counterparty_external_node():
     assert hub.broadcast("B", msgs, t("23:00")) == len(msgs) == 3  # A, C, D
     assert desks["A"].gw.external_release("B", "b1").value == 0.85
     assert hub.log.verify()
+
+
+def test_signed_head_verifies_and_detects_forgery():
+    from protocol.hub import verify_head
+
+    hub = Hub()
+    hub.log.append(t("20:00"), "query", "A", "B")
+    head = hub.signed_head()
+    assert verify_head(head["public_key"], head["seq"], head["hash"], head["signature"])
+    assert not verify_head(head["public_key"], head["seq"], "f" * 64, head["signature"])
+    other = Hub()
+    assert not verify_head(other.public_key, head["seq"], head["hash"], head["signature"])

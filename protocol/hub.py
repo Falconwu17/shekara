@@ -69,11 +69,38 @@ class AuditLog:
         return True
 
 
+def sign_head(signing_key, seq: int, head_hash: str) -> str:
+    """Подпись Ed25519 головы журнала: банки хранят подписанные головы и ловят переписывание."""
+    return signing_key.sign(f"{seq}{_SEP}{head_hash}".encode("utf-8")).signature.hex()
+
+
+def verify_head(public_key_hex: str, seq: int, head_hash: str, signature_hex: str) -> bool:
+    from nacl.exceptions import BadSignatureError
+    from nacl.signing import VerifyKey
+
+    try:
+        VerifyKey(bytes.fromhex(public_key_hex)).verify(f"{seq}{_SEP}{head_hash}".encode("utf-8"), bytes.fromhex(signature_hex))
+        return True
+    except (BadSignatureError, ValueError):
+        return False
+
+
 class Hub:
-    def __init__(self, log: AuditLog | None = None):
+    def __init__(self, log: AuditLog | None = None, signing_key=None):
+        from nacl.signing import SigningKey
+
         self.log = log or AuditLog()
+        self.signing_key = signing_key or SigningKey.generate()
         self._gateways: dict[str, Gateway] = {}
         self._desks: dict[str, IncidentDesk] = {}
+
+    @property
+    def public_key(self) -> str:
+        return self.signing_key.verify_key.encode().hex()
+
+    def signed_head(self) -> dict:
+        seq, h = self.log.head()
+        return {"seq": seq, "hash": h, "signature": sign_head(self.signing_key, seq, h), "public_key": self.public_key}
 
     def register(self, gateway: Gateway, desk: IncidentDesk | None = None) -> None:
         self._gateways[gateway.bank_id] = gateway

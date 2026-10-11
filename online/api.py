@@ -185,8 +185,7 @@ def create_app(net: Network) -> FastAPI:
 
     @app.get("/v1/audit/head")
     def audit_head():
-        seq, h = net.hub.log.head()
-        return {"seq": seq, "hash": h}
+        return net.hub.signed_head()
 
     @app.get("/v1/audit/verify")
     def audit_verify():
