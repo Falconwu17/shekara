@@ -30,7 +30,7 @@ if [ ! -f "$ENV" ]; then
   cat > "$ENV" <<EOF
 SHEKARA_DOMAIN=${IP//./-}.sslip.io
 SHEKARA_ADMIN_TOKEN=$(openssl rand -hex 16)
-SHEKARA_OPERATOR_TOKEN=$(openssl rand -hex 8)
+SHEKARA_OPERATOR_TOKEN=$(openssl rand -hex 16)
 SHEKARA_SPEED=600
 EOF
   chmod 600 "$ENV"

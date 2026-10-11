@@ -7,7 +7,7 @@ services:
     image: shekara:latest
     command: ["python", "-m", "online.api", "--host", "0.0.0.0"]
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./data/processed:/app/data/processed:ro
       - ./experiments/results:/app/experiments/results:ro
@@ -18,6 +18,6 @@ services:
       - api
     command: ["streamlit", "run", "dashboard/app.py", "--server.address=0.0.0.0", "--server.headless=true"]
     ports:
-      - "8501:8501"
+      - "127.0.0.1:8501:8501"
     volumes:
       - ./experiments/results:/app/experiments/results:ro

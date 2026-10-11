@@ -24,6 +24,7 @@ import numpy as np
 from pathlib import Path
 
 from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from online.alerts import AlertQueue, alert_budget
@@ -127,6 +128,22 @@ WEB_DIR = Path(__file__).resolve().parents[1] / "web"
 ADMIN_TOKEN = os.environ.get("SHEKARA_ADMIN_TOKEN", "")
 OPERATOR_TOKEN = os.environ.get("SHEKARA_OPERATOR_TOKEN", "")
 ACTION_LIMIT_PER_MIN = int(os.environ.get("SHEKARA_ACTION_LIMIT", "30"))
+# Общий потолок запросов к /v1 с одного IP: вкладка стенда делает ~3 запроса в секунду.
+REQUEST_LIMIT_PER_MIN = int(os.environ.get("SHEKARA_REQUEST_LIMIT", "600"))
+MIN_TOKEN_LEN = 16
+
+
+def public_mode() -> bool:
+    return bool(ADMIN_TOKEN or OPERATOR_TOKEN)
+
+
+def check_public_config(public: bool) -> None:
+    """Сервер в интернете не стартует с пустыми или короткими ключами — иначе стенд открыт всем."""
+    if not public:
+        return
+    for name, token in (("SHEKARA_ADMIN_TOKEN", ADMIN_TOKEN), ("SHEKARA_OPERATOR_TOKEN", OPERATOR_TOKEN)):
+        if len(token) < MIN_TOKEN_LEN:
+            raise SystemExit(f"{name}: нужен ключ не короче {MIN_TOKEN_LEN} символов (openssl rand -hex 16)")
 
 
 def _same(a: str, b: str) -> bool:
@@ -164,7 +181,21 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
     """`sim` — стенд online.sim.Simulator (его сеть и часы); без него — только протокол."""
     if sim is not None:
         net = sim.net
-    app = FastAPI(title="ШЕКАРА", description="Протокол межбанковского обмена оценками риска (docs/SHEKARA.md, раздел 3.5)")
+    public = public_mode()
+    # в публичном режиме схема API и Swagger не раздаются
+    app = FastAPI(title="ШЕКАРА", description="Протокол межбанковского обмена оценками риска (docs/SHEKARA.md, раздел 3.5)",
+                  docs_url=None if public else "/docs", redoc_url=None if public else "/redoc",
+                  openapi_url=None if public else "/openapi.json")
+    requests_limit = RateLimit(REQUEST_LIMIT_PER_MIN)
+
+    @app.middleware("http")
+    async def limit_requests(request: Request, call_next):
+        if request.url.path.startswith("/v1/"):
+            try:
+                requests_limit.check(request.client.host if request.client else "?")
+            except HTTPException as e:
+                return JSONResponse({"detail": e.detail}, status_code=e.status_code)
+        return await call_next(request)
 
     def _hops(sender: str, desk: IncidentDesk, iid: str, account: str, now: datetime) -> list[dict]:
         hops = desk.forward(iid, account, now)
@@ -363,7 +394,8 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--protocol-only", action="store_true", help="только протокол, без стенда-симуляции")
     args = parser.parse_args()
-    banks = [b for b in args.banks.split(",") if b] or None
+    check_public_config(public_mode() or bool(os.environ.get("SHEKARA_PUBLIC")))
+    banks =[b for b in args.banks.split(",") if b] or None
     if args.protocol_only:
         rows = {b: load_bank_keys(b) for b in banks}
         app = create_app(Network(rows))
@@ -379,7 +411,10 @@ def main() -> int:
         if os.environ.get("SHEKARA_AUTOPLAY"):
             sim.loop_forever = True
             sim.control("play", speed=float(os.environ.get("SHEKARA_SPEED", "600")))
-    uvicorn.run(app, host=args.host, port=args.port, proxy_headers=True, forwarded_allow_ips="*")
+    # IP клиента из X-Forwarded-For берём только от доверенного прокси (в прод-сборке — Caddy в сети Docker),
+    # иначе любой подставит себе чужой адрес и обойдёт лимиты
+    trusted = os.environ.get("SHEKARA_TRUSTED_PROXIES", "127.0.0.1")
+    uvicorn.run(app, host=args.host, port=args.port, proxy_headers=True, forwarded_allow_ips=trusted)
     return 0
 
 

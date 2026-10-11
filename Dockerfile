@@ -17,5 +17,9 @@ COPY demo/ demo/
 COPY dashboard/ dashboard/
 COPY web/ web/
 
+# приложение не работает от root
+RUN useradd --system --create-home --uid 10001 shekara
+USER shekara
+
 EXPOSE 8000 8501
 CMD ["python", "-m", "online.api", "--host", "0.0.0.0"]

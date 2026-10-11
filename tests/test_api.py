@@ -117,3 +117,37 @@ def test_rate_limit():
     with pytest.raises(HTTPException):
         lim.check("1.1.1.1")
     lim.check("2.2.2.2")
+
+
+def test_public_mode_hides_api_schema(monkeypatch):
+    import online.api as api_mod
+
+    assert client()[0].get("/docs").status_code == 200
+    monkeypatch.setattr(api_mod, "ADMIN_TOKEN", "a" * 32)
+    c, _ = client()
+    for path in ("/docs", "/redoc", "/openapi.json"):
+        assert c.get(path).status_code == 404, path
+
+
+def test_request_limit_per_ip(monkeypatch):
+    import online.api as api_mod
+
+    monkeypatch.setattr(api_mod, "REQUEST_LIMIT_PER_MIN", 3)
+    c, _ = client()
+    codes = [c.get("/v1/config").status_code for _ in range(5)]
+    assert codes == [200, 200, 200, 429, 429]
+    assert c.get("/").status_code == 200  # статика под лимит не попадает
+
+
+def test_public_server_refuses_weak_tokens(monkeypatch):
+    import pytest
+
+    import online.api as api_mod
+
+    monkeypatch.setattr(api_mod, "ADMIN_TOKEN", "a" * 32)
+    monkeypatch.setattr(api_mod, "OPERATOR_TOKEN", "short")
+    with pytest.raises(SystemExit):
+        api_mod.check_public_config(True)
+    monkeypatch.setattr(api_mod, "OPERATOR_TOKEN", "b" * 32)
+    api_mod.check_public_config(True)
+    api_mod.check_public_config(False)

@@ -8,8 +8,12 @@ services:
     restart: unless-stopped
     command: ["python", "-m", "online.api", "--host", "0.0.0.0", "--port", "8000"]
     environment:
-      SHEKARA_ADMIN_TOKEN: ${SHEKARA_ADMIN_TOKEN}
-      SHEKARA_OPERATOR_TOKEN: ${SHEKARA_OPERATOR_TOKEN}
+      # без ключей сборка не запустится: стенд в интернете не должен быть открыт для управления
+      SHEKARA_ADMIN_TOKEN: ${SHEKARA_ADMIN_TOKEN:?задайте в deploy/.env}
+      SHEKARA_OPERATOR_TOKEN: ${SHEKARA_OPERATOR_TOKEN:?задайте в deploy/.env}
+      SHEKARA_PUBLIC: "1"
+      # приложение доступно только из сети Docker (expose, не ports) — заголовки X-Forwarded-For ставит Caddy
+      SHEKARA_TRUSTED_PROXIES: "*"
       SHEKARA_AUTOPLAY: "1"
       SHEKARA_SPEED: ${SHEKARA_SPEED:-600}
       SHEKARA_ACTION_LIMIT: "30"
@@ -18,6 +22,13 @@ services:
       - ../experiments/results:/app/experiments/results:ro
     expose:
       - "8000"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/v1/health', timeout=3)"]
       interval: 30s
