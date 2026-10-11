@@ -289,7 +289,7 @@ TEMPLATE = """# ШЕКАРА — техническое приложение
 
 ## 9. Репозиторий и воспроизведение
 
-{repo} — `make stats`, `make data`, `make case`, `powershell -File experiments/run_all.ps1`, `experiments/run_after.ps1`, `make test`. Окружение — `requirements.txt` (Python 3.13, CPU). Лицензия кода — [выбрать: Apache-2.0 / MIT]; датасет — CDLA-Sharing-1.0.
+{repo} — `make stats`, `make data`, `make case`, `powershell -File experiments/run_all.ps1`, `experiments/run_after.ps1`, `make test`. Окружение — `requirements.txt` (Python 3.13, CPU). Лицензия кода — MIT; датасет — CDLA-Sharing-1.0.
 """
 
 

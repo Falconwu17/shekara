@@ -1,0 +1,5 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+  при зачислении isolation: AP получателя (тест) 0.2503, 43 с
+  раунд 0 + 3 фолда: 110 с
+  при зачислении L3: AP получателя (тест) 0.2149, 539 с

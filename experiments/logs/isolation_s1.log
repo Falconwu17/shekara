@@ -1,3 +1,12 @@
-C:\Users\Сагир\AppData\Local\Programs\Python\Python313\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
   warnings.warn(
-[16:54:05] режим isolation, seed 1
+[17:05:09] режим isolation, seed 1
+    раунд 0 шаг 10: loss 3.2713, AP вал 0.0020, 73 с
+    раунд 0 шаг 20: loss 1.6956, AP вал 0.0024, 144 с
+    раунд 0 шаг 30: loss 0.8059, AP вал 0.0130, 215 с
+    раунд 0 шаг 40: loss 0.3756, AP вал 0.0333, 285 с
+    раунд 0 шаг 50: loss 0.5276, AP вал 0.0372, 356 с
+    раунд 0 шаг 60: loss 0.3029, AP вал 0.0386, 427 с
+    раунд 0 шаг 70: loss 0.2906, AP вал 0.0399, 498 с
+    раунд 0 шаг 80: loss 0.2687, AP вал 0.0033, 569 с
+    раунд 0 шаг 90: loss 0.3508, AP вал 0.0034, 643 с

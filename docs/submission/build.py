@@ -177,7 +177,7 @@ ANNOTATION_RU = """# ШЕКАРА: межбанковское выявление
 
 **Результаты.** {results}
 
-**Готовность и внедрение.** Работающий прототип: шлюзы банков с правилом need-to-know и квотами, хаб с журналом, проверка при зачислении, трассировка и дерево оператора на реальном тестовом паттерне, дашборд; 20 автоматических проверок перед подачей пройдены. Открытый код: {repo}. TRL 4. Следующий этап — пилот с двумя банками в регуляторной песочнице НБК / АРРФР.
+**Готовность и внедрение.** Работающий прототип: шлюзы банков с правилом need-to-know и квотами, хаб с журналом, проверка при зачислении, трассировка и дерево оператора на реальном тестовом паттерне, дашборд; 22 автоматические проверки перед подачей пройдены. Открытый код: {repo}. TRL 4. Следующий этап — пилот с двумя банками в регуляторной песочнице НБК / АРРФР.
 
 **Команда.** [ФИО авторов и роли]. Западно-Казахстанский аграрно-технический университет имени Жангир хана (Уральск). Научный руководитель — Касымова Акмарал Хамзиевна.
 """
@@ -194,7 +194,7 @@ SUMMARY_EN = """# SHEKARA: cross-bank detection of money-mule networks without p
 
 **Results.** {results}
 
-**Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 20 automated pre-submission checks passing. Open-source code: {repo}. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
+**Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 22 automated pre-submission checks passing. Open-source code: {repo}. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
 
 **Team.** [Authors and roles]. Zhangir Khan West Kazakhstan Agrarian and Technical University (Oral). Supervisor: Akmaral Kassymova.
 """
@@ -209,7 +209,7 @@ def one_pager(n) -> str:
 
 **3. Решение.** «Не данные, а одна оценка риска прямого контрагента реального перевода». Ночью банк рассылает выпуски о своих счетах только банкам, с которыми у счёта были зачисленные переводы; при зачислении банк-получатель за {fmt(n['lat_inbound_ms'], 1)} мс проверяет перевод по своему графу и выпускам соседей; подозрительная цепочка трассируется по следующим банкам только по ссылкам на переводы. Полную цепочку видит только оператор.
 
-**4. Ценность (измерено на AMLworld, 3 запуска).** Модель на графе самого банка значимо сильнее центрального оператора межбанковских потоков (подход MITS): PR-AUC {fmt(n['isolation|all_max|ap'])} против {fmt(n['operator|all_max|ap'])}. Обмен оценками добавляет ещё {pct(rel_gain(n))} PR-AUC ({fmt(n['isolation|all_max|ap'])} → {fmt(n[f'{MAIN}|all_max|ap'])}) во всех запусках, но при 30 банках из 30 тыс. прирост пока не значим; польза есть при векторном выпуске (L2/L3), один балл (L1) не помогает — это цена приватности, которую выбирает регулятор. Клиентские записи не покидают банк; проверка при зачислении — {fmt(n['lat_inbound_ms'], 1)} мс; 20 автоматических проверок протокола пройдены.
+**4. Ценность (измерено на AMLworld, 3 запуска).** Модель на графе самого банка значимо сильнее центрального оператора межбанковских потоков (подход MITS): PR-AUC {fmt(n['isolation|all_max|ap'])} против {fmt(n['operator|all_max|ap'])}. Обмен оценками добавляет ещё {pct(rel_gain(n))} PR-AUC ({fmt(n['isolation|all_max|ap'])} → {fmt(n[f'{MAIN}|all_max|ap'])}) во всех запусках, но при 30 банках из 30 тыс. прирост пока не значим; польза есть при векторном выпуске (L2/L3), один балл (L1) не помогает — это цена приватности, которую выбирает регулятор. Клиентские записи не покидают банк; проверка при зачислении — {fmt(n['lat_inbound_ms'], 1)} мс; 22 автоматические проверки пройдены.
 
 **5. Новизна.** В мире есть центральный граф потоков у оператора платёжной системы (Mastercard/Vocalink MITS) и обмен записями о клиентах (COSMIC в Сингапуре, TMNL в Нидерландах). ШЕКАРА проверяет третий путь для Казахстана: оценка риска только по ссылке на реальный перевод, данные остаются в банке, сравнение с подходом MITS и общим графом на одном бенчмарке, измеренная цена раскрытия в качестве и в ε.
 

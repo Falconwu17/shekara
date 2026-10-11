@@ -15,7 +15,7 @@ kaggle.json
 .kaggle/
 
 # Эксперименты
-experiments/results/*.csv
+experiments/results/case_candidates.csv
 experiments/figures/*.png
 *.ckpt
 *.pt

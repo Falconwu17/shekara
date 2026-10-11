@@ -1,0 +1,1914 @@
+{
+  "pattern_id": 235,
+  "pattern_type": "SCATTER-GATHER",
+  "seed": 1,
+  "thresholds": {
+    "isolation": 0.22918433722562143,
+    "L3": 0.36859858218167846,
+    "C_L3": 0.24623173854596975
+  },
+  "participants_in_pattern": [
+    "006",
+    "011",
+    "01292"
+  ],
+  "steps": [
+    {
+      "row_no": 3411042,
+      "time": "2022/09/07 07:07",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "011852",
+      "to_account": "80C8BC8F0",
+      "amount": "16818.22",
+      "currency": "Euro",
+      "amount_kzt": 8745474,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411047,
+      "time": "2022/09/07 11:17",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "0239604",
+      "to_account": "80E62A630",
+      "amount": "9970.77",
+      "currency": "Swiss Franc",
+      "amount_kzt": 5384216,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411050,
+      "time": "2022/09/07 11:38",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "0011899",
+      "to_account": "804844840",
+      "amount": "18348.21",
+      "currency": "US Dollar",
+      "amount_kzt": 8807141,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411052,
+      "time": "2022/09/07 15:13",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "001411",
+      "to_account": "802371D80",
+      "amount": "13201.33",
+      "currency": "US Dollar",
+      "amount_kzt": 6336638,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411054,
+      "time": "2022/09/07 16:42",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "006276",
+      "to_account": "80D551FF0",
+      "amount": "18150.36",
+      "currency": "US Dollar",
+      "amount_kzt": 8712173,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411057,
+      "time": "2022/09/07 17:24",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "0013184",
+      "to_account": "805C26F90",
+      "amount": "1383051.53",
+      "currency": "Rupee",
+      "amount_kzt": 7883394,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411061,
+      "time": "2022/09/07 17:48",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "006",
+      "to_account": "80A1FB9F0",
+      "amount": "9499.91",
+      "currency": "Australian Dollar",
+      "amount_kzt": 2992472,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.5276024135636567,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 3.837445882564305
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": 1.3406535346939306
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 1.2482100599421015
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 1.1527873618324893
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": 1.1380227604667208
+        },
+        {
+          "feature": "получатель: доля межбанковских исходящих",
+          "contrib": 0.9430720881331629
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.08912821772502114,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 3.1217703598517805
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.201882564010602
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": 1.279695499731584
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.9343441126435782
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.7389205720926212
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": 0.6840548603208803
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.3083653156443389,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411065,
+      "time": "2022/09/07 19:11",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "0013029",
+      "to_account": "804F47D50",
+      "amount": "543759.49",
+      "currency": "Rupee",
+      "amount_kzt": 3099429,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411068,
+      "time": "2022/09/07 20:22",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "006129",
+      "to_account": "807809890",
+      "amount": "4585.89",
+      "currency": "US Dollar",
+      "amount_kzt": 2201227,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411071,
+      "time": "2022/09/08 01:11",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "011",
+      "to_account": "80031A110",
+      "amount": "3575.56",
+      "currency": "Euro",
+      "amount_kzt": 1859291,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.08461220388647352,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 3.1463649655645116
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.928392637217602
+        },
+        {
+          "feature": "валюта: Euro",
+          "contrib": 0.6815235786220727
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.5876922957979234
+        },
+        {
+          "feature": "получатель: входящих переводов",
+          "contrib": 0.4285597598817853
+        },
+        {
+          "feature": "получатель: доля межбанковских исходящих",
+          "contrib": 0.4016995804507246
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.000954585119815225,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.205636699106091
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.0886516794320116
+        },
+        {
+          "feature": "получатель: соседи-получатели, выпуск: доля вывода за 10 мин",
+          "contrib": -0.6930347383958806
+        },
+        {
+          "feature": "получатель: входящих переводов",
+          "contrib": 0.4972954724924246
+        },
+        {
+          "feature": "отправитель: дней в окне",
+          "contrib": -0.4632327295577105
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": -0.4234266191297434
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.04278339450314437,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411074,
+      "time": "2022/09/08 09:08",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "022828",
+      "to_account": "80104ABA0",
+      "amount": "6741.71",
+      "currency": "US Dollar",
+      "amount_kzt": 3236021,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411077,
+      "time": "2022/09/08 09:43",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "023537",
+      "to_account": "802929810",
+      "amount": "8422.84",
+      "currency": "US Dollar",
+      "amount_kzt": 4042963,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411080,
+      "time": "2022/09/08 14:57",
+      "from_bank": "0011030",
+      "from_account": "80CB65920",
+      "to_bank": "015863",
+      "to_account": "807D147A0",
+      "amount": "2127.62",
+      "currency": "Euro",
+      "amount_kzt": 1106362,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "isolation_sender": null,
+      "isolation_receiver": null,
+      "isolation_alert_sender": false,
+      "L3_sender": null,
+      "L3_receiver": null,
+      "L3_alert_sender": false,
+      "C_L3_sender": null,
+      "C_L3_receiver": null,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411045,
+      "time": "2022/09/08 20:32",
+      "from_bank": "011852",
+      "from_account": "80C8BC8F0",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "19707.31",
+      "currency": "US Dollar",
+      "amount_kzt": 9459509,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.994961882039745,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 3.803009171189273
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 3.7679370280533115
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.3875657100069745
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.05546264356834
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 1.1743333080023208
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": 0.928913216665978
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.9716423934674795,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 4.2918283109664825
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 3.041628989758176
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.2193036728587696
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 1.4815637844351421
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": 1.426454490107651
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": 0.727371836406449
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.9833021377536122,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411049,
+      "time": "2022/09/09 01:37",
+      "from_bank": "0239604",
+      "from_account": "80E62A630",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "10068.92",
+      "currency": "US Dollar",
+      "amount_kzt": 4833082,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.773374850688785,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.181163867298066
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.4444550150245044
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.3558733992450627
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.2229342336771847
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.7336286097085833
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.6947874124312791
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.003405642103985484,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.371824819722213
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.357153033353981
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.8163070376257638
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.7165364223708548
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -0.683574247838522
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": -0.5134845415219634
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.38839024639638525,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411051,
+      "time": "2022/09/09 05:18",
+      "from_bank": "0011899",
+      "from_account": "804844840",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "16942.48",
+      "currency": "US Dollar",
+      "amount_kzt": 8132390,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.7536058115421145,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.183944307775692
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.6235921267975146
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.2861229267786345
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.0546708126137334
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.8327665779328346
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.7277390799522245
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.02008890585183012,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.5139643684564073
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.5175319965090381
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.8136396352756231
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.7137804639613534
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -0.7025386281706235
+        },
+        {
+          "feature": "сумма зачисления",
+          "contrib": 0.7020979821517233
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.3868473586969723,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411053,
+      "time": "2022/09/09 08:51",
+      "from_bank": "001411",
+      "from_account": "802371D80",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "11699.21",
+      "currency": "US Dollar",
+      "amount_kzt": 5615621,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.7066183845695868,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.141364059295688
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.5351182081526735
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.2795755272312563
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.034156681682736
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.8131525182993707
+        },
+        {
+          "feature": "получатель: контрагентов за 3 дня",
+          "contrib": -0.6885230124721969
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.005615175710948195,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.366685815073465
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.2856427742628396
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.7286187066753604
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.6547149240815451
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -0.649510805267614
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": -0.45144783611931494
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.3561167801402675,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411055,
+      "time": "2022/09/09 17:32",
+      "from_bank": "006276",
+      "from_account": "80D551FF0",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "15492.23",
+      "currency": "US Dollar",
+      "amount_kzt": 7436270,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.8697534469050013,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.27975136212038
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.647215869199387
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.288557365947334
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.269667429897004
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.9173282384455497
+        },
+        {
+          "feature": "получатель: исходящих переводов",
+          "contrib": -0.7456318046734145
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.012640597330797958,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.4628502090823763
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.4598938518274547
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.9413767890864108
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -0.8488437396276342
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.779041924943521
+        },
+        {
+          "feature": "сумма зачисления",
+          "contrib": 0.5014433618734293
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.44119702211789963,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411059,
+      "time": "2022/09/09 19:27",
+      "from_bank": "0013184",
+      "from_account": "805C26F90",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "21254.73",
+      "currency": "US Dollar",
+      "amount_kzt": 10202270,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.891978760338733,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.045144965915685
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 3.2198475180300252
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.2493122923958455
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 1.7937035558728085
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.9428690677408957
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": 0.9402766926141389
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.004351249908682156,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.205612554703537
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.028028661757511
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -0.8499023787100745
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.48343497142955955
+        },
+        {
+          "feature": "сумма зачисления",
+          "contrib": 0.4726079862396155
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.39131073935574023
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.4481650051237076,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411063,
+      "time": "2022/09/10 04:14",
+      "from_bank": "006",
+      "from_account": "80A1FB9F0",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "6616.04",
+      "currency": "US Dollar",
+      "amount_kzt": 3175699,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": true,
+      "to_participant": true,
+      "isolation_sender": 0.9999994944555741,
+      "isolation_receiver": 0.9669192429364125,
+      "isolation_alert_sender": true,
+      "isolation_sender_explain": [
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 6.113115654354761
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.976460852016391
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 3.7368783598359276
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 3.398280789351834
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 1.949531162414299
+        },
+        {
+          "feature": "получатель: исходящих переводов",
+          "contrib": 1.7282139375116181
+        }
+      ],
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.21706000998309
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.7910263351183224
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.3626567637761555
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.2458437594414504
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -1.5173917332877949
+        },
+        {
+          "feature": "время суток (cos)",
+          "contrib": 1.0007236743832153
+        }
+      ],
+      "L3_sender": 0.9999999106177413,
+      "L3_receiver": 0.0008074418807321732,
+      "L3_alert_sender": true,
+      "L3_sender_explain": [
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 7.027962223346147
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 5.314874085538661
+        },
+        {
+          "feature": "отправитель: доля вывода за 10 мин",
+          "contrib": 3.836267345114183
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 3.270302415872191
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 3.0118945777498305
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": 2.2198134157220832
+        }
+      ],
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.092379173552063
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -1.095526246903162
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.011885319718312
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.7910153494655301
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.6954493151695874
+        },
+        {
+          "feature": "отправитель: дней в окне",
+          "contrib": -0.436971292582027
+        }
+      ],
+      "C_L3_sender": 0.9999997025366577,
+      "C_L3_receiver": 0.4838633424085723,
+      "C_L3_alert_sender": true,
+      "release_about_receiver": 2.6166458720388737e-09,
+      "release_night": "2022-09-09",
+      "release_in_max": 0.994961882039745
+    },
+    {
+      "row_no": 3411067,
+      "time": "2022/09/10 05:52",
+      "from_bank": "0013029",
+      "from_account": "804F47D50",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "8383.91",
+      "currency": "US Dollar",
+      "amount_kzt": 4024277,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.735732164800685,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.21361113617695
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.8516150314677677
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.2514290683708627
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -2.2417182320115723
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.184053823766492
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.7468566502701789
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.0008108168854806391,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.164392759109003
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -1.011937556998175
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 0.9474288263196069
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.6553278264296412
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.5219819521189453
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": -0.35189162680108954
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.36827149084308286,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411069,
+      "time": "2022/09/10 08:42",
+      "from_bank": "006129",
+      "from_account": "807809890",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "4028.18",
+      "currency": "US Dollar",
+      "amount_kzt": 1933526,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.0003441312884212938,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -2.516647830114146
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.3807593249829466
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.3333699890965878
+        },
+        {
+          "feature": "отправитель: контрагентов за день",
+          "contrib": 0.6630058712570536
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": -0.5665677685271694
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.49364323911202196
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.000858019419527202,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 1.8276529058930233
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.4243043069680918
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": -0.40557643132213544
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.38422419796406515
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -0.35428963364380606
+        },
+        {
+          "feature": "получатель: входящих переводов",
+          "contrib": -0.28315100074921923
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.0006010753539742479,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411073,
+      "time": "2022/09/10 09:13",
+      "from_bank": "011",
+      "from_account": "80031A110",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "3992.11",
+      "currency": "US Dollar",
+      "amount_kzt": 1916213,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": true,
+      "to_participant": true,
+      "isolation_sender": 0.08318697385042037,
+      "isolation_receiver": 0.00018833246608066632,
+      "isolation_alert_sender": false,
+      "isolation_sender_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.6387575838271182
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.448542546923432
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.8902894888495392
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": -0.5022681858031033
+        },
+        {
+          "feature": "получатель: входящих переводов",
+          "contrib": 0.415512611513721
+        },
+        {
+          "feature": "сумма зачисления",
+          "contrib": 0.39743470981304296
+        }
+      ],
+      "isolation_receiver_explain": [
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -2.545261025488306
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.395347768798832
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.287839701390879
+        },
+        {
+          "feature": "отправитель: контрагентов за день",
+          "contrib": 0.6643581991940423
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": -0.5910816270589956
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.48501760067011496
+        }
+      ],
+      "L3_sender": 0.026223052310076895,
+      "L3_receiver": 0.0017381871906551184,
+      "L3_alert_sender": false,
+      "L3_sender_explain": [
+        {
+          "feature": "получатель: входящих переводов",
+          "contrib": 3.0758714568415924
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.701363115180353
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.6551753275771746
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": -1.3920533623403768
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 1.0771117402288584
+        },
+        {
+          "feature": "отправитель: соседи-получатели, выпуск: доля новых контрагентов",
+          "contrib": -0.4479601571073196
+        }
+      ],
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 1.8571556497478467
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.3653853841810595
+        },
+        {
+          "feature": "отправитель: дней в окне",
+          "contrib": 0.4331208866853688
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.38643391513729647
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -0.35858539320812455
+        },
+        {
+          "feature": "получатель: дней в окне",
+          "contrib": -0.33001146127852354
+        }
+      ],
+      "C_L3_sender": 0.05470501308024863,
+      "C_L3_receiver": 0.0009632598283678923,
+      "C_L3_alert_sender": false,
+      "release_about_receiver": 2.6166458720388737e-09,
+      "release_night": "2022-09-09",
+      "release_in_max": 0.994961882039745
+    },
+    {
+      "row_no": 3411076,
+      "time": "2022/09/10 12:14",
+      "from_bank": "022828",
+      "from_account": "80104ABA0",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "6741.71",
+      "currency": "US Dollar",
+      "amount_kzt": 3236021,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.8915145774795538,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 3.9782598719614244
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 3.972282039601286
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -2.443559885751595
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.3978659578841497
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.188144279907656
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 1.1274064194179019
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.002422365468177792,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.9946755026065477
+        },
+        {
+          "feature": "формат: ACH",
+          "contrib": 1.7428460587244536
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -1.1337258478516214
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.5996825038986162
+        },
+        {
+          "feature": "интервал с прошлой операцией отправителя",
+          "contrib": 0.5208284274198534
+        },
+        {
+          "feature": "отправитель: дней в окне",
+          "contrib": 0.42859850437004976
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.44696847147386576,
+      "C_L3_alert_sender": false
+    },
+    {
+      "row_no": 3411078,
+      "time": "2022/09/10 17:11",
+      "from_bank": "023537",
+      "from_account": "802929810",
+      "to_bank": "01292",
+      "to_account": "80AE68D00",
+      "amount": "7697.08",
+      "currency": "US Dollar",
+      "amount_kzt": 3694598,
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "isolation_sender": null,
+      "isolation_receiver": 0.6791860538296532,
+      "isolation_alert_sender": false,
+      "isolation_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 4.2678469102092595
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 2.815313391572114
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -2.426845902559105
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 2.348483738182581
+        },
+        {
+          "feature": "валюта: US Dollar",
+          "contrib": 2.2653951896691558
+        },
+        {
+          "feature": "получатель: исходящих переводов",
+          "contrib": -0.755018235458425
+        }
+      ],
+      "L3_sender": null,
+      "L3_receiver": 0.0011857569936188788,
+      "L3_alert_sender": false,
+      "L3_receiver_explain": [
+        {
+          "feature": "формат: ACH",
+          "contrib": 2.1841219147811803
+        },
+        {
+          "feature": "получатель: fan-in за день",
+          "contrib": -1.0652416331190064
+        },
+        {
+          "feature": "получатель: доля входящих от новых контрагентов",
+          "contrib": 1.0425290503135047
+        },
+        {
+          "feature": "сумма перевода",
+          "contrib": 0.791631439656305
+        },
+        {
+          "feature": "отправитель: исходящих переводов",
+          "contrib": 0.6827547899932682
+        },
+        {
+          "feature": "получатель: соседи-отправители, выпуск: доля новых контрагентов",
+          "contrib": -0.2748837174697307
+        }
+      ],
+      "C_L3_sender": null,
+      "C_L3_receiver": 0.34018590541163607,
+      "C_L3_alert_sender": false
+    }
+  ],
+  "protocol": {
+    "trigger_row": 3411063,
+    "trigger_alerted_by_shekara": true,
+    "soft_tree": {
+      "incident_id": "006-1",
+      "kind": "soft",
+      "links": 2
+    },
+    "soft_segments": {
+      "006": {
+        "incident_id": "006-1",
+        "bank": "006",
+        "kind": "soft",
+        "links": [
+          {
+            "account": "80A1FB9F0",
+            "hop_no": 0,
+            "anchor": "2022-09-10T04:14:00",
+            "in_bank": null,
+            "in_ref": null,
+            "out": [
+              {
+                "bank": "01292",
+                "tx_ref_hmac": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc",
+                "amount": "6616.04",
+                "time": "2022-09-10T04:14:00"
+              }
+            ]
+          }
+        ]
+      },
+      "01292": {
+        "incident_id": "006-1",
+        "bank": "01292",
+        "kind": "soft",
+        "links": [
+          {
+            "account": "80AE68D00",
+            "hop_no": 1,
+            "anchor": "2022-09-10T04:14:00",
+            "in_bank": "006",
+            "in_ref": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc",
+            "out": []
+          }
+        ]
+      }
+    },
+    "confirmed_tree": {
+      "incident_id": "006-2",
+      "kind": "confirmed",
+      "edges": [
+        {
+          "from": [
+            "006",
+            "80A1FB9F0"
+          ],
+          "to": [
+            "01292",
+            "80AE68D00"
+          ],
+          "amount": "6616.04",
+          "time": "2022-09-10T04:14:00"
+        }
+      ]
+    },
+    "confirmed_segments": {
+      "006": {
+        "incident_id": "006-2",
+        "bank": "006",
+        "kind": "confirmed",
+        "links": [
+          {
+            "account": "80A1FB9F0",
+            "hop_no": 0,
+            "anchor": "2022-09-10T04:14:00",
+            "in_bank": null,
+            "in_ref": null,
+            "out": [
+              {
+                "bank": "01292",
+                "tx_ref_hmac": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc",
+                "amount": "6616.04",
+                "time": "2022-09-10T04:14:00"
+              }
+            ]
+          }
+        ]
+      },
+      "01292": {
+        "incident_id": "006-2",
+        "bank": "01292",
+        "kind": "confirmed",
+        "links": [
+          {
+            "account": "80AE68D00",
+            "hop_no": 1,
+            "anchor": "2022-09-10T04:14:00",
+            "in_bank": "006",
+            "in_ref": "3f205a7a56eb8a4f6164de0ac7142c91bf5b0bfe64fda7c55621c4a5d46c32cc",
+            "out": []
+          }
+        ]
+      }
+    },
+    "events": [
+      {
+        "bank": "006",
+        "event": "открыт soft-инцидент",
+        "incident": "006-1"
+      },
+      {
+        "bank": "01292",
+        "event": "шаг 1: входящий инцидент по ссылке",
+        "incident": "006-1",
+        "result": "80AE68D00"
+      },
+      {
+        "bank": "006",
+        "event": "открыт confirmed-инцидент",
+        "incident": "006-2"
+      },
+      {
+        "bank": "01292",
+        "event": "шаг 1: входящий инцидент по ссылке",
+        "incident": "006-2",
+        "result": "80AE68D00"
+      }
+    ],
+    "audit": {
+      "entries": 2,
+      "verify": true,
+      "head": "dec4fc4d1bb40d2cb991809d3796a3a53391b8fd780c4ea904b9f1f6e342e943",
+      "sample": [
+        {
+          "ts": "2022-09-10T04:14:00",
+          "kind": "incident_soft",
+          "src": "006",
+          "dst": "01292",
+          "ref_hash": "1d7827c223492e91d3b1a0a81c7631f0bcbe04dab56196cff5218857cac9857a",
+          "detail": "hop=1;ok"
+        },
+        {
+          "ts": "2022-09-10T04:14:00",
+          "kind": "incident_confirmed",
+          "src": "006",
+          "dst": "01292",
+          "ref_hash": "1d7827c223492e91d3b1a0a81c7631f0bcbe04dab56196cff5218857cac9857a",
+          "detail": "hop=1;ok"
+        }
+      ]
+    }
+  },
+  "queues": {
+    "isolation": [
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-07",
+        "rank": 826,
+        "accounts": 1164,
+        "budget": 2,
+        "score": 4.3120351562820795e-15
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-08",
+        "rank": 530,
+        "accounts": 1164,
+        "budget": 2,
+        "score": 1.983047023455952e-08
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-09",
+        "rank": 391,
+        "accounts": 1166,
+        "budget": 2,
+        "score": 7.21584696769473e-08
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-10",
+        "rank": 877,
+        "accounts": 1166,
+        "budget": 2,
+        "score": 1.343009262174854e-62
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-07",
+        "rank": 799,
+        "accounts": 1010,
+        "budget": 2,
+        "score": 5.390408156030408e-288
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-08",
+        "rank": 40,
+        "accounts": 1010,
+        "budget": 2,
+        "score": 0.0008029258546164618
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-09",
+        "rank": 23,
+        "accounts": 1013,
+        "budget": 2,
+        "score": 0.0022424707318928
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-10",
+        "rank": 127,
+        "accounts": 1013,
+        "budget": 2,
+        "score": 1.629463102872068e-05
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-07",
+        "rank": 957,
+        "accounts": 996,
+        "budget": 1,
+        "score": 0.0
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-08",
+        "rank": 287,
+        "accounts": 997,
+        "budget": 1,
+        "score": 2.8994859853080555e-07
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-09",
+        "rank": 537,
+        "accounts": 997,
+        "budget": 1,
+        "score": 2.6166458720388737e-09
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-10",
+        "rank": 267,
+        "accounts": 1000,
+        "budget": 1,
+        "score": 3.783301331006022e-07
+      }
+    ],
+    "L3": [
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-07",
+        "rank": 470,
+        "accounts": 1164,
+        "budget": 2,
+        "score": 1.4542353010403874e-18
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-08",
+        "rank": 65,
+        "accounts": 1164,
+        "budget": 2,
+        "score": 1.694801629118181e-07
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-09",
+        "rank": 50,
+        "accounts": 1166,
+        "budget": 2,
+        "score": 8.210863380204454e-07
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-10",
+        "rank": 28,
+        "accounts": 1166,
+        "budget": 2,
+        "score": 3.06814512028937e-05
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-07",
+        "rank": 663,
+        "accounts": 1010,
+        "budget": 2,
+        "score": 3.260260628076851e-121
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-08",
+        "rank": 141,
+        "accounts": 1010,
+        "budget": 2,
+        "score": 4.32623089908637e-09
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-09",
+        "rank": 148,
+        "accounts": 1013,
+        "budget": 2,
+        "score": 2.688215159457733e-09
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-10",
+        "rank": 67,
+        "accounts": 1013,
+        "budget": 2,
+        "score": 3.621203717996734e-07
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-07",
+        "rank": 736,
+        "accounts": 996,
+        "budget": 1,
+        "score": 0.0
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-08",
+        "rank": 918,
+        "accounts": 997,
+        "budget": 1,
+        "score": 0.0
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-09",
+        "rank": 903,
+        "accounts": 997,
+        "budget": 1,
+        "score": 0.0
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-10",
+        "rank": 865,
+        "accounts": 1000,
+        "budget": 1,
+        "score": 0.0
+      }
+    ],
+    "C_L3": [
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-07",
+        "rank": 881,
+        "accounts": 1164,
+        "budget": 2,
+        "score": 2.15674469579156e-15
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-08",
+        "rank": 371,
+        "accounts": 1164,
+        "budget": 2,
+        "score": 9.46553165731888e-08
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-09",
+        "rank": 223,
+        "accounts": 1166,
+        "budget": 2,
+        "score": 4.4662240384869635e-07
+      },
+      {
+        "bank": "006",
+        "account": "80A1FB9F0",
+        "end_day": "2022-09-10",
+        "rank": 100,
+        "accounts": 1166,
+        "budget": 2,
+        "score": 1.534072560144685e-05
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-07",
+        "rank": 850,
+        "accounts": 1010,
+        "budget": 2,
+        "score": 1.6301303140384255e-121
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-08",
+        "rank": 64,
+        "accounts": 1010,
+        "budget": 2,
+        "score": 0.00040146509042368047
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-09",
+        "rank": 42,
+        "accounts": 1013,
+        "budget": 2,
+        "score": 0.0011212367100539799
+      },
+      {
+        "bank": "011",
+        "account": "80031A110",
+        "end_day": "2022-09-10",
+        "rank": 154,
+        "accounts": 1013,
+        "budget": 2,
+        "score": 8.328375700260177e-06
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-07",
+        "rank": 862,
+        "accounts": 996,
+        "budget": 1,
+        "score": 0.0
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-08",
+        "rank": 315,
+        "accounts": 997,
+        "budget": 1,
+        "score": 1.4497429926540278e-07
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-09",
+        "rank": 568,
+        "accounts": 997,
+        "budget": 1,
+        "score": 1.3083229360194369e-09
+      },
+      {
+        "bank": "01292",
+        "account": "80AE68D00",
+        "end_day": "2022-09-10",
+        "rank": 290,
+        "accounts": 1000,
+        "budget": 1,
+        "score": 1.891650665503011e-07
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[17:31:46] режим isolation, seed 1
+  раунд 0 + 3 фолда: 32 с
+  isolation: F1 тест 0.3643, AP тест 0.2957, 65 с
+D:\shekara\model\gbt.py:271: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[17:32:51] режим L3, seed 1
+  L3: F1 тест 0.3388, AP тест 0.2762, 183 с
+D:\shekara\model\gbt.py:271: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[17:35:54] режим L3_nocf, seed 1
+  L3_nocf: F1 тест 0.2876, AP тест 0.2835, 86 с
+D:\shekara\model\gbt.py:271: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[17:37:20] режим operator, seed 1
+  operator: F1 тест 0.2027, AP тест 0.1394, 39 с
+D:\shekara\model\gbt.py:271: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
+[17:37:59] режим oracle, seed 1
+  oracle: F1 тест 0.2372, AP тест 0.1874, 43 с
+D:\shekara\model\gbt.py:271: DeprecationWarning: `is_in` with a collection of the same datatype is ambiguous and deprecated.
+Please use `implode` to return to previous behavior.
+
+See https://github.com/pola-rs/polars/issues/22149 for more information.
+  prev = pl.read_csv(RUNS_FILE).filter(~(pl.col("mode").is_in(out["mode"]) & (pl.col("seed") == seed)))
