@@ -1,0 +1,6 @@
+mode,honest_held_per_bank_day,honest_transfers_delayed,delay_median_min,delay_max_min
+isolation,0.888888888888889,9,33.0,55.0
+L3,0.8777777777777778,9,33.0,55.0
+C_L3,0.8111111111111111,11,25.0,55.0
+C_L2_s0.25,0.8666666666666667,13,33.0,60.0
+C_L1_s0.25,1.4666666666666666,9,33.0,55.0
