@@ -1,27 +1,18 @@
-"""Сборка веб-демонстрации ШЕКАРЫ: один HTML-файл с данными из experiments/results.
+"""Итоги эксперимента для приложения: /v1/results в online/api.py.
 
-Берёт demo_case.json (реальный тестовый паттерн, баллы, протокол), views.csv, coverage.csv,
-paired.csv, retention_s*.csv, latency.json, stats.json, checks.md и вставляет их в шаблон.
-Результат — demo/web/shekara.html (его же отдаёт API по адресу /).
-
-Запуск: py -m demo.web.build
+Читает experiments/results: views.csv, coverage.csv, paired.csv, retention_s*.csv, latency.json, stats.json, checks.md.
 """
 
 from __future__ import annotations
 
 import json
-import math
-import sys
 from pathlib import Path
 
 import polars as pl
 
 from protocol.accountant import epsilon, noise_multiplier
 
-ROOT = Path(__file__).resolve().parents[2]
-RES = ROOT / "experiments" / "results"
-HERE = Path(__file__).resolve().parent
-OUT = HERE / "shekara.html"
+RES = Path(__file__).resolve().parents[1] / "experiments" / "results"
 
 
 def views_summary() -> dict:
@@ -85,32 +76,3 @@ def results() -> dict:
             "checks": {"passed": checks.count("✅"), "total": checks.count("✅") + checks.count("❌")},
             "stats": {"share_seen": stats["pattern_share_seen_by_one_bank"], "interbank": stats["laundering_interbank_share"],
                       "prior": stats["patterns_with_prior_interbank_accounts"], "dwell_h": stats["dwell_minutes"]["median"] / 60}}
-
-
-def main() -> int:
-    case = json.loads((RES / "demo_case.json").read_text(encoding="utf-8"))
-    views = views_summary()
-    stats = json.loads((RES / "stats.json").read_text(encoding="utf-8"))["structure_train_days"]
-    checks = (RES / "checks.md").read_text(encoding="utf-8")
-    data = {
-        "case": case,
-        "views": views,
-        "privacy": privacy_points(views),
-        "coverage": coverage(),
-        "paired": paired(),
-        "retention": retention(),
-        "latency": json.loads((RES / "latency.json").read_text(encoding="utf-8")),
-        "checks": {"passed": checks.count("✅"), "total": checks.count("✅") + checks.count("❌")},
-        "stats": {"share_seen": stats["pattern_share_seen_by_one_bank"], "interbank": stats["laundering_interbank_share"],
-                  "prior": stats["patterns_with_prior_interbank_accounts"],
-                  "dwell_h": stats["dwell_minutes"]["median"] / 60},
-    }
-    payload = json.dumps(data, ensure_ascii=False, default=str).replace("</", "<\\/")
-    html = (HERE / "template.html").read_text(encoding="utf-8").replace("/*__DATA__*/null", payload)
-    OUT.write_text(html, encoding="utf-8")
-    print(f"{OUT} — {len(html) // 1024} КБ")
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

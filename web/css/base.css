@@ -1,0 +1,18 @@
+/* Сброс, типографика и вспомогательные классы. */
+* { box-sizing: border-box }
+html, body { height: 100% }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 14px/1.45 var(--sans) }
+button, select, input { font: inherit; color: inherit }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+a { color: var(--accent) }
+
+h1 { font: 500 20px/1.2 var(--display); margin: 0; letter-spacing: -.01em; text-wrap: balance }
+h2 { font: 600 14px/1.2 var(--sans); margin: 0; letter-spacing: .01em }
+
+.mono { font-family: var(--mono); font-size: 12.5px }
+.display { font-family: var(--display) }
+.muted { color: var(--ink-3) }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important }
+}

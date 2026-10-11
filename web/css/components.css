@@ -1,0 +1,87 @@
+/* Компоненты. Порядок — как в js/components и js/charts. */
+
+/* кнопки, переключатели, поля */
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; white-space: nowrap }
+.btn:hover { border-color: var(--ink-3) }
+.btn:disabled { opacity: .5; cursor: default }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff }
+.btn-warn { border-color: var(--risk); color: var(--risk) }
+
+.seg { display: inline-flex; max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px }
+.seg button { border: 0; white-space: nowrap; border-left: 1px solid var(--line); background: var(--panel); padding: 6px 11px; cursor: pointer; font-size: 13px }
+.seg button:first-child { border-left: 0 }
+.seg button.on { background: var(--ink); color: var(--panel) }
+
+select, .input { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 10px }
+
+/* панель времени */
+.clock { font: 500 20px/1 var(--mono); letter-spacing: .02em }
+.clock small { font-size: 12px; color: var(--ink-3); margin-left: 6px }
+.progress { flex: 1; min-width: 120px; height: 6px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; overflow: hidden }
+.progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s }
+
+/* панель */
+.panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px }
+
+/* полоса показателей */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden }
+.kpi { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-left: 1px solid var(--line) }
+.kpi:first-child { border-left: 0 }
+.kpi-label { font-size: 12px; color: var(--ink-3) }
+.kpi-value { font: 500 22px/1.1 var(--mono); font-variant-numeric: tabular-nums }
+.kpi-note { font-style: normal; font-size: 12px; color: var(--ink-2) }
+
+/* таблица */
+.table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums }
+.table th { text-align: left; font-weight: 500; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap }
+.table td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: middle }
+.table .align-right { text-align: right }
+.table .row-link { cursor: pointer }
+.table .row-link:hover td { background: var(--panel-2) }
+
+/* метки */
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; white-space: nowrap }
+.chip-alert { background: var(--amber-soft); color: var(--amber) }
+.chip-risk { background: var(--risk-soft); color: var(--risk) }
+.chip-ok { background: var(--ok-soft); color: var(--ok) }
+.chip-accent { background: var(--accent-soft); color: var(--accent) }
+.chip-muted { background: var(--panel-2); color: var(--ink-2); border: 1px solid var(--line) }
+
+/* шкала балла */
+.score { display: inline-grid; grid-template-columns: 64px 40px; align-items: center; gap: 8px }
+.score i { position: relative; height: 6px; overflow: hidden; border-radius: 3px; background: var(--panel-2); border: 1px solid var(--line) }
+.score i b { position: absolute; inset: 0 auto 0 0; background: var(--ink-3) }
+.score i b.high { background: var(--amber) }
+
+/* лента событий */
+.feed { display: flex; flex-direction: column; max-height: 560px; overflow: auto }
+.event { display: grid; grid-template-columns: 82px 96px minmax(0, 1fr); align-items: baseline; gap: 10px; padding: 7px 4px; border-bottom: 1px solid var(--line); font-size: 13px }
+.event-time { font: 12px var(--mono); color: var(--ink-3) }
+.event-new { animation: flash 1.2s ease-out }
+@keyframes flash { from { background: var(--accent-soft) } to { background: transparent } }
+
+/* пояснения, ответы, пустые состояния, уведомление */
+.note { font-size: 12.5px; color: var(--ink-2); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
+.result { font-size: 13px; padding: 8px 12px; background: var(--panel-2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0 }
+.result-error { border-left-color: var(--risk) }
+.empty { padding: 24px; text-align: center; color: var(--ink-3); font-size: 13px }
+.toast { position: fixed; z-index: 20; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); max-width: 420px; padding: 10px 14px; border-radius: 10px; font-size: 13px; background: var(--ink); color: var(--panel); box-shadow: 0 8px 24px rgba(0, 0, 0, .25) }
+
+/* пары «название — значение» */
+.kv { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 12px; font-size: 13px }
+.kv > span { word-break: break-all }
+.kv > span:nth-child(odd) { color: var(--ink-3) }
+
+/* графики */
+.chart { display: block; width: 100%; height: auto }
+.ring-node, .point { cursor: pointer }
+.bars { display: flex; flex-direction: column; gap: 8px }
+.bar-row { display: grid; grid-template-columns: 200px minmax(0, 1fr) 56px; align-items: center; gap: 10px; font-size: 13px }
+.bar-track { position: relative; height: 18px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px }
+.bar-fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px }
+.bar-value { font: 12.5px var(--mono); text-align: right }
+
+@media (max-width: 760px) {
+  .bar-row { grid-template-columns: 120px minmax(0, 1fr) 48px }
+}

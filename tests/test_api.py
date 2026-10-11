@@ -90,8 +90,9 @@ def test_incident_mode_off_and_unknown_bank():
 def test_root_serves_web_app():
     c, _ = client()
     r = c.get("/")
-    assert r.status_code == 200 and "ШЕКАРА" in r.text and "app.js" in r.text
-    assert c.get("/app.js").status_code == 200
+    assert r.status_code == 200 and "ШЕКАРА" in r.text and "js/main.js" in r.text
+    for path in ("/js/main.js", "/js/router.js", "/css/tokens.css", "/css/components.css"):
+        assert c.get(path).status_code == 200, path
 
 
 def test_public_mode_requires_tokens(monkeypatch):

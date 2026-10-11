@@ -5,36 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ШЕКАРА — стенд</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<script type="module" src="js/main.js"></script>
 </head>
 <body>
 <div class="app">
-  <nav class="side" aria-label="Разделы">
+  <nav class="side" id="nav" aria-label="Разделы">
     <div class="logo">ШЕКА<span>РА</span></div>
-    <a href="#/network" data-r="network">Сеть</a>
-    <a href="#/bank" data-r="bank">Кабинет банка</a>
-    <a href="#/operator" data-r="operator">Оператор</a>
-    <a href="#/audit" data-r="audit">Журнал хаба</a>
-    <a href="#/results" data-r="results">Эксперимент</a>
-    <div class="sep"></div>
-    <div class="who">Стенд на данных IBM AMLworld HI-Small · тестовые дни 8–10.09<br>Джусупов С. Е. · ЗКАТУ им. Жангир хана</div>
+    <a href="#/network" data-route="network">Сеть</a>
+    <a href="#/bank" data-route="bank">Кабинет банка</a>
+    <a href="#/operator" data-route="operator">Оператор</a>
+    <a href="#/audit" data-route="audit">Журнал хаба</a>
+    <a href="#/results" data-route="results">Эксперимент</a>
+    <div class="side-spacer"></div>
+    <div class="side-credits">Стенд на данных IBM AMLworld HI-Small · тестовые дни 8–10.09<br>Джусупов С. Е. · ЗКАТУ им. Жангир хана</div>
   </nav>
-
-  <header class="bar" aria-label="Время симуляции">
-    <div class="clock" id="clock">—</div>
-    <button class="btn primary" id="play" type="button">Запустить</button>
-    <div class="seg" id="speed" role="group" aria-label="Скорость">
-      <button type="button" data-s="60">×60</button><button type="button" data-s="600">×600</button><button type="button" data-s="3600">×3600</button>
-    </div>
-    <div class="prog" title="Прогресс тестовых дней"><i id="prog"></i></div>
-    <div class="seg" id="mode" role="group" aria-label="Режим банков"></div>
-    <button class="btn" id="reset" type="button">Сначала</button>
-    <button class="btn" id="theme" type="button" aria-label="Тема">◐</button>
-  </header>
-
-  <main id="view" tabindex="-1"></main>
+  <header class="sim-bar" id="sim-bar" aria-label="Время симуляции"></header>
+  <main class="view" id="view" tabindex="-1"></main>
 </div>
 <div class="toast" id="toast" hidden></div>
-<script src="app.js"></script>
 </body>
 </html>

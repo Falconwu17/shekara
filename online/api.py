@@ -271,7 +271,7 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
 
     @app.get("/v1/results")
     def results():
-        from demo.web.build import results as collect
+        from online.results import results as collect
 
         return collect()
 

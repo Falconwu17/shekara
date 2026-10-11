@@ -1,0 +1,39 @@
+/* Цвета и шрифты. Тёмная тема переопределяет только токены — компоненты пишутся через var(--…). */
+:root {
+  --bg: #EDF1F1; --panel: #FFFFFF; --panel-2: #F6F8F8;
+  --ink: #0F1E24; --ink-2: #485961; --ink-3: #7B8B91; --line: #D6DEDF;
+  --accent: #0B6E9F; --accent-soft: #DCEBF3;
+  --amber: #A35C00; --amber-soft: #FBEDD6;
+  --risk: #B23A24; --risk-soft: #F8E0DA;
+  --ok: #237A52; --ok-soft: #DDF1E6;
+  --side: #0F1E24; --side-ink: #C9D6DA; --side-hi: #FFFFFF; --side-accent: #5BB6E3;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --sans: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1316; --panel: #101D21; --panel-2: #0D181B;
+    --ink: #E3ECEE; --ink-2: #A4B5BA; --ink-3: #6F8389; --line: #22343A;
+    --accent: #5BB6E3; --accent-soft: #112F42;
+    --amber: #E8A33C; --amber-soft: #3A2911;
+    --risk: #EC705A; --risk-soft: #3E1D17;
+    --ok: #5DC392; --ok-soft: #12321F;
+    --side: #060E10; --side-ink: #9FB2B8;
+    color-scheme: dark;
+  }
+}
+
+/* те же значения, чтобы переключатель темы работал при любой настройке системы */
+:root[data-theme="dark"] {
+  --bg: #0A1316; --panel: #101D21; --panel-2: #0D181B;
+  --ink: #E3ECEE; --ink-2: #A4B5BA; --ink-3: #6F8389; --line: #22343A;
+  --accent: #5BB6E3; --accent-soft: #112F42;
+  --amber: #E8A33C; --amber-soft: #3A2911;
+  --risk: #EC705A; --risk-soft: #3E1D17;
+  --ok: #5DC392; --ok-soft: #12321F;
+  --side: #060E10; --side-ink: #9FB2B8;
+  color-scheme: dark;
+}
