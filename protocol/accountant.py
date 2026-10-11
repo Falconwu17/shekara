@@ -25,6 +25,8 @@ def noise_multiplier(level: str, sigma: float) -> float:
 def epsilon(n_releases: int, z: float, delta: float = DELTA) -> float:
     if n_releases == 0:
         return 0.0
+    if z <= 0:
+        return math.inf  # выпуск без шума формальной гарантии не даёт
     c = n_releases / (2 * z**2)
     return c + 2 * math.sqrt(c * math.log(1 / delta))
 

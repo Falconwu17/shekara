@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import sqlite3
+import threading
 from datetime import datetime
 from typing import Iterable
 
@@ -26,7 +27,10 @@ def _entry_hash(prev_hash: str, values: Iterable[str]) -> str:
 
 class AuditLog:
     def __init__(self, path: str = ":memory:"):
-        self._db = sqlite3.connect(path)
+        # API обслуживает запросы в пуле потоков: соединение общее, запись под блокировкой,
+        # чтобы голова цепочки не читалась между чужими INSERT
+        self._db = sqlite3.connect(path, check_same_thread=False)
+        self._lock = threading.Lock()
         self._db.execute(
             "CREATE TABLE IF NOT EXISTS audit (seq INTEGER PRIMARY KEY, ts TEXT, kind TEXT,"
             " src TEXT, dst TEXT, ref_hash TEXT, detail TEXT, prev_hash TEXT, hash TEXT)"
@@ -37,6 +41,10 @@ class AuditLog:
         return row if row else (0, GENESIS)
 
     def append(self, ts: datetime, kind: str, src: str, dst: str, ref_hash: str = "", detail: str = "") -> str:
+        with self._lock:
+            return self._append(ts, kind, src, dst, ref_hash, detail)
+
+    def _append(self, ts: datetime, kind: str, src: str, dst: str, ref_hash: str, detail: str) -> str:
         seq, prev = self.head()
         values = (ts.isoformat(), kind, src, dst, ref_hash, detail)
         h = _entry_hash(prev, values)

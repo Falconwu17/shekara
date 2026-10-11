@@ -1,0 +1,10 @@
+.venv/
+.pip-cache/
+.git/
+data/raw/
+data/processed/
+experiments/
+docs/
+tests/
+model/
+**/__pycache__/
