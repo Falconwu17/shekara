@@ -338,7 +338,7 @@ function drawBars() {
 }
 function drawPrivacy() {
   const R = S.results, pts = R.privacy, iso = R.views.isolation.all_max.ap, l3 = R.views.C_L3.all_max.ap;
-  const w = 520, h = 280, m = { l: 48, r: 14, t: 14, b: 40 };
+  const w = 540, h = 280, m = { l: 48, r: 34, t: 14, b: 40 };
   const lx = pts.map(p => Math.log10(p.eps)), x0 = Math.floor(Math.min(...lx)), x1 = Math.ceil(Math.max(...lx));
   const ys = [...pts.map(p => p.ap), iso, l3], y0 = Math.floor(Math.min(...ys) * 100 - 1) / 100, y1 = Math.ceil(Math.max(...ys) * 100 + 1) / 100;
   const X = v => m.l + (Math.log10(v) - x0) / (x1 - x0) * (w - m.l - m.r), Y = v => m.t + (1 - (v - y0) / (y1 - y0)) * (h - m.t - m.b);
