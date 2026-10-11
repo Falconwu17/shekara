@@ -152,5 +152,5 @@
 | `eps_private` | 345.1304 |
 | `eps_strict` | 7.5082 |
 | `eps_strict_week` | 2.5243 |
-| `paired_main_iso` | {"diff": 0.019712844279749637, "lo": -0.014256858250710235, "hi": 0.06355008126432629, "seeds_positive": 0, "seeds_diff_positive": 3, "seeds": 3} |
-| `paired_main_op` | {"diff": 0.17972144942174184, "lo": 0.11395704307419274, "hi": 0.24757033607214987, "seeds_positive": 3, "seeds_diff_positive": 3, "seeds": 3} |
+| `paired_main_iso` | {"diff": 0.019712844279749637, "lo": -0.015609612596222346, "hi": 0.06202568593306886, "seeds_positive": 0, "seeds_diff_positive": 3, "seeds": 3} |
+| `paired_main_op` | {"diff": 0.17972144942174184, "lo": 0.11865644549300619, "hi": 0.24581135381845706, "seeds_positive": 3, "seeds_diff_positive": 3, "seeds": 3} |

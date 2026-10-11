@@ -110,6 +110,37 @@ def h1_table() -> str:
         f"{fmt(r['delay_median_min'], 0)} | {fmt(r['delay_max_min'], 0)} |" for r in c.iter_rows(named=True))
 
 
+def coverage_table(v: pl.DataFrame | None) -> str:
+    """N = 30 — основной эксперимент; N = 100/200 — исследовательские прогоны (experiments/coverage.py)."""
+    rows = []
+    if v is not None:
+        base = v.filter(pl.col("slice") == "all_max")
+        for m in ("isolation", "F", "C_F", "C_L1_s4", "C_L3"):
+            x = base.filter(pl.col("mode") == m)
+            if x.height:
+                rows.append({"n": 30, "mode": m, "ap": x["ap"][0], "sd": x["ap_sd"][0], "seeds": x["seeds"][0]})
+    f = RES / "coverage.csv"
+    if f.exists():
+        c = (pl.read_csv(f).filter(pl.col("slice") == "all_max").group_by("n", "mode")
+             .agg(pl.col("ap").mean(), pl.col("ap").std().alias("sd"), pl.len().alias("seeds")))
+        rows += c.filter(pl.col("mode").is_in(["isolation", "F", "C_F", "C_L1_s4", "C_L3"])).to_dicts()
+    if not rows:
+        return NA
+    t = pl.DataFrame(rows)
+    names = {"isolation": "Изоляция", "F": "Модель с фактом выпуска (без содержимого)",
+             "C_F": "Сочетание с фактом выпуска", "C_L1_s4": "Сочетание с выпуском-шумом (контроль)", "C_L3": "**ШЕКАРА L3**"}
+    ns = sorted(t["n"].unique().to_list())
+    head = "| Режим | " + " | ".join(f"N = {n}" for n in ns) + " |\n|---|" + "---|" * len(ns)
+    lines = []
+    for m in names:
+        cells = []
+        for n in ns:
+            x = t.filter((pl.col("mode") == m) & (pl.col("n") == n))
+            cells.append(f"{pm(x['ap'][0], x['sd'][0])} ({x['seeds'][0]} seed)" if x.height else "—")
+        lines.append(f"| {names[m]} | " + " | ".join(cells) + " |")
+    return head + "\n" + "\n".join(lines)
+
+
 def data_section() -> str:
     d = json.loads((RES.parents[1] / "data" / "split_decision.json").read_text(encoding="utf-8"))
     st = load_json("stats.json")
@@ -190,6 +221,12 @@ TEMPLATE = """# ШЕКАРА — техническое приложение
 
 {paired_table}
 
+**Охват и источник прироста (PR-AUC, все межбанковские).** N = 30 — основной эксперимент; N = 100 и 200 — исследовательские прогоны с теми же днями и правилом ранжирования банков (`experiments/coverage.py`), основное решение не менялось.
+
+{coverage_table}
+
+Как читать: «сочетание» — среднее баллов изолированной модели и модели с выпусками. Контроли с выпуском-шумом и с одним фактом выпуска показывают, сколько даёт само сочетание двух моделей банка без информации от соседей. Вклад содержимого выпусков L3 — разность между ШЕКАРОЙ L3 и контролями: ≈ +0,02 при N = 30, ≈ +0,01 при N = 100 и не виден при N = 200. Гипотеза «пользу даёт сам факт выпуска» (один бит «у счёта есть история в его банке») не подтвердилась. Гипотеза раздела 4.11 о росте пользы с охватом на AMLworld не подтвердилась: сочетание стабильно лучше изоляции (+9…14%), но вклад самих выпусков с охватом не растёт. При N = 200 третий запуск не поместился в 16 ГБ памяти.
+
 **Удержание до вывода** — доля звеньев отмывания (входящий перевод отмывания на счёт участника, после которого счёт отправил отмывание дальше), где деньги ещё на счёте к моменту решения аналитика: алерт при зачислении в пределах бюджета 0,1% активных счетов, порог банка подобран на валидации. H0 — только очередь, τ — время реакции аналитика (τ = 0 — недостижимая верхняя граница); H1 — временная задержка исходящих для верхних 10% бюджета. Каскад инцидентов (I1/I2) в этой версии не включён.
 
 {retention_table}
@@ -239,7 +276,7 @@ def main() -> int:
     v = views_summary()
     text = TEMPLATE.format(
         repo=REPO_URL, data=data_section(), main_table=main_table(v), privacy_table=privacy_table(v),
-        paired_table=paired_table(), retention_table=retention_table(), h1_table=h1_table(),
+        paired_table=paired_table(), retention_table=retention_table(), h1_table=h1_table(), coverage_table=coverage_table(v),
         lat_query=fmt(n["lat_query_ms"], 3), lat_inbound=fmt(n["lat_inbound_ms"], 2),
     )
     (OUT / "tech_appendix_ru.md").write_text(text, encoding="utf-8")
