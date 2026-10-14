@@ -1,4 +1,4 @@
-# SHEKARA_DOMAIN: имя сервера (например 158-101-12-34.sslip.io или shekara.duckdns.org) —
+# SHEKARA_DOMAIN: имя сервера (например shekara.21restobar.kz или 158-101-12-34.sslip.io) —
 # Caddy сам получит сертификат Let's Encrypt. Значение ":80" — без HTTPS, по IP.
 {$SHEKARA_DOMAIN} {
 	encode gzip zstd

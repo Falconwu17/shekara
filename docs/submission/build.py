@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 RES = ROOT / "experiments" / "results"
 OUT = Path(__file__).resolve().parent
 REPO_URL = "https://github.com/Falconwu17/shekara"
+STAND_URL = "https://shekara.21restobar.kz"   # публичный стенд (Oracle Cloud, deploy/)
 MAIN = "C_L3"          # главный режим ШЕКАРЫ (комбинированный, см. model/combine.py)
 PRIVATE = "C_L1_s0.25"  # минимальное раскрытие: один балл
 STRICT = "C_L1_s4"      # строгая приватность
@@ -177,7 +178,7 @@ ANNOTATION_RU = """# ШЕКАРА: межбанковское выявление
 
 **Результаты.** {results}
 
-**Готовность и внедрение.** Работающий прототип: шлюзы банков с правилом need-to-know и квотами, хаб с журналом, проверка при зачислении, трассировка и дерево оператора на реальном тестовом паттерне, дашборд; 22 автоматические проверки перед подачей пройдены. Открытый код: {repo}. TRL 4. Следующий этап — пилот с двумя банками в регуляторной песочнице НБК / АРРФР.
+**Готовность и внедрение.** Работающий прототип: шлюзы банков с правилом need-to-know и квотами, хаб с журналом, проверка при зачислении, трассировка и дерево оператора на реальном тестовом паттерне, дашборд; 22 автоматические проверки перед подачей пройдены. Открытый код: {repo}. Публичный стенд: {stand}. TRL 4. Следующий этап — пилот с двумя банками в регуляторной песочнице НБК / АРРФР.
 
 **Команда.** Джусупов Сагир Едгеевич — автор (full-stack разработка: протокол, модель, эксперимент, демо). Западно-Казахстанский аграрно-технический университет имени Жангир хана (Уральск). Научный руководитель — Касымова Акмарал Хамзиевна.
 """
@@ -194,7 +195,7 @@ SUMMARY_EN = """# SHEKARA: cross-bank detection of money-mule networks without p
 
 **Results.** {results}
 
-**Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 22 automated pre-submission checks passing. Open-source code: {repo}. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
+**Readiness and deployment.** A working prototype — bank gateways with need-to-know rules and quotas, a logged hub, an incoming-credit check, incident tracing and an operator view replayed on a real test pattern, a dashboard — with 22 automated pre-submission checks passing. Open-source code: {repo}. Live stand: {stand}. TRL 4. Next step: a two-bank pilot in the NBK / ARDFM regulatory sandbox.
 
 **Team.** Sagir Dzhussupov — sole author (full-stack: protocol, model, experiment, demo). Zhangir Khan West Kazakhstan Agrarian and Technical University (Oral). Supervisor: Akmaral Kassymova.
 """
@@ -214,6 +215,7 @@ def one_pager(n) -> str:
 **5. Новизна.** В мире есть центральный граф потоков у оператора платёжной системы (Mastercard/Vocalink MITS) и обмен записями о клиентах (COSMIC в Сингапуре, TMNL в Нидерландах). ШЕКАРА проверяет третий путь для Казахстана: оценка риска только по ссылке на реальный перевод, данные остаются в банке, сравнение с подходом MITS и общим графом на одном бенчмарке, измеренная цена раскрытия в качестве и в ε.
 
 Код и воспроизведение: {REPO_URL}
+Публичный стенд: {STAND_URL}
 """
 
 
@@ -231,8 +233,8 @@ def numbers_sheet(n) -> str:
 def main() -> int:
     n = numbers()
     files = {
-        "annotation_ru.md": ANNOTATION_RU.format(results=results_ru(n), repo=REPO_URL),
-        "summary_en.md": SUMMARY_EN.format(results=results_en(n), repo=REPO_URL),
+        "annotation_ru.md": ANNOTATION_RU.format(results=results_ru(n), repo=REPO_URL, stand=STAND_URL),
+        "summary_en.md": SUMMARY_EN.format(results=results_en(n), repo=REPO_URL, stand=STAND_URL),
         "one_pager_ru.md": one_pager(n),
         "numbers.md": numbers_sheet(n),
     }
