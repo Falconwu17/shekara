@@ -43,7 +43,7 @@ powershell -ExecutionPolicy Bypass -File experiments\run_all.ps1     # сетк�
 powershell -ExecutionPolicy Bypass -File experiments\run_after.ps1   # проверка при зачислении, метрики, удержание, демо
 .venv\Scripts\python -m experiments.checks --retrain                 # чек-лист 6.7
 .venv\Scripts\python -m docs.submission.build ; .venv\Scripts\python -m docs.submission.appendix
-.venv\Scripts\python -m pytest            # 80 тестов
+.venv\Scripts\python -m pytest            # 91 тест
 ```
 
 С установленным `make` те же шаги запускаются целями `make stats / data / case / experiment / test`.
@@ -58,13 +58,21 @@ powershell -ExecutionPolicy Bypass -File experiments\run_after.ps1   # пров�
 docker compose up --build                              # то же в контейнерах (API :8000, дашборд :8501)
 ```
 
+## Публичный стенд
+
+Комплект для выкладки в интернет — [`deploy/`](deploy/): Oracle Cloud (бесплатный тариф), Caddy с автоматическим HTTPS, одна команда настройки сервера и одна команда заливки данных. Пошагово, включая свой домен, — [`deploy/README.md`](deploy/README.md).
+
+В публичном режиме стенд сам проигрывает тестовые дни по кругу. Управление временем закрыто ключом администратора, вид оператора — токеном, действия и запросы ограничены по IP. Заголовки CSP и HSTS, контейнер без root и только для чтения; без ключей сервер не запускается.
+
 ## Структура
 
 | Папка | Что внутри |
 |---|---|
 | `protocol/` | ключ перевода `tx_ref`, HMAC пар банков, шлюз need-to-know с квотой и шумом L1–L3, учёт ε, хаб с журналом на хэш-цепочке и подписью Ed25519 |
 | `trace/` | инциденты I0–I2, сегменты, дерево оператора; удержание до вывода; каскад |
-| `online/` | очередь алертов с бюджетом, HTTP-API |
+| `online/` | очередь алертов с бюджетом, HTTP-API, симулятор стенда, итоги для `/v1/results` |
+| `web/` | фронтенд стенда: ES-модули без сборки, [устройство](web/README.md) |
+| `deploy/` | выкладка в Oracle Cloud: Caddy, compose, скрипты настройки и заливки |
 | `data/` | загрузка AMLworld, `make stats`, разбиение на банки, метки, признаки без заглядывания вперёд |
 | `model/` | основная модель (`gbt.py`, LightGBM), абляция GINE, проверка при зачислении, сочетание моделей, метрики |
 | `demo/`, `dashboard/` | выбор и проигрывание демо-паттерна, дашборд |
