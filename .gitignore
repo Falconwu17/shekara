@@ -45,3 +45,12 @@ deploy/.env.*
 # Личные заметки автора (не для публичного репозитория)
 FAQ.md
 NOTES.md
+
+# Печатные версии для подписи и черновик заявки с контактами (локально)
+docs/submission/*.html
+docs/submission/*.docx
+docs/submission/*.pdf
+docs/submission/application_ru.md
+
+# Лог локального сервера стенда
+experiments/logs/server.log
