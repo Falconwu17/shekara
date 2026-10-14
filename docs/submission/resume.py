@@ -31,7 +31,7 @@ RU = {
     "name": "ШЕКАРА: межбанковское выявление сетей дропов без обмена клиентскими данными",
     "meta": [
         ("Конкурс", "Республиканский конкурс Ассоциации банков РК 2026; треки AI for Finance (антифрод) и Digital Banking (AML/regtech)"),
-        ("Участник", "Джусупов Сагир Едгеевич (индивидуальное участие)"),
+        ("Участник", "Джусупов Сагир Едгеевич, магистрант 1 курса, ОП 7М06100 «Информационные системы и технологии» (индивидуальное участие)"),
         ("Научный руководитель", "Касымова Акмарал Хамзиевна"),
         ("Организация", "НАО «Западно-Казахстанский аграрно-технический университет имени Жангир хана», "
                         "090009, Республика Казахстан, г. Уральск, ул. Жангир хана, 51"),
@@ -77,7 +77,7 @@ EN = {
     "meta": [
         ("Contest", "Republican contest of the Association of Banks of Kazakhstan 2026; tracks AI for Finance "
                     "(anti-fraud) and Digital Banking (AML/regtech)"),
-        ("Participant", "Sagir Dzhussupov (individual entry)"),
+        ("Participant", "Sagir Dzhussupov, first-year master's student, Information Systems and Technologies (individual entry)"),
         ("Supervisor", "Akmaral Kassymova"),
         ("Institution", "Zhangir Khan West Kazakhstan Agrarian and Technical University, "
                         "51 Zhangir Khan St., Uralsk 090009, Republic of Kazakhstan"),

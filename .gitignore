@@ -51,6 +51,7 @@ docs/submission/*.html
 docs/submission/*.docx
 docs/submission/*.pdf
 docs/submission/application_ru.md
+docs/submission/application_private.json
 
 # Лог локального сервера стенда
 experiments/logs/server.log
