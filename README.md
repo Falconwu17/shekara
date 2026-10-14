@@ -87,4 +87,4 @@ docker compose up --build                              # то же в конте
 
 Код: MIT ([`LICENSE`](LICENSE)). Датасет AMLworld: CDLA-Sharing-1.0, в репозиторий не входит.
 
-Статус работ и решения по ходу проекта: [`STATUS.md`](STATUS.md).
+Ход работ и принятые решения: история коммитов и материалы подачи в [`docs/submission/`](docs/submission/).
