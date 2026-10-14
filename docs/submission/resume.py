@@ -1,7 +1,7 @@
 """Резюме проекта для заявки (раздел 8 положения): по одной странице A4 на русском и английском.
 
 Тексты резюме живут здесь, а не собираются из аннотации: у резюме жёсткий лимит в одну страницу.
-Результат — resume_ru.docx и resume_en.docx в docs/submission/ (в git не попадают, см. .gitignore).
+Результат: resume_ru.docx и resume_en.docx в docs/submission/ (в git не попадают, см. .gitignore).
 
     .venv\\Scripts\\python -m pip install python-docx
     .venv\\Scripts\\python -m docs.submission.resume
@@ -55,7 +55,7 @@ RU = {
     ],
     "results_head": "Результаты",
     "results": [
-        "Модель на графе самого банка значимо сильнее центрального оператора: PR-AUC 0,315–0,354 против 0,162, "
+        "Модель на графе самого банка значимо сильнее центрального оператора: PR-AUC 0,315-0,354 против 0,162, "
         "F1 +0,18 (значимо в 3 из 3 запусков).",
         "Обмен оценками поднимает PR-AUC с 0,315 до 0,354 (+13%) во всех запусках; прирост пока статистически не значим.",
         "Цена приватности измерена: один зашумлённый балл (L1) не помогает, польза появляется при векторном выпуске (L2, L3).",
@@ -101,7 +101,7 @@ EN = {
     ],
     "results_head": "Results",
     "results": [
-        "A model on the bank's own graph significantly beats the central operator: PR-AUC 0.315–0.354 versus "
+        "A model on the bank's own graph significantly beats the central operator: PR-AUC 0.315-0.354 versus "
         "0.162, F1 +0.18 (significant in 3 of 3 runs).",
         "Exchanging estimates raises PR-AUC from 0.315 to 0.354 (+13%) in every run; the gain is not yet statistically significant.",
         "The price of privacy is measured: a single noisy score (L1) does not help; benefit appears with vector releases (L2, L3).",
@@ -146,7 +146,7 @@ def _no_borders(table):
 
 
 def _rule(par):
-    """Тонкая линия под абзацем — отделяет шапку от текста."""
+    """Тонкая линия под абзацем, отделяет шапку от текста."""
     border = OxmlElement("w:pBdr")
     bottom = OxmlElement("w:bottom")
     for key, value in (("w:val", "single"), ("w:sz", "6"), ("w:space", "4"), ("w:color", "808080")):
@@ -219,7 +219,7 @@ def build(spec: dict) -> Path:
     for cell in row:
         cell.paragraphs[0].paragraph_format.space_before = Pt(10)
     _fixed_widths(signs, (Cm(5.0), Cm(12.5)))
-    # Word требует абзац после таблицы — делаем его минимальным, чтобы не создавал вторую страницу
+    # Word требует абзац после таблицы, делаем его минимальным, чтобы не создавал вторую страницу
     last = doc.paragraphs[-1] if doc.paragraphs[-1]._p is doc.element.body[-2] else _para(doc)
     last.paragraph_format.space_after = Pt(0)
     for run in last.runs:
