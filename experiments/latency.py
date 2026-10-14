@@ -1,6 +1,6 @@
 """Задержки (раздел 3.6): запрос выпуска через шлюз и проверка одного перевода при зачислении.
 
-Шлюз — настоящий protocol.gateway на базе банка-участника; проверка при зачислении — один
+Шлюз: настоящий protocol.gateway на базе банка-участника; проверка при зачислении: один
 прямой проход модели LightGBM по признакам одного перевода (признаки берутся из ночного кэша).
 Результат: experiments/results/latency.json. Запуск: py -m experiments.latency
 """
@@ -35,7 +35,7 @@ def main() -> int:
     key = new_pair_key()
     gw = Gateway(b, rows_b, {a: key})
     shared = [(r, ref) for r, ref in zip(rows_b, compute_tx_refs(rows_b)) if a in (r.from_bank, r.to_bank)][:2000]
-    # не больше суточной квоты (50 + 1,2 × зачисленных) — разные дни в пределах 30-дневного окна
+    # не больше суточной квоты (50 + 1,2 × зачисленных): разные дни в пределах 30-дневного окна
     q, found = [], 0
     for i, (r, ref) in enumerate(shared[:1000]):
         now = datetime(2022, 9, 11) + timedelta(days=i // 50)
@@ -58,7 +58,7 @@ def main() -> int:
         inb.append(time.perf_counter() - t0)
     out = {"query_ms_p50": p50_ms(q), "query_ms_p99": float(np.percentile(q, 99) * 1000), "queries": len(q), "queries_found": found,
            "inbound_ms_p50": p50_ms(inb), "inbound_ms_p99": float(np.percentile(inb, 99) * 1000),
-           "note": "CPU ноутбука, один поток; сеть хаба не учитывается (в MVP — один процесс)"}
+           "note": "CPU ноутбука, один поток; сеть хаба не учитывается (в MVP: один процесс)"}
     (RESULTS_DIR / "latency.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(out)
     return 0

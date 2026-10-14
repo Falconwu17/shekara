@@ -39,7 +39,7 @@ export function mount(root) {
     render(barsBox,
       segmented(SLICES, slice, value => { slice = value; drawBars(r); }, "Срез"),
       barList(rows),
-      h("span", { class: "muted" }, `${r.views.isolation[slice]?.pos ?? "—"} положительных переводов в тесте; среднее по трём запускам.`));
+      h("span", { class: "muted" }, `${r.views.isolation[slice]?.pos ?? "-"} положительных переводов в тесте; среднее по трём запускам.`));
   }
 
   (async () => {

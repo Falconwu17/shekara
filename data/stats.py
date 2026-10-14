@@ -2,7 +2,7 @@
 
 Решение (`data/split_decision.json`) принимается только по дням обучения, метки теста не
 смотрятся, и после первого обучения не меняется: существующий файл не перезаписывается
-без --force. Отчёт — `experiments/results/stats.json`.
+без --force. Отчёт: `experiments/results/stats.json`.
 
 Запуск: py -m data.stats [--force]
 """
@@ -47,7 +47,7 @@ def full_and_tail_days(daily: pl.DataFrame) -> tuple[list[date], pl.DataFrame]:
 
 
 def split_days(full: list[date]) -> tuple[list[date], list[date], list[date]]:
-    """Первые 60% — обучение, следующие 10% (не меньше дня) — валидация, остальное — тест."""
+    """Первые 60%: обучение, следующие 10% (не меньше дня): валидация, остальное: тест."""
     n_train = len(full) * 6 // 10
     n_val = max(1, len(full) // 10)
     return full[:n_train], full[n_train : n_train + n_val], full[n_train + n_val :]
@@ -187,7 +187,7 @@ def run(trans_path=None, patterns_path=None, decision_path=DECISION_FILE, stats_
     participants = ranking[:n]
 
     if Path(decision_path).exists() and not force:
-        print(f"{decision_path} уже есть — решение не меняется (раздел 3.3). Для пересчёта: --force.")
+        print(f"{decision_path} уже есть: решение не меняется (раздел 3.3). Для пересчёта: --force.")
         decision = json.loads(Path(decision_path).read_text(encoding="utf-8"))
     else:
         decision = {

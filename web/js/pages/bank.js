@@ -12,8 +12,8 @@ function queueTable(queue, threshold, openAccount) {
   return dataTable([
     { title: "Счёт", cell: a => [h("span", { class: "mono" }, a.account), a.incident_flags.length ? [" ", chip("инцидент", "risk")] : null] },
     { title: "Балл", cell: a => scoreBar(a.score, threshold) },
-    { title: "Пришло из", cell: a => a.from_bank ?? "—" },
-    { title: "Сумма", align: "right", cell: a => (a.amount ? amount(a.amount, a.currency) : "—") },
+    { title: "Пришло из", cell: a => a.from_bank ?? "-" },
+    { title: "Сумма", align: "right", cell: a => (a.amount ? amount(a.amount, a.currency) : "-") },
     { title: "Разметка", cell: a => (a.laundering ? chip("отмывание", "risk") : chip("нет")) },
   ], queue, { onRowClick: a => openAccount(a.account), empty: "Сегодня алертов пока нет." });
 }
@@ -26,7 +26,7 @@ function feedTable(feed, { bank, threshold, participants, openAccount, ask }) {
     { title: "Свой счёт", cell: r => h("a", { href: "#", class: "mono", onClick: e => { e.preventDefault(); openAccount(r.account); } }, r.account) },
     { title: "Банк контрагента", cell: r => [r.cp_bank, isPartner(r) ? [" ", chip("участник", "ok")] : null] },
     { title: "Сумма", align: "right", cell: r => amount(r.amount, r.currency) },
-    { title: "Балл при зачислении", cell: r => (r.side === "in" ? scoreBar(r.score, threshold) : h("span", { class: "muted" }, "—")) },
+    { title: "Балл при зачислении", cell: r => (r.side === "in" ? scoreBar(r.score, threshold) : h("span", { class: "muted" }, "-")) },
     { title: "", cell: r => (isPartner(r) ? h("button", { type: "button", class: "btn", onClick: () => ask(r.row_no) }, "Запросить выпуск") : null) },
   ], feed);
 }
@@ -34,7 +34,7 @@ function feedTable(feed, { bank, threshold, participants, openAccount, ask }) {
 function releaseText(release) {
   if (!release) return "ещё не рассылался";
   const value = Array.isArray(release.value) ? release.value.map(v => decimal(v)).join(", ") : decimal(release.value);
-  return `${release.level} от ${release.date} — балл ${value}`;
+  return `${release.level} от ${release.date}: балл ${value}`;
 }
 
 function accountCard(card, bank, onIncident) {
@@ -102,11 +102,11 @@ export function mount(root, [bankParam]) {
     h("div", { class: "page-head" },
       h("h1", {}, `Кабинет банка ${bank}`),
       h("div", { class: "row" }, h("label", { for: "bank-select", class: "muted" }, "Войти как банк"), select)),
-    note(`Вы видите только переводы клиентов банка ${bank} и баллы, которые банк считает сам. О счёте в другом банке — только выпуск, присланный по ссылке на реальный перевод. Столбец «разметка» — истина AMLworld для проверки стенда; банку она неизвестна.`),
+    note(`Вы видите только переводы клиентов банка ${bank} и баллы, которые банк считает сам. О счёте в другом банке: только выпуск, присланный по ссылке на реальный перевод. Столбец «разметка»: истина AMLworld для проверки стенда; банку она неизвестна.`),
     h("div", { class: "grid grid-half" },
       panel("Очередь алертов на сегодня", { aside: queueMeta, body: queueBox }),
       cardBox),
-    panel("Лента переводов банка", { aside: "«Запросить выпуск» — спросить банк-контрагента о счёте на другом конце этого перевода", body: [answerBox, feedBox] }));
+    panel("Лента переводов банка", { aside: "«Запросить выпуск»: спросить банк-контрагента о счёте на другом конце этого перевода", body: [answerBox, feedBox] }));
 
   return every(2000, async () => {
     try {

@@ -48,7 +48,7 @@ function modeAndReset(sim) {
 export function mountSimBar(root) {
   const draw = sim => {
     if (!sim) {
-      render(root, h("div", { class: "clock" }, store.connected ? "—" : "нет связи с API"));
+      render(root, h("div", { class: "clock" }, store.connected ? "-" : "нет связи с API"));
       return;
     }
     const locked = store.config.admin_required && !auth.adminToken;

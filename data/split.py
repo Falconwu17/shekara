@@ -1,9 +1,9 @@
 """make data: разбиение AMLworld на базы банков-участников по split_decision.json (3.3).
 
 В базу банка (`data/processed/banks/<банк>.duckdb`, таблица `transfers`) попадают только
-строки полных дней, где банк — отправитель или получатель. Колонки tx_ref нет: банк считает
+строки полных дней, где банк: отправитель или получатель. Колонки tx_ref нет: банк считает
 его сам (protocol/matching.py) по строкам, упорядоченным по `row_no`.
-Полный граф для оракула — `data/processed/full_days.parquet`.
+Полный граф для оракула: `data/processed/full_days.parquet`.
 
 Запуск: py -m data.split
 """
@@ -48,7 +48,7 @@ def load_bank(bank: str, banks_dir: Path = BANKS_DIR) -> pl.DataFrame:
 
 
 def load_bank_keys(bank: str, banks_dir: Path = BANKS_DIR) -> list[TransferKey]:
-    """Строки банка для Gateway — в порядке исходного файла."""
+    """Строки банка для Gateway: в порядке исходного файла."""
     return transfer_keys(load_bank(bank, banks_dir))
 
 

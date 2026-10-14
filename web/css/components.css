@@ -1,4 +1,4 @@
-/* Компоненты. Порядок — как в js/components и js/charts. */
+/* Компоненты. Порядок: как в js/components и js/charts. */
 
 /* кнопки, переключатели, поля */
 .btn { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; white-space: nowrap }
@@ -68,7 +68,7 @@ select, .input { border: 1px solid var(--line); background: var(--panel); border
 .empty { padding: 24px; text-align: center; color: var(--ink-3); font-size: 13px }
 .toast { position: fixed; z-index: 20; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); max-width: 420px; padding: 10px 14px; border-radius: 10px; font-size: 13px; background: var(--ink); color: var(--panel); box-shadow: 0 8px 24px rgba(0, 0, 0, .25) }
 
-/* пары «название — значение» */
+/* пары «название: значение» */
 .kv { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 12px; font-size: 13px }
 .kv > span { word-break: break-all }
 .kv > span:nth-child(odd) { color: var(--ink-3) }

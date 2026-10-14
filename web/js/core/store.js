@@ -29,7 +29,7 @@ export async function refreshSim() {
   try {
     const sim = await api.simState();
     if (sim.seq < store.lastSeq) {
-      // стенд начал проигрывание заново — лента тоже начинается заново
+      // стенд начал проигрывание заново: лента тоже начинается заново
       store.lastSeq = 0;
       store.events = [];
     }

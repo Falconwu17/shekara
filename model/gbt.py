@@ -4,12 +4,12 @@
 оказался сильнее полнобатчевой GINE (model/gine.py остаётся абляцией) и в сотни раз быстрее,
 что позволяет прогнать полную сетку раскрытия, R = 2 и 3 seed.
 
-Раунд 0 — изоляция: модель перевода E и модель счёта N на локальных графах участников.
-Выпуск о своём счёте: p = N (балл «транзитный», L1) и h — 8 чисел профиля риска (L2/L3):
+Раунд 0: изоляция: модель перевода E и модель счёта N на локальных графах участников.
+Выпуск о своём счёте: p = N (балл «транзитный», L1) и h: 8 чисел профиля риска (L2/L3):
 p, максимум и среднее баллов E по входящим и исходящим, доля входящих, ушедших за 10 мин,
 доля входящих от новых контрагентов, доля межбанковских исходящих (всё в [−1, 1]).
-Раунд 1: выпуски — признаки внешних узлов; через средние по соседям они доходят до своих
-счетов. Кросс-фиттинг, окна и сохранение баллов — как в model/train_rounds.py.
+Раунд 1: выпуски: признаки внешних узлов; через средние по соседям они доходят до своих
+счетов. Кросс-фиттинг, окна и сохранение баллов: как в model/train_rounds.py.
 
 Запуск: py -m model.gbt --modes isolation,L3,oracle --seeds 1,2,3
 """
@@ -77,7 +77,7 @@ class Mats:
 
 
 def make_mats(g: Graph, participants: list[str], extra: np.ndarray | None = None) -> Mats:
-    """Признаки узла: свои признаки + «банк узла — участник» (+ выпуск и выпуски соседей).
+    """Признаки узла: свои признаки + «банк узла: участник» (+ выпуск и выпуски соседей).
     Средние признаков соседей не добавляются: на общем графе они переобучают (см. STATUS)."""
     part = np.isin(g.node_bank, participants).astype(np.float32)[:, None]
     parts = [g.x, part]
@@ -120,7 +120,7 @@ def feature_names(extra_dim: int = 0) -> list[str]:
             edge.append(f"валюта: {CURRENCIES[int(c[3:])]}")
         else:
             edge.append(_EDGE_NAMES[c])
-    node = [_NODE_NAMES[c] for c in NODE_FEATURES] + ["банк — участник ШЕКАРЫ"]
+    node = [_NODE_NAMES[c] for c in NODE_FEATURES] + ["банк: участник ШЕКАРЫ"]
     if extra_dim:
         rel = (["выпуск: балл"] if extra_dim == 2 else [f"выпуск: {h}" for h in _H_NAMES]) + ["выпуск получен"]
         node += rel + [f"соседи-отправители, {r}" for r in rel] + [f"соседи-получатели, {r}" for r in rel] + ["макс. выпуск соседей"]
@@ -140,7 +140,7 @@ class Models:
 @dataclass
 class TrainRows:
     """Строки обучения из графа окна, кончающегося днём `day`: только переводы этого дня
-    (как на тесте) и все узлы графа; фолды концов — для кросс-фиттинга."""
+    (как на тесте) и все узлы графа; фолды концов: для кросс-фиттинга."""
 
     ex: np.ndarray
     ye: np.ndarray
@@ -220,7 +220,7 @@ class GBTExperiment(Experiment):
                     pek, pnk = self.score(fm, m)
                     pn = np.where(folds == k, pnk, pn)
                     s, d = g.edge_index
-                    # балл перевода о счёте фолда k — из модели, не видевшей рёбер этого счёта
+                    # балл перевода о счёте фолда k: из модели, не видевшей рёбер этого счёта
                     pe = np.where((folds[s] == k) | (folds[d] == k), pek, pe)
             s, d = g.edge_index
             n = g.num_nodes
@@ -238,7 +238,7 @@ class GBTExperiment(Experiment):
 
     # ---------- режимы ----------
     def round(self, prev: Models | None, prev_folds, prev_make, level, sigma, cf: bool, rng, need_folds: bool = True):
-        """Обучает раунд по выпускам модели prev (None — раунд 0). Возвращает (модель, фолды, make)."""
+        """Обучает раунд по выпускам модели prev (None: раунд 0). Возвращает (модель, фолды, make)."""
         if prev is None:
             make = lambda end, night, **kw: self.local_mats(end)
         else:
@@ -344,7 +344,7 @@ class GBTExperiment(Experiment):
 
 
 def edge_scores(views: pl.DataFrame) -> pl.DataFrame:
-    """Основная оценка перевода — максимум баллов банков, которые его видят (раздел 3.6)."""
+    """Основная оценка перевода: максимум баллов банков, которые его видят (раздел 3.6)."""
     return views.group_by("row_no").agg(pl.col("score").max(), pl.col("label").first(), pl.col("day").first())
 
 

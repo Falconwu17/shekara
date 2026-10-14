@@ -1,4 +1,4 @@
-// Оператор (антифрод-центр): список инцидентов и дерево цепочки — только для роли «оператор».
+// Оператор (антифрод-центр): список инцидентов и дерево цепочки: только для роли «оператор».
 
 import { incidentTree } from "../charts/incident-tree.js";
 import { dataTable } from "../components/table.js";
@@ -33,7 +33,7 @@ export function mount(root) {
       const tree = await api.incidentTree(id);
       if (tree.kind === "soft") {
         render(treeBox, h("h2", {}, "Инцидент ", h("span", { class: "mono" }, id)),
-          note(`Мягкий инцидент: оператору видно только число звеньев — ${tree.links}. Суммы и счета остаются у банков.`));
+          note(`Мягкий инцидент: оператору видно только число звеньев: ${tree.links}. Суммы и счета остаются у банков.`));
         return;
       }
       render(treeBox, h("h2", {}, "Инцидент ", h("span", { class: "mono" }, id), ` · ${tree.edges.length} звеньев`), incidentTree(tree.edges));

@@ -1,11 +1,11 @@
-"""HTTP-API ШЕКАРЫ (раздел 3.5): хаб и узлы банков в одном процессе — вариант «для одного
-автора» из раздела 3.2 (банки — отдельные объекты со своими базами, чужие переводы в них не
-попадают). Логика — та же, что в protocol/ и trace/, без упрощений.
+"""HTTP-API ШЕКАРЫ (раздел 3.5): хаб и узлы банков в одном процессе: вариант «для одного
+автора» из раздела 3.2 (банки: отдельные объекты со своими базами, чужие переводы в них не
+попадают). Логика: та же, что в protocol/ и trace/, без упрощений.
 
 Время в симуляции задаёт проигрыватель: поле `now` (часы проигрывателя) определяет, что
 «уже зачислено». В пилоте его заменят часы сервера.
 
-Запуск: py -m online.api --banks 006,011,01292 [--port 8000]   (базы — data/processed/banks)
+Запуск: py -m online.api --banks 006,011,01292 [--port 8000]   (базы: data/processed/banks)
 Документация эндпоинтов: http://localhost:8000/docs
 """
 
@@ -37,7 +37,7 @@ from trace.incident import IncidentDesk, Operator
 
 
 class Network:
-    """Банки-участники, хаб и оператор. `rows` — строки каждого банка в порядке исходного файла."""
+    """Банки-участники, хаб и оператор. `rows`: строки каждого банка в порядке исходного файла."""
 
     def __init__(self, rows: dict[str, Sequence[TransferKey]], incidents_mode: str = "I2"):
         banks = sorted(rows)
@@ -124,7 +124,7 @@ class SignatureIn(BaseModel):
 WEB_DIR = Path(__file__).resolve().parents[1] / "web"
 
 # Публичный режим (сервер в интернете): если переменные заданы, управление временем требует
-# X-Admin-Token, а роль «оператор» — X-Operator-Token. Локально они не заданы — всё открыто.
+# X-Admin-Token, а роль «оператор»: X-Operator-Token. Локально они не заданы: всё открыто.
 ADMIN_TOKEN = os.environ.get("SHEKARA_ADMIN_TOKEN", "")
 OPERATOR_TOKEN = os.environ.get("SHEKARA_OPERATOR_TOKEN", "")
 ACTION_LIMIT_PER_MIN = int(os.environ.get("SHEKARA_ACTION_LIMIT", "30"))
@@ -138,7 +138,7 @@ def public_mode() -> bool:
 
 
 def check_public_config(public: bool) -> None:
-    """Сервер в интернете не стартует с пустыми или короткими ключами — иначе стенд открыт всем."""
+    """Сервер в интернете не стартует с пустыми или короткими ключами: иначе стенд открыт всем."""
     if not public:
         return
     for name, token in (("SHEKARA_ADMIN_TOKEN", ADMIN_TOKEN), ("SHEKARA_OPERATOR_TOKEN", OPERATOR_TOKEN)):
@@ -152,7 +152,7 @@ def _same(a: str, b: str) -> bool:
 
 def require_admin(token: str) -> None:
     if ADMIN_TOKEN and not _same(token or "", ADMIN_TOKEN):
-        raise HTTPException(403, "управление временем стенда — только с ключом администратора")
+        raise HTTPException(403, "управление временем стенда: только с ключом администратора")
 
 
 def require_operator(role: str, token: str) -> None:
@@ -163,7 +163,7 @@ def require_operator(role: str, token: str) -> None:
 
 
 class RateLimit:
-    """Скользящее окно в минуту на IP — для действий банков (запрос выпуска, инцидент)."""
+    """Скользящее окно в минуту на IP: для действий банков (запрос выпуска, инцидент)."""
 
     def __init__(self, per_min: int):
         self.per_min, self.hits = per_min, defaultdict(deque)
@@ -173,12 +173,12 @@ class RateLimit:
         while q and now - q[0] > 60:
             q.popleft()
         if len(q) >= self.per_min:
-            raise HTTPException(429, "слишком много действий подряд — подождите минуту")
+            raise HTTPException(429, "слишком много действий подряд: подождите минуту")
         q.append(now)
 
 
 def create_app(net: Network | None = None, sim=None) -> FastAPI:
-    """`sim` — стенд online.sim.Simulator (его сеть и часы); без него — только протокол."""
+    """`sim`: стенд online.sim.Simulator (его сеть и часы); без него: только протокол."""
     if sim is not None:
         net = sim.net
     public = public_mode()
@@ -224,7 +224,7 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
         if body.level != "L3" and body.scores:
             acc = next(iter(body.scores))
             e = gw.ledger.epsilon(acc, body.now.date(), body.level, body.sigma)
-            eps = e if np.isfinite(e) else None  # None — без шума, гарантии нет
+            eps = e if np.isfinite(e) else None  # None: без шума, гарантии нет
         return {"releases": len(body.scores), "messages": len(msgs), "delivered": delivered,
                 "epsilon_30d_first_account": eps, "noise_multiplier": noise_multiplier(body.level, body.sigma) if body.level != "L3" else None}
 
@@ -388,7 +388,7 @@ def main() -> int:
     from data.split import load_bank_keys
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--banks", default="", help="банки-участники через запятую (по умолчанию — все 30)")
+    parser.add_argument("--banks", default="", help="банки-участники через запятую (по умолчанию: все 30)")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--seed", type=int, default=1)
@@ -411,7 +411,7 @@ def main() -> int:
         if os.environ.get("SHEKARA_AUTOPLAY"):
             sim.loop_forever = True
             sim.control("play", speed=float(os.environ.get("SHEKARA_SPEED", "600")))
-    # IP клиента из X-Forwarded-For берём только от доверенного прокси (в прод-сборке — Caddy в сети Docker),
+    # IP клиента из X-Forwarded-For берём только от доверенного прокси (в прод-сборке: Caddy в сети Docker),
     # иначе любой подставит себе чужой адрес и обойдёт лимиты
     trusted = os.environ.get("SHEKARA_TRUSTED_PROXIES", "127.0.0.1")
     uvicorn.run(app, host=args.host, port=args.port, proxy_headers=True, forwarded_allow_ips=trusted)

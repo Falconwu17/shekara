@@ -1,7 +1,7 @@
 """Загрузка AMLworld (HI-Small): переводы и файл паттернов отмывания (раздел 3.3).
 
 Поля читаются строками как есть: из них банки сами считают tx_ref (3.5), поэтому суммы
-не парсятся в float. `row_no` — номер строки исходного файла (с нуля): по нему банки
+не парсятся в float. `row_no`: номер строки исходного файла (с нуля): по нему банки
 упорядочивают свои строки перед расчётом счётчика дублей."""
 
 from __future__ import annotations
@@ -76,7 +76,7 @@ def parse_patterns(path: Path = PATTERNS_FILE) -> pl.DataFrame:
 
 
 def _join_norm(df: pl.DataFrame) -> pl.DataFrame:
-    # Номера банков в файле паттернов могут отличаться ведущими нулями, суммы — записью
+    # Номера банков в файле паттернов могут отличаться ведущими нулями, суммы: записью
     # числа: для сопоставления строк паттерна с переводами всё нормализуется.
     return df.with_columns(
         pl.col("from_bank").str.strip_chars_start("0").alias("_fb"),
@@ -94,7 +94,7 @@ _RAW_FROM_TRANS = ["from_bank", "to_bank", "amount_received", "amount_paid"]
 def align_patterns(patterns: pl.DataFrame, trans: pl.DataFrame) -> pl.DataFrame:
     """Строки паттернов с `row_no` перевода и полями банков и сумм в записи файла
     переводов, чтобы сравнивать их с участниками и строками баз банков.
-    Несопоставленные строки остаются с null в `row_no`. При дублях — первая строка."""
+    Несопоставленные строки остаются с null в `row_no`. При дублях: первая строка."""
     right = (
         _join_norm(trans)
         .select([*_JOIN_ON, "row_no", *[pl.col(c).alias(f"{c}_t") for c in _RAW_FROM_TRANS]])

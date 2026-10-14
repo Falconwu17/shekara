@@ -54,7 +54,7 @@ def mode_table(preds, seed_rng: int = 0) -> pl.DataFrame:
 
 def paired_by_patterns(a: tuple, b: tuple, pattern_of: dict[int, int], rng, n=N_BOOT) -> dict:
     """Разность F1 (a − b) на одних и тех же выборках: положительные рёбра ресемплируются
-    целыми паттернами, отрицательные — по одному."""
+    целыми паттернами, отрицательные: по одному."""
     (va, ta), (vb, tb) = a, b
     ta, tb = ta.sort("row_no"), tb.sort("row_no")
     assert ta["row_no"].to_list() == tb["row_no"].to_list(), "режимы оценены на разных рёбрах"

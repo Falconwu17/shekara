@@ -1,6 +1,6 @@
 # Цели по README / разделу 6.6 docs/SHEKARA.md. Нужен скачанный AMLworld в data/raw/.
 # Порядок: stats (решение split_decision.json) → data (базы банков) → case (демо-паттерн).
-# Окружение — .venv на диске D (py -m venv .venv; .venv\Scripts\python -m pip install -r requirements.txt).
+# Окружение: .venv на диске D (py -m venv .venv; .venv\Scripts\python -m pip install -r requirements.txt).
 PY ?= .venv/Scripts/python.exe
 
 .PHONY: stats data case experiment metrics demo app test

@@ -61,7 +61,7 @@ def test_full_days_tail_and_split(synth):
     full, tail = stats.full_and_tail_days(daily)
     assert full == days(*range(FULL_DAYS))
     assert tail["day"].to_list() == days(FULL_DAYS, FULL_DAYS + 1)
-    assert (tail["laundering_share"] > 0.3).all()  # хвост — почти одно отмывание
+    assert (tail["laundering_share"] > 0.3).all()  # хвост: почти одно отмывание
     train, val, test = stats.split_days(full)
     assert (len(train), len(val), len(test)) == (6, 1, 3)
 
@@ -126,7 +126,7 @@ def test_stats_report_has_required_numbers(pipeline):
     assert 0 < st["laundering_interbank_share"] <= 1
     assert 0 < st["pattern_share_seen_by_one_bank"] < 1
     assert st["patterns_with_prior_interbank_accounts"] is not None
-    # в каждой цепочке mid1 держит деньги 7 мин, mid2 — 23 мин
+    # в каждой цепочке mid1 держит деньги 7 мин, mid2-23 мин
     assert (st["dwell_minutes"]["p10"], st["dwell_minutes"]["median"], st["dwell_minutes"]["p90"]) == (7, 15, 23)
     assert s["duplicate_rows"]["groups"] >= 1
     assert s["transit_accounts"]["train"] == 6 * 3 * 2
@@ -163,7 +163,7 @@ def test_pick_case_levels_without_scores(synth):
     assert summary.height == 9 and summary["level"].to_list() == [1] * 9
     best = pick(summary)
     assert best["level"] == 1 and best["n_tx"] == 4
-    assert best["first_time"] == summary["first_time"].min()  # при равенстве — первый по времени
+    assert best["first_time"] == summary["first_time"].min()  # при равенстве: первый по времени
 
     two_banks = with_levels(summarize_patterns(patterns, BANKS[:2], test_days))
     assert set(two_banks["level"].drop_nulls().to_list()) <= {2, 3}

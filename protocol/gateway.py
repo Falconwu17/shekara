@@ -90,8 +90,8 @@ def apply_mechanism(level: str, value, sigma: float, rng: np.random.Generator):
 
 
 class Gateway:
-    """Шлюз одного банка. `rows` — только его строки, в порядке исходного файла;
-    `pair_keys` — ключи пар с другими банками-участниками."""
+    """Шлюз одного банка. `rows`: только его строки, в порядке исходного файла;
+    `pair_keys`: ключи пар с другими банками-участниками."""
 
     def __init__(self, bank_id: str, rows: Sequence[TransferKey], pair_keys: Mapping[str, bytes]):
         self.bank_id = bank_id
@@ -180,7 +180,7 @@ class Gateway:
     ) -> list[Broadcast]:
         """Новый выпуск по каждому счёту из `raw` (p для L1, h для L2/L3) и рассылка
         банкам, с клиентами которых у счёта был зачисленный перевод за 30 дней.
-        Адрес — ссылка на последний такой перевод. Квоту не расходует."""
+        Адрес: ссылка на последний такой перевод. Квоту не расходует."""
         out = []
         for account, value in raw.items():
             rel = Release(apply_mechanism(level, value, sigma, rng), level, now.date())

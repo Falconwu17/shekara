@@ -2,7 +2,7 @@
 
 Граф окна: переводы со дня первого дня окна по `end_day` включительно. Признаки узлов и
 рёбер считаются только по переводам графа, поэтому граф для дня t не видит переводов после t.
-Локальный граф банка — его строки: свои счета (все их переводы есть в базе банка) и внешние
+Локальный граф банка: его строки: свои счета (все их переводы есть в базе банка) и внешние
 узлы-контрагенты, о которых банк знает только по переводам со своими клиентами.
 """
 
@@ -30,7 +30,7 @@ NODE_FEATURES = [
 
 @dataclass
 class Graph:
-    """Граф одного окна. Узлы — (банк, счёт); `owner_bank` — банк-хозяин узла."""
+    """Граф одного окна. Узлы: (банк, счёт); `owner_bank`: банк-хозяин узла."""
 
     node_bank: np.ndarray
     node_account: np.ndarray
@@ -41,7 +41,7 @@ class Graph:
     edge_day: np.ndarray
     edge_label: np.ndarray
     node_label: np.ndarray  # транзитный счёт за окно
-    owner: str | None  # банк, чей это локальный граф (None — общий граф)
+    owner: str | None  # банк, чей это локальный граф (None: общий граф)
 
     @property
     def num_nodes(self) -> int:
@@ -150,7 +150,7 @@ def node_features(df: pl.DataFrame, end_day: date) -> pl.DataFrame:
 
 
 def build_graph(df: pl.DataFrame, end_day: date, owner: str | None = None) -> Graph:
-    """Граф по переводам `df` с днями ≤ `end_day`. Для локального графа `owner` — банк:
+    """Граф по переводам `df` с днями ≤ `end_day`. Для локального графа `owner`: банк:
     узлы других банков помечаются внешними."""
     df = df.filter(pl.col("day") <= end_day)
     edges = edge_features(df)

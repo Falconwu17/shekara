@@ -19,7 +19,7 @@ RESULTS = Path(__file__).resolve().parents[1] / "experiments" / "results"
 CASE = RESULTS / "demo_case.json"
 
 st.set_page_config(page_title="ШЕКАРА", page_icon="🛡", layout="wide")
-st.title("ШЕКАРА — межбанковский поиск сетей дропов без обмена клиентскими данными")
+st.title("ШЕКАРА: межбанковский поиск сетей дропов без обмена клиентскими данными")
 
 
 def money(v: int) -> str:
@@ -27,7 +27,7 @@ def money(v: int) -> str:
 
 
 def pct(v) -> str:
-    return "—" if v is None else f"{v:.2f}"
+    return "-" if v is None else f"{v:.2f}"
 
 
 @st.cache_data
@@ -47,11 +47,11 @@ tab_scene, tab_bank, tab_op, tab_exp = st.tabs(["Сцена", "Банк", "Оп�
 # ---------------- Сцена ----------------
 with tab_scene:
     if case is None:
-        st.warning("Нет experiments/results/demo_case.json — запустите `py -m demo.replay`.")
+        st.warning("Нет experiments/results/demo_case.json: запустите `py -m demo.replay`.")
     else:
         st.subheader(f"Реальный тестовый паттерн AMLworld № {case['pattern_id']} ({case['pattern_type']})")
-        st.caption("Суммы пересчитаны в тенге по фиксированному курсу только для показа. Баллы — те же модели, "
-                   "что в метриках. «Отправитель/получатель» — балл, который этот банк видит сам.")
+        st.caption("Суммы пересчитаны в тенге по фиксированному курсу только для показа. Баллы: те же модели, "
+                   "что в метриках. «Отправитель/получатель»: балл, который этот банк видит сам.")
         thr = case["thresholds"]
         rows = []
         for s in case["steps"]:
@@ -63,10 +63,10 @@ with tab_scene:
                 "изоляция: получатель": pct(s["isolation_receiver"]), "ШЕКАРА: получатель": pct(s["C_L3_receiver"]),
                 "выпуск о получателе: транзит / макс. входящий": (
                     f"{pct(s.get('release_about_receiver'))} / {pct(s.get('release_in_max'))}"
-                    if s.get("release_night") else "—"),
+                    if s.get("release_night") else "-"),
             })
         st.dataframe(pl.DataFrame(rows), use_container_width=True, hide_index=True)
-        st.caption(f"● — банк-участник ШЕКАРЫ. Порог алерта (выбран на валидации): изоляция {thr['isolation']:.2f}, "
+        st.caption(f"●: банк-участник ШЕКАРЫ. Порог алерта (выбран на валидации): изоляция {thr['isolation']:.2f}, "
                    f"ШЕКАРА {thr['C_L3']:.2f}.")
         pp = [s for s in case["steps"] if s["from_participant"] and s["to_participant"]]
         for s in pp:
@@ -98,7 +98,7 @@ with tab_bank:
             "балл (изоляция)": pct(s["isolation_sender"] if s["from_bank"] == bank else s["isolation_receiver"]),
             "балл (ШЕКАРА)": pct(s["C_L3_sender"] if s["from_bank"] == bank else s["C_L3_receiver"]),
         } for s in mine]), use_container_width=True, hide_index=True)
-        st.markdown("**Почему такой балл** — вклад признаков в балл перевода (модель изоляции и модель с выпусками; "
+        st.markdown("**Почему такой балл**: вклад признаков в балл перевода (модель изоляции и модель с выпусками; "
                     "положительный вклад повышает риск)")
         for s in mine:
             side = "sender" if s["from_bank"] == bank else "receiver"
@@ -114,7 +114,7 @@ with tab_bank:
                             st.dataframe(pl.DataFrame([{"признак": x["feature"], "вклад": round(x["contrib"], 2)} for x in e]),
                                          use_container_width=True, hide_index=True)
         q = case["queues"]
-        st.markdown("**Место своих счетов паттерна в ночной очереди** (бюджет — 0,1% активных счетов)")
+        st.markdown("**Место своих счетов паттерна в ночной очереди** (бюджет: 0,1% активных счетов)")
         rows = []
         for mode, label in (("isolation", "изоляция"), ("C_L3", "ШЕКАРА")):
             for r in q.get(mode, []):
@@ -137,7 +137,7 @@ with tab_op:
         proto = case["protocol"]
         st.markdown("**Мягкий инцидент:** оператор видит только факт и число звеньев.")
         st.json(proto.get("soft_tree", {}))
-        st.markdown("**Подтверждённый инцидент:** дерево цепочки из сегментов банков (суммы и время — только у оператора).")
+        st.markdown("**Подтверждённый инцидент:** дерево цепочки из сегментов банков (суммы и время: только у оператора).")
         tree = proto.get("confirmed_tree", {})
         if tree.get("edges"):
             dot = ["digraph G { rankdir=LR; node [shape=box, style=rounded];"]
@@ -157,7 +157,7 @@ with tab_op:
 with tab_exp:
     views = load_csv("views.csv")
     if views is None:
-        st.warning("Нет experiments/results/views.csv — запустите `py -m model.view_eval`.")
+        st.warning("Нет experiments/results/views.csv: запустите `py -m model.view_eval`.")
     else:
         st.subheader("Качество по режимам (среднее по seed)")
         names = {"all_max": "все межбанковские (максимум двух банков)", "pp_sender": "между участниками: решает банк-отправитель",
@@ -188,7 +188,7 @@ with tab_exp:
                 y="AP:Q", color=alt.value("gray"), tooltip=["линия"]) for k in ("isolation", "L3", "oracle") if k in base]
             st.altair_chart(alt.layer(chart, *rules), use_container_width=True)
             st.caption("Пунктир: изоляция, L3 (без шума), оракул. Регулятор выбирает точку на кривой. "
-                       "ε — оценка сверху (RDP, δ = 1e-5, 30 выпусков).")
+                       "ε: оценка сверху (RDP, δ = 1e-5, 30 выпусков).")
         else:
             st.info("Точки L1/L2 появятся после прогона полной сетки.")
 

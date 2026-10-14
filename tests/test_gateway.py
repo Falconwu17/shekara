@@ -26,7 +26,7 @@ def row(ts, fb, fa, tb, ta, amount="100.00"):
 
 AB_1 = row("2022/09/01 10:00", "A", "a1", "B", "b1")
 BC_NEW = row("2022/09/01 10:05", "B", "b2", "C", "c1")
-BE = row("2022/09/01 10:10", "B", "b1", "E", "e1")  # E — не участник
+BE = row("2022/09/01 10:10", "B", "b1", "E", "e1")  # E: не участник
 CB_OLD = row("2022/08/01 09:00", "C", "c2", "B", "b1")  # старше 30 дней на NOW
 AB_2 = row("2022/09/01 12:00", "A", "a2", "B", "b1")  # последний перевод b1 с A
 AB_FUTURE = row("2022/09/03 09:00", "A", "a1", "B", "b2")  # ещё не зачислен на NOW
@@ -111,8 +111,8 @@ def test_repeat_query_returns_same_release_without_spending_epsilon():
 def test_nightly_broadcast_goes_only_to_recent_participant_counterparties():
     b = gateway("B")
     sent = b.publish_nightly({"b1": 0.9}, "L1", 0.0, np.random.default_rng(0), NOW)
-    assert [m.target_bank for m in sent] == ["A"]  # C — перевод старше 30 дней, E — не участник
-    assert sent[0].tx_ref_hmac == ref_hmac("A", "B", AB_2)  # адрес — последний перевод
+    assert [m.target_bank for m in sent] == ["A"]  # C: перевод старше 30 дней, E: не участник
+    assert sent[0].tx_ref_hmac == ref_hmac("A", "B", AB_2)  # адрес: последний перевод
 
     t = gateway("A").resolve("B", sent[0].tx_ref_hmac, NOW)
     assert (t.own_account, t.counterparty_account) == ("a2", "b1")

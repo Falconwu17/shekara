@@ -1,8 +1,8 @@
-"""Проигрывание демо-паттерна (раздел 4.1, п. 5–6): реальный тестовый паттерн AMLworld,
-те же модели и баллы, что в метриках, и настоящий протокол — шлюзы банков, хаб с журналом,
+"""Проигрывание демо-паттерна (раздел 4.1, п. 5-6): реальный тестовый паттерн AMLworld,
+те же модели и баллы, что в метриках, и настоящий протокол: шлюзы банков, хаб с журналом,
 мягкий и подтверждённый инцидент, дерево оператора.
 
-Результат — experiments/results/demo_case.json для дашборда (dashboard/app.py).
+Результат: experiments/results/demo_case.json для дашборда (dashboard/app.py).
 Запуск: py -m demo.replay [--seed 1]
 """
 
@@ -30,8 +30,8 @@ from protocol.tokens import new_pair_key
 from trace.incident import IncidentDesk, Operator
 
 CASE_FILE = RESULTS_DIR / "demo_case.json"
-MODES = ("isolation", "L3", "C_L3")  # C_L3 — главный режим ШЕКАРЫ (model/combine.py)
-# Курсы только для отображения сумм в тенге (приблизительно, на 2026 год — проверить).
+MODES = ("isolation", "L3", "C_L3")  # C_L3: главный режим ШЕКАРЫ (model/combine.py)
+# Курсы только для отображения сумм в тенге (приблизительно, на 2026 год: проверить).
 KZT_RATE = {"US Dollar": 480, "Euro": 520, "UK Pound": 610, "Swiss Franc": 540, "Yuan": 66, "Yen": 3.2,
             "Rupee": 5.7, "Ruble": 5.5, "Australian Dollar": 315, "Canadian Dollar": 350, "Mexican Peso": 26,
             "Brazil Real": 88, "Saudi Riyal": 128, "Shekel": 130, "Bitcoin": 30_000_000}
@@ -51,7 +51,7 @@ def view_scores(mode: str, seed: int) -> pl.DataFrame:
 
 
 def thresholds(seed: int) -> dict[str, float]:
-    """Порог F1 каждого режима — с валидации (как в метриках)."""
+    """Порог F1 каждого режима: с валидации (как в метриках)."""
     from model.train_rounds import best_threshold
 
     out = {}

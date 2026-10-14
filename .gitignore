@@ -6,7 +6,7 @@ venv/
 .pip-cache/
 *.egg-info/
 
-# Data: датасет большой и не для git, а kaggle.json — секрет
+# Data: датасет большой и не для git, а kaggle.json: секрет
 data/raw/
 data/processed/
 *.csv
@@ -34,10 +34,14 @@ experiments/coverage/
 experiments/results/preds/
 experiments/results/check_preds/
 
-# Итоговые таблицы результатов — в репозитории (жюри видит цифры)
+# Итоговые таблицы результатов: в репозитории (жюри видит цифры)
 !experiments/results/*.csv
 experiments/results/case_candidates.csv
 
 # Ключи продакшн-стенда
 deploy/.env
 deploy/.env.*
+
+# Личные заметки автора (не для публичного репозитория)
+FAQ.md
+NOTES.md

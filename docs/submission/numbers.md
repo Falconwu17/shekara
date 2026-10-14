@@ -1,6 +1,6 @@
 # Цифры для слайдов и документов
 
-Все числа — из experiments/results (см. docs/submission/build.py).
+Все числа: из experiments/results (см. docs/submission/build.py).
 Значения «[нет данных]» нельзя выносить на слайды.
 
 | Ключ | Значение |

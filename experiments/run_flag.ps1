@@ -1,4 +1,4 @@
-# Проверка гипотезы «польза — от факта выпуска»: режим F на N = 30 (основной) и N = 100/200 (исследовательские).
+# Проверка гипотезы «польза: от факта выпуска»: режим F на N = 30 (основной) и N = 100/200 (исследовательские).
 # Запуск из корня: powershell -ExecutionPolicy Bypass -File experiments/run_flag.ps1
 $py = ".venv\Scripts\python.exe"
 & $py -u -m model.gbt --modes "F" --seeds "1,2,3" *> experiments\logs\flag_N30.log

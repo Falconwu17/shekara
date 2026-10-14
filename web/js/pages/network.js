@@ -14,7 +14,7 @@ function kpis(counters = {}) {
   const caught = counters.laundering_in ? counters.laundering_alerted / counters.laundering_in : null;
   return kpiStrip([
     { label: "Переводов обработано", value: integer(counters.transfers || 0) },
-    { label: "Алертов при зачислении", value: integer(counters.alerts || 0), note: `${integer(counters.alerts_laundering || 0)} — отмывание по разметке` },
+    { label: "Алертов при зачислении", value: integer(counters.alerts || 0), note: `${integer(counters.alerts_laundering || 0)}: отмывание по разметке` },
     { label: "Входящее отмывание поймано", value: percent(caught), note: `${integer(counters.laundering_alerted || 0)} из ${integer(counters.laundering_in || 0)} межбанковских` },
     { label: "Инцидентов", value: integer((counters.incidents_soft || 0) + (counters.incidents_confirmed || 0)), note: `шагов по ссылке: ${integer(counters.hops || 0)}` },
     { label: "Ночных выпусков", value: integer(counters.releases_delivered || 0), note: `запросов днём: ${integer(counters.queries || 0)}` },
@@ -32,7 +32,7 @@ const BANK_COLUMNS = [
 export function mount(root) {
   const openBank = bank => { location.hash = `#/bank/${bank}`; };
   const kpiBox = h("div");
-  const feed = eventFeed(store.events, { empty: "Нажмите «Запустить» — переводы пойдут по времени." });
+  const feed = eventFeed(store.events, { empty: "Нажмите «Запустить»: переводы пойдут по времени." });
   const ring = bankRing(store.sim?.participants || [], openBank);
   const banksBox = h("div", { class: "scroll" });
   const release = store.sim?.release;
@@ -40,13 +40,13 @@ export function mount(root) {
   render(root,
     h("div", { class: "page-head" },
       h("h1", {}, "Сеть банков-участников"),
-      h("span", { class: "muted" }, "Пунктир — граница банка. Вспышка — алерт, линия — шаг инцидента по ссылке.")),
+      h("span", { class: "muted" }, "Пунктир: граница банка. Вспышка: алерт, линия: шаг инцидента по ссылке.")),
     kpiBox,
     h("div", { class: "grid grid-wide" },
       panel(`${store.sim?.participants.length ?? 0} банков-участников`, {
         aside: release ? `выпуски: ${release.level}, σ = ${decimal(release.sigma, 2)}` : null, body: ring.el }),
       panel("Лента протокола", { aside: "хаб видит только метаданные", body: feed.el })),
-    panel("Банки", { aside: "бюджет алертов — 0,1% активных счетов в сутки", body: banksBox }));
+    panel("Банки", { aside: "бюджет алертов: 0,1% активных счетов в сутки", body: banksBox }));
 
   const drawKpis = sim => render(kpiBox, kpis(sim?.counters));
   drawKpis(store.sim);

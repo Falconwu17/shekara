@@ -8,7 +8,7 @@ APP = Path(__file__).resolve().parents[1] / "dashboard" / "app.py"
 CASE = Path(__file__).resolve().parents[1] / "experiments" / "results" / "demo_case.json"
 
 
-@pytest.mark.skipif(not CASE.exists(), reason="нет demo_case.json — сначала py -m demo.replay")
+@pytest.mark.skipif(not CASE.exists(), reason="нет demo_case.json: сначала py -m demo.replay")
 def test_dashboard_renders_all_tabs():
     from streamlit.testing.v1 import AppTest
 

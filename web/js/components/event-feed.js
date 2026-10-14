@@ -8,7 +8,7 @@ const DESCRIBE = {
   alert: e => [chip("алерт", "alert"), [
     "банк ", h("b", {}, e.bank), ": счёт ", h("span", { class: "mono" }, e.account),
     `, балл ${decimal(e.score)} · входящий из ${e.from_bank}`,
-    e.laundering ? [" ", chip("в разметке — отмывание", "risk")] : null]],
+    e.laundering ? [" ", chip("в разметке: отмывание", "risk")] : null]],
   incident: e => [chip("инцидент", "risk"), [
     "банк ", h("b", {}, e.bank), ` открыл ${e.incident_kind === "soft" ? "мягкий" : "подтверждённый"} инцидент `,
     h("span", { class: "mono" }, e.incident)]],

@@ -88,7 +88,7 @@ def test_forward_only_credited_transfers_within_window_and_once():
     _, desks = build("I1")
     iid = desks["B"].open("b1", "confirmed", now=t("19:56"), anchor=t("19:55"))
     assert desks["B"].forward(iid, "b1", t("19:57")) == []  # 19:58 ещё не зачислены
-    assert len(desks["B"].forward(iid, "b1", t("20:00"))) == 2  # c9 в 21:30 — вне Δt
+    assert len(desks["B"].forward(iid, "b1", t("20:00"))) == 2  # c9 в 21:30: вне Δt
     assert desks["B"].forward(iid, "b1", t("22:00")) == []
 
 

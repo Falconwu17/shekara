@@ -108,9 +108,9 @@ def test_independent_banks_agree_on_shared_transfers():
     refs_a = compute_tx_refs(view_a)
     refs_b = compute_tx_refs(view_b)
 
-    # TransferKey — именно равные (неотличимые) дубли сравниваются по значению,
+    # TransferKey: именно равные (неотличимые) дубли сравниваются по значению,
     # поэтому сопоставляем не словарём (ключи-дубли схлопнутся), а по позиции
-    # внутри общей для A и B подпоследовательности AB-переводов — она в обоих
+    # внутри общей для A и B подпоследовательности AB-переводов: она в обоих
     # представлениях идёт в одном и том же относительном порядке файла.
     def ab_subsequence(view, refs):
         return [ref for row, ref in zip(view, refs) if row.from_bank == "A" and row.to_bank == "B"]

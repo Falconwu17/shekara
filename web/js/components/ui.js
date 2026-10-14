@@ -8,9 +8,9 @@ export function chip(text, kind = "muted") {
   return h("span", { class: `chip chip-${kind}` }, text);
 }
 
-/** Шкала балла 0…1; выше порога — подсвечена. */
+/** Шкала балла 0…1; выше порога: подсвечена. */
 export function scoreBar(value, threshold) {
-  if (value == null) return h("span", { class: "muted" }, "—");
+  if (value == null) return h("span", { class: "muted" }, "-");
   const high = threshold != null && value >= threshold;
   return h("span", { class: "score" },
     h("i", {}, h("b", { class: high ? "high" : "", style: { width: `${Math.max(3, value * 100)}%` } })),

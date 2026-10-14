@@ -22,7 +22,7 @@ TABLE_3_4 = [
 
 @pytest.mark.parametrize("level,sigma,k,expected", TABLE_3_4)
 def test_epsilon_matches_table_3_4(level, sigma, k, expected):
-    # та же формула, что в таблице; допуск — на округление чисел в документе
+    # та же формула, что в таблице; допуск: на округление чисел в документе
     assert epsilon(k, noise_multiplier(level, sigma)) == pytest.approx(expected, rel=0.1)
 
 
