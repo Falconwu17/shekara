@@ -1,49 +1,5 @@
 # Стенд ШЕКАРЫ в Oracle Cloud
 
-Итог: сайт по адресу `https://<ваш-IP>.sslip.io` (или своё имя) с настоящим сертификатом. Стенд сам проигрывает тестовые дни по кругу. Управление временем закрыто ключом администратора, вид оператора: токеном. Тариф Always Free: денег не списывают.
-
-## 1. Аккаунт и сервер (делаете вы, ~20 минут)
-
-1. Зарегистрируйтесь на oracle.com/cloud/free. Карта нужна только для проверки. Регион выбирайте поближе (Frankfurt или любой другой с ARM), сменить его потом нельзя.
-2. В консоли: **☰ → Compute → Instances → Create instance** (или плитка **Create a VM instance** на главной). Уже выбранный домашний регион виден справа сверху (например «Germany Central (Frankfurt)»): после создания ресурсов менять его нельзя.
-   - Image: **Canonical Ubuntu 22.04** (или 24.04);
-   - Shape: **Ampere → VM.Standard.A1.Flex**, **2 OCPU, 12 GB**: бесплатно (до 4 OCPU / 24 GB);
-   - Networking: оставить по умолчанию, **Assign a public IPv4 address**: да;
-   - SSH keys: **Generate a key pair for me** → скачайте приватный ключ (например, `C:\keys\oracle.key`).
-3. Откройте порты: Instance → Subnet → **Security List → Add Ingress Rules**:
-   source `0.0.0.0/0`, TCP, destination port **80**; ещё одно правило: порт **443**.
-4. Запишите **Public IP** сервера.
-5. Дождитесь состояния **Running** (1-2 минуты) и возьмите **Public IP** из списка Instances: он нужен в шагах 2 и 3. Из него же получится адрес стенда: точки заменяются дефисами, `158.101.12.34` → `https://158-101-12-34.sslip.io`.
-
-Если A1 пишет «Out of capacity»: повторите позже или выберите другой Availability Domain.
-
-## 2. Настройка сервера (одна команда)
-
-```powershell
-ssh -i C:\keys\oracle.key ubuntu@<IP>
-```
-На сервере:
-```bash
-curl -fsSL https://raw.githubusercontent.com/Falconwu17/shekara/main/deploy/bootstrap.sh | bash
-exit
-```
-Скрипт ставит Docker, открывает 80/443 во встроенном файрволе, клонирует репозиторий и создаёт `~/shekara/deploy/.env` с адресом и случайными ключами. Ключи он печатает: сохраните их.
-
-## 3. Данные и запуск (с вашего компьютера, из `D:\shekara`)
-
-```powershell
-powershell -ExecutionPolicy Bypass -File deploy\push.ps1 -Server <IP> -Key C:\keys\oracle.key
-```
-Скрипт собирает архив (~200 МБ: базы банков и результаты эксперимента), отправляет его на сервер, собирает образ и поднимает стенд. Первая сборка на ARM: 3-5 минут, старт стенда: около 20 секунд.
-
-Сайт: `https://<IP с дефисами>.sslip.io`, например `https://158-101-12-34.sslip.io`.
-
-**Проверка после заливки.**
-1. Адрес открывается по HTTPS без предупреждений браузера (сертификат Let's Encrypt). Первый запрос после старта может занять 5-15 секунд, пока Caddy получает сертификат.
-2. `https://<IP с дефисами>.sslip.io/v1/health` возвращает JSON с списком банков и режимом инцидентов.
-3. На сайте работает кнопка «Ключ администратора» (пуск/пауза, скорость, режим, сброс), страница «Оператор» принимает `SHEKARA_OPERATOR_TOKEN`, в ленте идут события протокола.
-4. Логи приложения: команда из раздела «Управление»; там видно проигрывание тестовых дней по кругу.
-
 ## Управление
 
 - **Ключ администратора** (`SHEKARA_ADMIN_TOKEN` в `~/shekara/deploy/.env`): на сайте кнопка «Ключ администратора»: после ввода появляются пуск/пауза, скорость, режим и сброс.
@@ -51,16 +7,6 @@ powershell -ExecutionPolicy Bypass -File deploy\push.ps1 -Server <IP> -Key C:\ke
 - Обновить код: снова `deploy\push.ps1`.
 - Логи: `ssh ... "cd ~/shekara && docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env logs -f app"`.
 
-## Своё имя вместо sslip.io
-
-**Свой домен (например, `21restobar.kz`).** Основной сайт домена не трогаем: заводим поддомен:
-
-1. В панели регистратора домена (DNS-записи) добавить запись: тип **A**, имя **`shekara`**, значение: **Public IP** сервера, TTL 300. Остальные записи не менять.
-2. Подождать 5-30 минут и проверить: `nslookup shekara.21restobar.kz` должен вернуть IP сервера.
-3. На сервере в `~/shekara/deploy/.env` поставить `SHEKARA_DOMAIN=shekara.21restobar.kz` и выполнить
-   `docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env up -d`. Caddy сам получит сертификат Let's Encrypt.
-
-**Без своего домена:** duckdns.org → войти через GitHub → создать имя `shekara-kz` → вписать IP сервера → `SHEKARA_DOMAIN=shekara-kz.duckdns.org`.
 
 ## Что защищено
 
@@ -71,8 +17,3 @@ powershell -ExecutionPolicy Bypass -File deploy\push.ps1 -Server <IP> -Key C:\ke
 - **Контейнер:** не от root, файловая система только для чтения, без Linux-capabilities, `no-new-privileges`; данные смонтированы только для чтения. Swagger и схема API в публичном режиме не раздаются.
 - **Данные:** на стенде только открытый синтетический набор IBM AMLworld: персональных данных нет.
 
-## Сервер (сделать один раз)
-
-- Входить только по SSH-ключу (так в Oracle по умолчанию), ключ не пересылать в мессенджерах.
-- В Security List открыты только 22, 80, 443. Порт 22 можно ограничить своим IP.
-- Обновления: `sudo apt update && sudo apt upgrade -y` раз в неделю (автообновления безопасности в Ubuntu включены по умолчанию).
