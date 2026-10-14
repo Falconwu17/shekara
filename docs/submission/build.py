@@ -154,7 +154,7 @@ def results_en(n) -> str:
         f"laundering transfers cross a bank boundary (AMLworld). (1) Models on each bank's own graph clearly beat a central "
         f"operator that sees only interbank flows (the MITS approach): PR-AUC {f(n['isolation|all_max|ap'])}–"
         f"{f(n[f'{MAIN}|all_max|ap'])} versus {f(n['operator|all_max|ap'])}, F1 +{f(po.get('diff'), 2)} (paired bootstrap "
-        f"over patterns, significant in {po.get('seeds', NA)} of {po.get('seeds', NA)} runs). (2) With 30 participating banks "
+        f"over patterns, significant in {po.get('seeds_positive', NA)} of {po.get('seeds', NA)} runs). (2) With 30 participating banks "
         f"({n['pos_all'] or NA} positive test transfers, only ~19% of them between two participants) exchanging risk "
         f"estimates raises PR-AUC from {f(n['isolation|all_max|ap'])} to {f(n[f'{MAIN}|all_max|ap'])} ({p(g)}) in all "
         f"three runs, but the F1 gain (+{f(pi.get('diff'))}) is not statistically significant; about half of it comes from "
