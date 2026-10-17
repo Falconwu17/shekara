@@ -3,9 +3,9 @@
   "pattern_type": "SCATTER-GATHER",
   "seed": 1,
   "thresholds": {
-    "isolation": 0.5223559253345972,
-    "L3": 0.3179261689828998,
-    "C_L3": 0.49662503015228343
+    "isolation": 0.34883136845125867,
+    "L3": 0.06878554141128478,
+    "C_L3": 0.23110229622397696
   },
   "participants_in_pattern": [
     "006",
@@ -165,7 +165,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.002051871079789707,
+      "isolation_receiver": 0.012940643615994658,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -194,7 +194,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.00012104919369517249,
+      "L3_receiver": 0.0018571222000256706,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -223,7 +223,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.0010864601367424399,
+      "C_L3_receiver": 0.007398882908010164,
       "C_L3_alert_sender": false
     },
     {
@@ -286,7 +286,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.14826638966850444,
+      "isolation_receiver": 0.05855862351890485,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -315,7 +315,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.007363338738896306,
+      "L3_receiver": 0.06878554141128478,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -344,7 +344,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.07781486420370037,
+      "C_L3_receiver": 0.06367208246509481,
       "C_L3_alert_sender": false
     },
     {
@@ -430,7 +430,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.8281730996840151,
+      "isolation_receiver": 0.7792975404744604,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -459,7 +459,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.028357150343734473,
+      "L3_receiver": 0.0010813338956883408,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -488,7 +488,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.42826512501387476,
+      "C_L3_receiver": 0.3901894371850744,
       "C_L3_alert_sender": false
     },
     {
@@ -505,7 +505,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.08731255289684405,
+      "isolation_receiver": 0.13823178381990198,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -534,7 +534,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.0006652885861039736,
+      "L3_receiver": 0.004265180464404959,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -563,7 +563,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.04398892074147401,
+      "C_L3_receiver": 0.07124848214215347,
       "C_L3_alert_sender": false
     },
     {
@@ -580,7 +580,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.28453290632107997,
+      "isolation_receiver": 0.19728452988795286,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -609,7 +609,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.005990798592083777,
+      "L3_receiver": 0.004265180464404959,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -638,7 +638,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.14526185245658188,
+      "C_L3_receiver": 0.10077485517617892,
       "C_L3_alert_sender": false
     },
     {
@@ -655,7 +655,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.04971847261022731,
+      "isolation_receiver": 0.13823178381990198,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -684,7 +684,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.005689892509317863,
+      "L3_receiver": 0.004265180464404959,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -713,7 +713,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.027704182559772587,
+      "C_L3_receiver": 0.07124848214215347,
       "C_L3_alert_sender": false
     },
     {
@@ -730,7 +730,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.2702314005001546,
+      "isolation_receiver": 0.19728452988795286,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -759,7 +759,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.9906610926072944,
+      "L3_receiver": 0.9919819725509308,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -788,7 +788,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.6304462465537245,
+      "C_L3_receiver": 0.5946332512194419,
       "C_L3_alert_sender": false
     },
     {
@@ -805,7 +805,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.06319143278830137,
+      "isolation_receiver": 0.19728452988795286,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -834,7 +834,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.96416920114231,
+      "L3_receiver": 0.9919819725509308,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -863,7 +863,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.5136803169653057,
+      "C_L3_receiver": 0.5946332512194419,
       "C_L3_alert_sender": false
     },
     {
@@ -879,8 +879,8 @@
       "channel": "межбанковский перевод по реквизитам (клиринг)",
       "from_participant": true,
       "to_participant": true,
-      "isolation_sender": 0.9999868783589149,
-      "isolation_receiver": 0.0010645929801246395,
+      "isolation_sender": 0.9999868276960118,
+      "isolation_receiver": 0.18110116362931458,
       "isolation_alert_sender": true,
       "isolation_sender_explain": [
         {
@@ -934,8 +934,8 @@
           "contrib": 1.0007236743832153
         }
       ],
-      "L3_sender": 0.942420055929878,
-      "L3_receiver": 0.0033583465608492367,
+      "L3_sender": 0.9881078051584337,
+      "L3_receiver": 0.0006989944238382762,
       "L3_alert_sender": true,
       "L3_sender_explain": [
         {
@@ -989,12 +989,12 @@
           "contrib": -0.436971292582027
         }
       ],
-      "C_L3_sender": 0.9712034671443964,
-      "C_L3_receiver": 0.002211469770486938,
+      "C_L3_sender": 0.9940473164272228,
+      "C_L3_receiver": 0.09090007902657643,
       "C_L3_alert_sender": true,
-      "release_about_receiver": 2.6166458720388737e-09,
+      "release_about_receiver": 4.516852778352304e-05,
       "release_night": "2022-09-09",
-      "release_in_max": 0.8281730996840151
+      "release_in_max": 0.7792975404744604
     },
     {
       "row_no": 3411067,
@@ -1010,7 +1010,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.03824705207805253,
+      "isolation_receiver": 0.18110116362931458,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -1039,7 +1039,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.0001806590620839249,
+      "L3_receiver": 0.0006989944238382762,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -1068,7 +1068,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.01921385557006823,
+      "C_L3_receiver": 0.09090007902657643,
       "C_L3_alert_sender": false
     },
     {
@@ -1085,7 +1085,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.0007664110939686669,
+      "isolation_receiver": 0.0025738864154678407,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -1114,7 +1114,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.0011824779325111398,
+      "L3_receiver": 0.0015326122393710994,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -1143,7 +1143,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.0009744445132399034,
+      "C_L3_receiver": 0.00205324932741947,
       "C_L3_alert_sender": false
     },
     {
@@ -1159,9 +1159,9 @@
       "channel": "межбанковский перевод по реквизитам (клиринг)",
       "from_participant": true,
       "to_participant": true,
-      "isolation_sender": 0.7414717357054111,
-      "isolation_receiver": 0.0013357534692319923,
-      "isolation_alert_sender": true,
+      "isolation_sender": 0.3436522444492992,
+      "isolation_receiver": 0.0025738864154678407,
+      "isolation_alert_sender": false,
       "isolation_sender_explain": [
         {
           "feature": "формат: ACH",
@@ -1214,9 +1214,9 @@
           "contrib": 0.48501760067011496
         }
       ],
-      "L3_sender": 0.34997744425557503,
-      "L3_receiver": 0.0013043087073194434,
-      "L3_alert_sender": true,
+      "L3_sender": 0.0014886899759625298,
+      "L3_receiver": 0.0015326122393710994,
+      "L3_alert_sender": false,
       "L3_sender_explain": [
         {
           "feature": "получатель: входящих переводов",
@@ -1269,12 +1269,12 @@
           "contrib": -0.33001146127852354
         }
       ],
-      "C_L3_sender": 0.5457245899804931,
-      "C_L3_receiver": 0.0013200310882757178,
-      "C_L3_alert_sender": true,
-      "release_about_receiver": 2.6166458720388737e-09,
+      "C_L3_sender": 0.17257046721263086,
+      "C_L3_receiver": 0.00205324932741947,
+      "C_L3_alert_sender": false,
+      "release_about_receiver": 4.516852778352304e-05,
       "release_night": "2022-09-09",
-      "release_in_max": 0.8281730996840151
+      "release_in_max": 0.7792975404744604
     },
     {
       "row_no": 3411076,
@@ -1290,7 +1290,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.5143214817110092,
+      "isolation_receiver": 0.7792975404744604,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -1319,7 +1319,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.1449891965708295,
+      "L3_receiver": 0.0006498501170596534,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -1348,7 +1348,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.3296553391409194,
+      "C_L3_receiver": 0.38997369529576004,
       "C_L3_alert_sender": false
     },
     {
@@ -1365,7 +1365,7 @@
       "from_participant": false,
       "to_participant": true,
       "isolation_sender": null,
-      "isolation_receiver": 0.021383535035372127,
+      "isolation_receiver": 0.18110116362931458,
       "isolation_alert_sender": false,
       "isolation_receiver_explain": [
         {
@@ -1394,7 +1394,7 @@
         }
       ],
       "L3_sender": null,
-      "L3_receiver": 0.0012664279851070182,
+      "L3_receiver": 0.0006989944238382762,
       "L3_alert_sender": false,
       "L3_receiver_explain": [
         {
@@ -1423,7 +1423,7 @@
         }
       ],
       "C_L3_sender": null,
-      "C_L3_receiver": 0.011324981510239572,
+      "C_L3_receiver": 0.09090007902657643,
       "C_L3_alert_sender": false
     }
   ],
@@ -1450,7 +1450,7 @@
             "out": [
               {
                 "bank": "01292",
-                "tx_ref_hmac": "2bda661edaddf2af380e78610fff444e5608cef392bf76d445b35b493a7a3766",
+                "tx_ref_hmac": "dc5d5bd98ffbc93a66cf612d40e5a56017dac227963c30473dc75039d42aa407",
                 "amount": "6616.04",
                 "time": "2022-09-10T04:14:00"
               }
@@ -1468,7 +1468,7 @@
             "hop_no": 1,
             "anchor": "2022-09-10T04:14:00",
             "in_bank": "006",
-            "in_ref": "2bda661edaddf2af380e78610fff444e5608cef392bf76d445b35b493a7a3766",
+            "in_ref": "dc5d5bd98ffbc93a66cf612d40e5a56017dac227963c30473dc75039d42aa407",
             "out": []
           }
         ]
@@ -1507,7 +1507,7 @@
             "out": [
               {
                 "bank": "01292",
-                "tx_ref_hmac": "2bda661edaddf2af380e78610fff444e5608cef392bf76d445b35b493a7a3766",
+                "tx_ref_hmac": "dc5d5bd98ffbc93a66cf612d40e5a56017dac227963c30473dc75039d42aa407",
                 "amount": "6616.04",
                 "time": "2022-09-10T04:14:00"
               }
@@ -1525,7 +1525,7 @@
             "hop_no": 1,
             "anchor": "2022-09-10T04:14:00",
             "in_bank": "006",
-            "in_ref": "2bda661edaddf2af380e78610fff444e5608cef392bf76d445b35b493a7a3766",
+            "in_ref": "dc5d5bd98ffbc93a66cf612d40e5a56017dac227963c30473dc75039d42aa407",
             "out": []
           }
         ]
@@ -1558,14 +1558,14 @@
     "audit": {
       "entries": 2,
       "verify": true,
-      "head": "7de9fc5419e1784a277866b22bccb9b27d2c693e1d84458eb509c6f96dba5ed6",
+      "head": "48a37e934b02a8e3be7c8f42b575446ec6564c8f923debde22b61794e3304a21",
       "sample": [
         {
           "ts": "2022-09-10T04:14:00",
           "kind": "incident_soft",
           "src": "006",
           "dst": "01292",
-          "ref_hash": "71e65c686498b8d31e802df79036a94d50187f565f4e1d5ca99d6a2a7307f802",
+          "ref_hash": "9dd299fc4465aa3f536039d159d40f7af42282b4fb8452879443cf3565fbb7a1",
           "detail": "hop=1;ok"
         },
         {
@@ -1573,7 +1573,7 @@
           "kind": "incident_confirmed",
           "src": "006",
           "dst": "01292",
-          "ref_hash": "71e65c686498b8d31e802df79036a94d50187f565f4e1d5ca99d6a2a7307f802",
+          "ref_hash": "9dd299fc4465aa3f536039d159d40f7af42282b4fb8452879443cf3565fbb7a1",
           "detail": "hop=1;ok"
         }
       ]
@@ -1585,109 +1585,109 @@
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-07",
-        "rank": 826,
+        "rank": 90,
         "accounts": 1164,
         "budget": 2,
-        "score": 4.3120351562820795e-15
+        "score": 0.00033575038134001865
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-08",
-        "rank": 530,
+        "rank": 87,
         "accounts": 1164,
         "budget": 2,
-        "score": 1.983047023455952e-08
+        "score": 0.00033575038134001865
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-09",
-        "rank": 391,
+        "rank": 80,
         "accounts": 1166,
         "budget": 2,
-        "score": 7.21584696769473e-08
+        "score": 0.00033575038134001865
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-10",
-        "rank": 877,
+        "rank": 1166,
         "accounts": 1166,
         "budget": 2,
-        "score": 1.343009262174854e-62
+        "score": 2.1878132137168652e-100
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-07",
-        "rank": 798,
+        "rank": 355,
         "accounts": 1010,
         "budget": 2,
-        "score": 5.390408156030408e-288
+        "score": 0.00015139033843122125
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-08",
-        "rank": 40,
+        "rank": 66,
         "accounts": 1010,
         "budget": 2,
-        "score": 0.0008029258546164618
+        "score": 0.0005559776041409692
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-09",
-        "rank": 23,
+        "rank": 56,
         "accounts": 1013,
         "budget": 2,
-        "score": 0.0022424707318928
+        "score": 0.0005559776041409692
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-10",
-        "rank": 127,
+        "rank": 111,
         "accounts": 1013,
         "budget": 2,
-        "score": 1.629463102872068e-05
+        "score": 0.0003645929085677257
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-07",
-        "rank": 891,
+        "rank": 600,
         "accounts": 996,
         "budget": 1,
-        "score": 0.0
+        "score": 0.0001285562786565136
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-08",
-        "rank": 287,
+        "rank": 903,
         "accounts": 997,
         "budget": 1,
-        "score": 2.8994859853080555e-07
+        "score": 0.00010152804552483131
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-09",
-        "rank": 537,
+        "rank": 923,
         "accounts": 997,
         "budget": 1,
-        "score": 2.6166458720388737e-09
+        "score": 4.516852778352304e-05
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-10",
-        "rank": 267,
+        "rank": 74,
         "accounts": 1000,
         "budget": 1,
-        "score": 3.783301331006022e-07
+        "score": 0.0035373219724748753
       }
     ],
     "L3": [
@@ -1695,109 +1695,109 @@
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-07",
-        "rank": 72,
+        "rank": 896,
         "accounts": 1164,
         "budget": 2,
-        "score": 3.967264965428349e-06
+        "score": 1.5212408377801691e-05
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-08",
-        "rank": 73,
+        "rank": 1074,
         "accounts": 1164,
         "budget": 2,
-        "score": 2.1656848625559228e-06
+        "score": 5.883240682521242e-06
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-09",
-        "rank": 58,
+        "rank": 1073,
         "accounts": 1166,
         "budget": 2,
-        "score": 9.669340876342772e-07
+        "score": 5.883240682521242e-06
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-10",
-        "rank": 102,
+        "rank": 10,
         "accounts": 1166,
         "budget": 2,
-        "score": 7.570610073858239e-09
+        "score": 0.18554170548209736
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-07",
-        "rank": 556,
+        "rank": 472,
         "accounts": 1010,
         "budget": 2,
-        "score": 6.283072849801745e-20
+        "score": 2.979924185792153e-05
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-08",
-        "rank": 78,
+        "rank": 245,
         "accounts": 1010,
         "budget": 2,
-        "score": 7.47111821930342e-07
+        "score": 4.740510663259064e-05
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-09",
-        "rank": 91,
+        "rank": 220,
         "accounts": 1013,
         "budget": 2,
-        "score": 3.598364222583633e-07
+        "score": 4.740510663259064e-05
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-10",
-        "rank": 119,
+        "rank": 803,
         "accounts": 1013,
         "budget": 2,
-        "score": 1.7228420377114436e-08
+        "score": 1.3129313141946978e-05
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-07",
-        "rank": 969,
+        "rank": 282,
         "accounts": 996,
         "budget": 1,
-        "score": 0.0
+        "score": 3.6920580246026105e-05
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-08",
-        "rank": 197,
+        "rank": 37,
         "accounts": 997,
         "budget": 1,
-        "score": 4.0242384617037124e-11
+        "score": 0.0006694444136739891
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-09",
-        "rank": 129,
+        "rank": 182,
         "accounts": 997,
         "budget": 1,
-        "score": 8.267742765828312e-10
+        "score": 4.511414591077016e-05
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-10",
-        "rank": 308,
+        "rank": 923,
         "accounts": 1000,
         "budget": 1,
-        "score": 4.900145573874529e-14
+        "score": 2.7190593934486504e-06
       }
     ],
     "C_L3": [
@@ -1805,109 +1805,109 @@
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-07",
-        "rank": 205,
+        "rank": 127,
         "accounts": 1164,
         "budget": 2,
-        "score": 1.983632484870192e-06
+        "score": 0.00017548139485891017
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-08",
-        "rank": 215,
+        "rank": 135,
         "accounts": 1164,
         "budget": 2,
-        "score": 1.0927576663952411e-06
+        "score": 0.00017081681101126995
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-09",
-        "rank": 217,
+        "rank": 137,
         "accounts": 1166,
         "budget": 2,
-        "score": 5.195462786556123e-07
+        "score": 0.00017081681101126995
       },
       {
         "bank": "006",
         "account": "80A1FB9F0",
         "end_day": "2022-09-10",
-        "rank": 630,
+        "rank": 44,
         "accounts": 1166,
         "budget": 2,
-        "score": 3.7853050369291195e-09
+        "score": 0.09277085274104868
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-07",
-        "rank": 790,
+        "rank": 383,
         "accounts": 1010,
         "budget": 2,
-        "score": 3.1415364249008726e-20
+        "score": 9.059479014457139e-05
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-08",
-        "rank": 57,
+        "rank": 122,
         "accounts": 1010,
         "budget": 2,
-        "score": 0.0004018364832191961
+        "score": 0.0003016913553867799
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-09",
-        "rank": 51,
+        "rank": 103,
         "accounts": 1013,
         "budget": 2,
-        "score": 0.0011214152841575293
+        "score": 0.0003016913553867799
       },
       {
         "bank": "011",
         "account": "80031A110",
         "end_day": "2022-09-10",
-        "rank": 151,
+        "rank": 144,
         "accounts": 1013,
         "budget": 2,
-        "score": 8.155929724548898e-06
+        "score": 0.00018886111085483632
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-07",
-        "rank": 987,
+        "rank": 452,
         "accounts": 996,
         "budget": 1,
-        "score": 0.0
+        "score": 8.273842945126985e-05
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-08",
-        "rank": 313,
+        "rank": 79,
         "accounts": 997,
         "budget": 1,
-        "score": 1.449944204577113e-07
+        "score": 0.0003854862295994102
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-09",
-        "rank": 561,
+        "rank": 917,
         "accounts": 997,
         "budget": 1,
-        "score": 1.7217100743108525e-09
+        "score": 4.5141336847146605e-05
       },
       {
         "bank": "01292",
         "account": "80AE68D00",
         "end_day": "2022-09-10",
-        "rank": 292,
+        "rank": 90,
         "accounts": 1000,
         "budget": 1,
-        "score": 1.8916509105102897e-07
+        "score": 0.001770020515934162
       }
     ]
   }

@@ -133,8 +133,10 @@ def check_retrain() -> list[tuple[str, bool, str]]:
 
     class Shuffled(gb.GBTExperiment):
         def fit(self, rows, fold=None, **kw):
+            # метки перемешаны и в обучении, и на дне валидации, по которому выбирается число деревьев:
+            # иначе ранняя остановка подбирала бы случайную модель по настоящим меткам
             rng = np.random.default_rng(0)
-            for r in rows:
+            for r in rows + (kw.get("val") or []):
                 r.ye = rng.permutation(r.ye)
             return super().fit(rows, fold, **kw)
 
