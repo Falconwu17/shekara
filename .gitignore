@@ -58,3 +58,4 @@ experiments/logs/server.log
 
 # Диагностические прогоны: баллы
 experiments/probe/
+experiments/results_v1/

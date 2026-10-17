@@ -11,6 +11,11 @@ p, максимум и среднее баллов E по входящим и и
 Раунд 1: выпуски: признаки внешних узлов; через средние по соседям они доходят до своих
 счетов. Кросс-фиттинг, окна и сохранение баллов: как в model/train_rounds.py.
 
+Попарные признаки перевода u → v (число переводов между u и v, переводы v с клиентами банка u и
+u с клиентами банка v) получают все режимы. Изолированный банк видит этот сигнал и без них: внешний
+узел в его графе известен только по переводам с его клиентами. Без этих признаков общий граф и
+оператор были занижены (experiments/probe_pooled.py, 17.10.2026).
+
 Запуск: py -m model.gbt --modes isolation,L3,oracle --seeds 1,2,3
 """
 
@@ -37,6 +42,11 @@ H_DIM = 8
 # без подвыборок строк и признаков: разброс между seed втрое меньше, AP не хуже (см. STATUS)
 LGB_PARAMS = dict(n_estimators=800, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=1.0,
                   colsample_bytree=1.0, verbose=-1, n_jobs=-1)
+
+# experiments/probe_pooled.py выключает их, чтобы воспроизвести первую версию эксперимента
+PAIR_FEATURES = True
+PAIR_NAMES = ["переводов между отправителем и получателем", "переводов получателя с клиентами банка отправителя",
+              "переводов отправителя с клиентами банка получателя"]
 
 SIGMAS_L1 = (0.1, 0.25, 0.5, 2.0, 4.0)
 SIGMAS_L2 = (0.1, 0.25, 0.5)
@@ -69,6 +79,21 @@ def _scatter_max(vals: np.ndarray, idx: np.ndarray, n: int) -> np.ndarray:
     return out
 
 
+def pair_features(g: Graph) -> np.ndarray:
+    """Попарные признаки каждого перевода графа (по переводам окна, как признаки узлов)."""
+    s, d = g.edge_index
+    lo, hi = np.minimum(s, d), np.maximum(s, d)
+    pair = pl.DataFrame({"a": lo, "b": hi}).with_columns(pl.len().over("a", "b").alias("n"))["n"].to_numpy()
+    banks = g.node_bank
+    ends = pl.DataFrame({"node": np.concatenate([s, d]), "cp_bank": np.concatenate([banks[d], banks[s]])})
+    nb = ends.group_by("node", "cp_bank").agg(pl.len().alias("k"))
+    e = pl.DataFrame({"src": s, "dst": d, "sb": banks[s], "db": banks[d]})
+    dst_with_sb = e.join(nb, left_on=["dst", "sb"], right_on=["node", "cp_bank"], how="left", maintain_order="left")["k"]
+    src_with_db = e.join(nb, left_on=["src", "db"], right_on=["node", "cp_bank"], how="left", maintain_order="left")["k"]
+    cols = [pair, dst_with_sb.fill_null(0).to_numpy(), src_with_db.fill_null(0).to_numpy()]
+    return np.log1p(np.stack(cols, axis=1)).astype(np.float32)
+
+
 @dataclass
 class Mats:
     g: Graph
@@ -92,7 +117,8 @@ def make_mats(g: Graph, participants: list[str], extra: np.ndarray | None = None
             _scatter_max(np.concatenate([flagged[s], flagged[d]]), both, g.num_nodes)[:, None].astype(np.float32),
         ]
     nx = np.hstack(parts).astype(np.float32)
-    return Mats(g, nx, np.hstack([g.edge_attr, nx[s], nx[d]]).astype(np.float32))
+    edge = [g.edge_attr, nx[s], nx[d]] + ([pair_features(g)] if PAIR_FEATURES else [])
+    return Mats(g, nx, np.hstack(edge).astype(np.float32))
 
 
 _EDGE_NAMES = {"log_paid": "сумма перевода", "log_recv": "сумма зачисления", "fx": "разные валюты",
@@ -124,7 +150,8 @@ def feature_names(extra_dim: int = 0) -> list[str]:
     if extra_dim:
         rel = (["выпуск: балл"] if extra_dim == 2 else [f"выпуск: {h}" for h in _H_NAMES]) + ["выпуск получен"]
         node += rel + [f"соседи-отправители, {r}" for r in rel] + [f"соседи-получатели, {r}" for r in rel] + ["макс. выпуск соседей"]
-    return edge + [f"отправитель: {n}" for n in node] + [f"получатель: {n}" for n in node]
+    pairs = PAIR_NAMES if PAIR_FEATURES else []
+    return edge + [f"отправитель: {n}" for n in node] + [f"получатель: {n}" for n in node] + pairs
 
 
 def proba(model: lgb.LGBMClassifier, X: np.ndarray) -> np.ndarray:

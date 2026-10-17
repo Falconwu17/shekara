@@ -57,3 +57,19 @@ def test_release_columns_and_neighbour_max(tmp_path):
     s, d = g.edge_index
     neighbours = np.unique(np.concatenate([d[s == ext], s[d == ext]]))
     assert np.allclose(m.nx[neighbours, -1], 0.9)
+
+
+def test_pair_features_count_pair_and_bank_contacts(tmp_path):
+    from model.gbt import PAIR_NAMES, feature_names, pair_features
+
+    g = _graph(tmp_path)
+    pf = np.expm1(pair_features(g)).round().astype(int)
+    s, d = g.edge_index
+    banks = g.node_bank
+    for i in range(0, len(s), max(1, len(s) // 25)):
+        u, v = s[i], d[i]
+        assert pf[i, 0] == int((((s == u) & (d == v)) | ((s == v) & (d == u))).sum())
+        assert pf[i, 1] == int(((s == v) & (banks[d] == banks[u])).sum() + ((d == v) & (banks[s] == banks[u])).sum())
+        assert pf[i, 2] == int(((s == u) & (banks[d] == banks[v])).sum() + ((d == u) & (banks[s] == banks[v])).sum())
+    m = make_mats(g, ["001"])
+    assert m.ex.shape[1] == len(feature_names()) and feature_names()[-3:] == PAIR_NAMES

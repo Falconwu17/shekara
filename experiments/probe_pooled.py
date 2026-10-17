@@ -24,6 +24,8 @@ import numpy as np
 import polars as pl
 
 import model.gbt as gb
+
+gb.PAIR_FEATURES = False  # диагностика первой версии: попарные признаки добавляет augment()
 from data.split import FULL_DAYS_FILE
 from model.gbt import Mats, make_mats
 from model.train_rounds import RESULTS_DIR, average_precision, best_threshold, f1_at
@@ -35,18 +37,7 @@ PAIR_COLUMNS = ["log_pair_cnt", "log_dst_with_src_bank", "log_src_with_dst_bank"
 
 
 def pair_features(m: Mats) -> np.ndarray:
-    g = m.g
-    s, d = g.edge_index
-    lo, hi = np.minimum(s, d), np.maximum(s, d)
-    pair = pl.DataFrame({"a": lo, "b": hi}).with_columns(pl.len().over("a", "b").alias("n"))["n"].to_numpy()
-    banks = g.node_bank
-    # узел × банк контрагента: сколько переводов узла с клиентами этого банка
-    ends = pl.DataFrame({"node": np.concatenate([s, d]), "cp_bank": np.concatenate([banks[d], banks[s]])})
-    nb = ends.group_by("node", "cp_bank").agg(pl.len().alias("k"))
-    e = pl.DataFrame({"src": s, "dst": d, "sb": banks[s], "db": banks[d]})
-    dst_with_sb = e.join(nb, left_on=["dst", "sb"], right_on=["node", "cp_bank"], how="left")["k"].fill_null(0).to_numpy()
-    src_with_db = e.join(nb, left_on=["src", "db"], right_on=["node", "cp_bank"], how="left")["k"].fill_null(0).to_numpy()
-    return np.log1p(np.stack([pair, dst_with_sb, src_with_db], axis=1)).astype(np.float32)
+    return gb.pair_features(m.g)
 
 
 def augment(m: Mats) -> Mats:
