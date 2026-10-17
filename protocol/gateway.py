@@ -1,5 +1,8 @@
 """Шлюз банка: need-to-know, квота дневных запросов, механизмы L1/L2/L3,
-суточный кэш выпусков и ночная рассылка (разделы 3.1, 3.4, 3.5)."""
+суточный кэш выпусков и ночная рассылка (разделы 3.1, 3.4, 3.5).
+
+Если банку известны открытые ключи соседей (`sealer.add_peers`), ответы и выпуски уходят
+зашифрованными адресату (protocol/sealing.py): хаб видит только шифротекст."""
 
 from __future__ import annotations
 
@@ -13,6 +16,7 @@ import numpy as np
 
 from protocol.accountant import PrivacyLedger
 from protocol.matching import TransferKey, compute_tx_refs
+from protocol.sealing import Sealer
 from protocol.tokens import account_pseudonym, tx_ref_hmac
 
 CHANNEL = "amlworld"
@@ -49,7 +53,8 @@ class Release:
 class Broadcast:
     target_bank: str
     tx_ref_hmac: str
-    release: Release
+    release: Release | None  # открытый выпуск, только если ключ адресата неизвестен
+    sealed: bytes | None = None  # выпуск, зашифрованный адресату
 
 
 def not_found() -> dict:
@@ -95,6 +100,7 @@ class Gateway:
 
     def __init__(self, bank_id: str, rows: Sequence[TransferKey], pair_keys: Mapping[str, bytes]):
         self.bank_id = bank_id
+        self.sealer = Sealer()
         self.ledger = PrivacyLedger()
         self._keys = dict(pair_keys)
         self._index: dict[str, dict[str, Transfer]] = {b: {} for b in self._keys}
@@ -172,10 +178,17 @@ class Gateway:
         t = self.resolve(requester, ref_hmac, now)
         if t is None:
             return not_found()
-        return {
-            "pseudonym": account_pseudonym(self._keys[requester], t.own_account),
-            "release": self._releases.get(t.own_account),
-        }
+        pseudonym = account_pseudonym(self._keys[requester], t.own_account)
+        release = self._releases.get(t.own_account)
+        if self.sealer.knows(requester):
+            return {"sealed": self.sealer.seal_answer(requester, pseudonym, release)}
+        return {"pseudonym": pseudonym, "release": release}
+
+    def open_answer(self, sender: str, resp: dict) -> dict:
+        """Ответ банка `sender` на свой запрос: расшифровать, если пришёл зашифрованным."""
+        if "sealed" not in resp:
+            return resp
+        return self.sealer.open_answer(sender, resp["sealed"])
 
     def publish_nightly(
         self,
@@ -195,7 +208,11 @@ class Gateway:
             if level != "L3":
                 self.ledger.record(account, now.date())
             for bank, t in self._latest_per_bank(account, now).items():
-                out.append(Broadcast(bank, tx_ref_hmac(self._keys[bank], CHANNEL, t.tx_ref), rel))
+                ref = tx_ref_hmac(self._keys[bank], CHANNEL, t.tx_ref)
+                if self.sealer.knows(bank):
+                    out.append(Broadcast(bank, ref, None, self.sealer.seal_release(bank, rel)))
+                else:
+                    out.append(Broadcast(bank, ref, rel))
         return out
 
     def receive_broadcast(self, sender: str, msg: Broadcast, now: datetime) -> bool:
@@ -203,7 +220,8 @@ class Gateway:
         t = self.resolve(sender, msg.tx_ref_hmac, now)
         if t is None:
             return False
-        self._external[(sender, t.counterparty_account)] = msg.release
+        release = msg.release if msg.sealed is None else self.sealer.open_release(sender, msg.sealed)
+        self._external[(sender, t.counterparty_account)] = release
         return True
 
     def external_release(self, bank: str, account: str) -> Release | None:

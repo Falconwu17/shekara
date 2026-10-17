@@ -54,6 +54,10 @@ class Network:
             self.desks[b] = IncidentDesk(gw, incidents_mode, active)
             self.queues[b] = AlertQueue(alert_budget(active))
             self.hub.register(gw, self.desks[b])
+        # обмен открытыми ключами при подключении: дальше ответы и выпуски шифруются адресату
+        public = {b: gw.sealer.public_key for b, gw in self.gateways.items()}
+        for b, gw in self.gateways.items():
+            gw.sealer.add_peers({o: k for o, k in public.items() if o != b})
 
     def reset(self) -> None:
         """Состояние протокола с нуля: журнал, выпуски, учёт ε, инциденты, очереди."""
@@ -230,7 +234,10 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
         resp = net.hub.query(q.requester_bank, q.target_bank, q.tx_ref_hmac, q.now)
         if "error" in resp:
             return resp
-        return {"pseudonym": resp["pseudonym"], "release": _release_json(resp["release"])}
+        # хаб передал шифротекст; расшифровывает узел запрашивающего банка (в MVP: тот же процесс)
+        sealed = len(resp.get("sealed", b""))
+        answer = net.gateways[q.requester_bank].open_answer(q.target_bank, resp) if q.requester_bank in net.gateways else resp
+        return {"pseudonym": answer["pseudonym"], "release": _release_json(answer["release"]), "sealed_bytes": sealed}
 
     @app.post("/v1/banks/{bank}/releases/nightly", dependencies=PROTOCOL_GUARD)
     def nightly(bank: str, body: NightlyIn):

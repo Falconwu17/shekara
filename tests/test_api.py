@@ -2,6 +2,7 @@
 
 from datetime import date, datetime
 
+import numpy as np
 from fastapi.testclient import TestClient
 
 from online.api import Network, create_app
@@ -77,6 +78,34 @@ def test_audit_chain_and_alert_budget():
     for i in range(budget + 2):
         c.post("/v1/banks/B/alerts", json={"account": f"x{i}", "score": i / 10, "day": day})
     assert len(c.get("/v1/banks/B/alerts", params={"day": day}).json()["queue"]) == budget
+
+
+def test_hub_carries_only_ciphertext():
+    import pytest
+    from nacl.exceptions import CryptoError
+
+    from protocol.tokens import account_pseudonym
+
+    c, net = client()
+    msgs = net.gateways["B"].publish_nightly({"b1": 0.9}, "L1", 0.0, np.random.default_rng(0), datetime(2022, 9, 1, 23))
+    assert msgs and all(m.release is None and m.sealed for m in msgs)  # хаб получает выпуски только шифротекстом
+    assert net.hub.broadcast("B", msgs, datetime(2022, 9, 1, 23)) == len(msgs)
+    assert net.gateways["A"].external_release("B", "a1") is None
+    assert net.gateways["A"].external_release("B", "b1").value == 0.9  # адресат расшифровал сам
+
+    resp = net.hub.query("A", "B", ref_from(net, "A", "B", MASTER[0]), datetime(2022, 9, 2, 8))
+    assert set(resp) == {"sealed"}  # ни псевдонима, ни балла в открытом виде
+    pseudonym = account_pseudonym(net.gateways["B"]._keys["A"], "b1")
+    assert pseudonym.encode() not in resp["sealed"]
+    answer = net.gateways["A"].open_answer("B", resp)
+    assert answer["pseudonym"] == pseudonym and answer["release"].value == 0.9
+    with pytest.raises(CryptoError):  # третий банк ответ не откроет
+        net.gateways["C"].open_answer("B", resp)
+    with pytest.raises(CryptoError):  # правка шифротекста в пути обнаруживается
+        net.gateways["A"].open_answer("B", {"sealed": resp["sealed"][:-1] + bytes([resp["sealed"][-1] ^ 1])})
+    api = c.post("/v1/signals/query", json={"requester_bank": "A", "target_bank": "B",
+                                            "tx_ref_hmac": ref_from(net, "A", "B", MASTER[0]), "now": "2022-09-02T08:00:00"}).json()
+    assert api["release"]["value"] == 0.9 and api["sealed_bytes"] > 0
 
 
 def test_network_reset_clears_protocol_state():

@@ -88,7 +88,8 @@ export function mount(root, [bankParam]) {
         render(answerBox, result(`Отказ: ${r.text || r.error}. Ответ одинаков для неверной, чужой и ещё не зачисленной ссылки.`, { error: true }));
         return;
       }
-      render(answerBox, result(`Банк ${r.to_bank} ответил: выпуск ${releaseText(r.release)} · псевдоним счёта ${r.pseudonym.slice(0, 16)}… · дневная квота на пару: ${r.quota}`));
+      const sealed = r.sealed_bytes ? ` · через хаб прошло ${r.sealed_bytes} байт шифротекста, открыть его может только ваш банк` : "";
+      render(answerBox, result(`Банк ${r.to_bank} ответил: выпуск ${releaseText(r.release)} · псевдоним счёта ${r.pseudonym.slice(0, 16)}… · дневная квота на пару: ${r.quota}${sealed}`));
       toast(`Запрос к банку ${r.to_bank} записан в журнал хаба`);
     } catch (e) {
       toast(e.message);

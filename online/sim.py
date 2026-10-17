@@ -305,8 +305,10 @@ class Simulator:
             self._event("query", bank=bank, to_bank=t.counterparty_bank, result=resp.get("error", "ok"))
             if "error" in resp:
                 return resp
+            sealed = len(resp.get("sealed", b""))  # столько байт шифротекста прошло через хаб
+            resp = gw.open_answer(t.counterparty_bank, resp)
             rel = resp["release"]
-            return {"to_bank": t.counterparty_bank, "pseudonym": resp["pseudonym"],
+            return {"to_bank": t.counterparty_bank, "pseudonym": resp["pseudonym"], "sealed_bytes": sealed,
                     "release": None if rel is None else {"value": rel.value if not hasattr(rel.value, "tolist") else rel.value.tolist(),
                                                          "level": rel.level, "date": rel.date.isoformat()},
                     "quota": self.net.gateways[t.counterparty_bank].quota(bank, self.clock)}
