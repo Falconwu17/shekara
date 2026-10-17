@@ -20,9 +20,14 @@ Write-Host "== Отправка на $Server"
 scp -i $Key -o StrictHostKeyChecking=accept-new $bundle "${User}@${Server}:~/"
 
 Write-Host "== Распаковка и запуск"
-$remote = "cd ~/shekara && git pull --ff-only && tar -xzf ~/$bundle -C ~/shekara && " +
+# Архив кладёт итоги эксперимента в рабочую копию git, поэтому прошлая заливка выглядит для git как
+# локальная правка и ломает pull. Эти файлы сначала возвращаются к версии из git: архив тут же их перезапишет.
+$remote = "set -e; cd ~/shekara && git checkout -- experiments/results && git pull --ff-only && " +
+          "tar -xzf ~/$bundle -C ~/shekara && " +
           "docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env up -d --build && " +
           "docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env ps"
 ssh -i $Key "${User}@${Server}" $remote
+$code = $LASTEXITCODE
 Remove-Item $bundle
+if ($code -ne 0) { throw "на сервере команда завершилась с ошибкой (код $code): стенд не обновлён, см. вывод выше" }
 Write-Host "Готово. Адрес сайта: SHEKARA_DOMAIN из ~/shekara/deploy/.env на сервере."
