@@ -82,6 +82,8 @@ def _scatter_max(vals: np.ndarray, idx: np.ndarray, n: int) -> np.ndarray:
 def pair_features(g: Graph) -> np.ndarray:
     """Попарные признаки каждого перевода графа (по переводам окна, как признаки узлов)."""
     s, d = g.edge_index
+    if len(s) == 0:  # граф ночи до начала данных (второй раунд выпусков на первом дне обучения)
+        return np.zeros((0, len(PAIR_NAMES)), dtype=np.float32)
     lo, hi = np.minimum(s, d), np.maximum(s, d)
     pair = pl.DataFrame({"a": lo, "b": hi}).with_columns(pl.len().over("a", "b").alias("n"))["n"].to_numpy()
     banks = g.node_bank

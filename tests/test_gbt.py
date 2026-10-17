@@ -99,3 +99,12 @@ def test_release_of_fold_account_comes_only_from_its_fold_model(tmp_path):
         assert np.isclose(p, expect)
         if (d == i).any():  # максимум баллов входящих: h = 2·балл − 1
             assert np.isclose(h[1], 2 * expect - 1, atol=1e-6)
+
+
+def test_pair_features_on_empty_graph(tmp_path):
+    """Второй раунд выпусков строит граф ночи до начала данных: в нём нет переводов."""
+    from model.gbt import pair_features
+
+    g = _graph(tmp_path, end_offset=-1)
+    assert g.edge_index.shape[1] == 0
+    assert pair_features(g).shape == (0, 3) and make_mats(g, ["001"]).ex.shape[0] == 0
