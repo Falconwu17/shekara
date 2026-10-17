@@ -95,9 +95,16 @@ def main() -> int:
     pairs = []
     for (mode, seed) in preds:
         for base in ("isolation", "operator"):
-            if mode != base and (base, seed) in preds and mode not in ("isolation",):
+            if mode != base and (base, seed) in preds and mode != "isolation":
                 r = paired_by_patterns(preds[(mode, seed)], preds[(base, seed)], pmap, rng)
                 pairs.append({"mode": mode, "vs": base, "seed": seed, **r})
+    # Изоляция против оператора: «модель на графе самого банка» без обмена. Свой генератор, чтобы
+    # интервалы пар выше не сдвигались от добавления этой пары.
+    rng_iso = np.random.default_rng(1)
+    for (mode, seed) in preds:
+        if mode == "isolation" and ("operator", seed) in preds:
+            r = paired_by_patterns(preds[(mode, seed)], preds[("operator", seed)], pmap, rng_iso)
+            pairs.append({"mode": mode, "vs": "operator", "seed": seed, **r})
     if pairs:
         pt = pl.DataFrame(pairs).sort("seed", "vs", "mode")
         pt.write_csv(PAIRED_FILE)

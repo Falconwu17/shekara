@@ -80,6 +80,7 @@ class Simulator:
     # ---------- управление ----------
     def reset(self) -> None:
         with self.lock:
+            self.net.reset()  # новый круг тестовых дней: журнал и учёт ε не копятся между кругами
             self.running = False
             self.clock = datetime.combine(self.test_days[0], datetime.min.time())
             self.end = datetime.combine(self.test_days[-1], datetime.min.time()) + timedelta(days=1)

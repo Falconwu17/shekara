@@ -161,8 +161,8 @@ def main() -> int:
     results += check_retention()
     if args.retrain:
         results += check_retrain()
-    tests = subprocess.run([sys.executable, "-m", "pytest", "-q", *sorted(set(UNIT_TESTS.values()))],
-                           capture_output=True, text=True, encoding="utf-8")
+    # весь набор тестов, а не только файлы чек-листа: число в отчёте совпадает с README
+    tests = subprocess.run([sys.executable, "-m", "pytest", "-q", "tests"], capture_output=True, text=True, encoding="utf-8")
     tests_ok = tests.returncode == 0
     last = next((l for l in reversed(tests.stdout.splitlines()) if "passed" in l or "failed" in l), "нет вывода")
     for name, test in UNIT_TESTS.items():

@@ -79,6 +79,18 @@ def test_audit_chain_and_alert_budget():
     assert len(c.get("/v1/banks/B/alerts", params={"day": day}).json()["queue"]) == budget
 
 
+def test_network_reset_clears_protocol_state():
+    c, net = client()
+    c.post("/v1/banks/B/releases/nightly", json={"now": "2022-09-01T23:00:00", "level": "L1", "sigma": 0.5, "scores": {"b1": 0.9}})
+    c.post("/v1/incidents", json={"origin_bank": "B", "account": "b1", "kind": "confirmed", "now": "2022-09-01T20:00:00",
+                                  "anchor": "2022-09-01T19:55:00"})
+    assert net.hub.log.count() > 0 and net.gateways["B"].ledger.count("b1", date(2022, 9, 1)) == 1
+    net.reset()  # стенд начинает тестовые дни заново: ничего не копится между кругами
+    assert net.hub.log.count() == 0 and net.hub.log.verify()
+    assert net.gateways["B"].ledger.count("b1", date(2022, 9, 1)) == 0
+    assert net.gateways["A"].external_release("B", "b1") is None and not net.desks["C"].flags
+
+
 def test_incident_mode_off_and_unknown_bank():
     rows = {b: [r for r in MASTER if b in (r.from_bank, r.to_bank)] for b in BANKS}
     c = TestClient(create_app(Network(rows, incidents_mode="I0")))
@@ -104,6 +116,22 @@ def test_public_mode_requires_tokens(monkeypatch):
     assert c.get("/v1/operator/incidents/x/tree", headers={"X-Role": "operator"}).status_code == 403
     r = c.get("/v1/operator/incidents/x/tree", headers={"X-Role": "operator", "X-Operator-Token": "op-secret"})
     assert r.status_code == 200
+
+
+def test_public_mode_closes_protocol_writes(monkeypatch):
+    import online.api as api_mod
+
+    monkeypatch.setattr(api_mod, "ADMIN_TOKEN", "a" * 32)
+    c, _ = client()
+    query = {"requester_bank": "A", "target_bank": "B", "tx_ref_hmac": "00" * 32, "now": "2022-09-02T08:00:00"}
+    calls = [("/v1/signals/query", query),
+             ("/v1/banks/B/releases/nightly", {"now": "2022-09-01T23:00:00", "level": "L1", "scores": {"b1": 0.9}}),
+             ("/v1/incidents", {"origin_bank": "B", "account": "b1", "kind": "soft", "now": "2022-09-01T20:00:00"}),
+             ("/v1/banks/B/alerts", {"account": "b1", "score": 0.9, "day": "2022-09-01"})]
+    for path, body in calls:
+        assert c.post(path, json=body).status_code == 403, path
+    r = c.post("/v1/signals/query", json=query, headers={"X-Admin-Token": "a" * 32})
+    assert r.json() == {"error": "not_found"}
 
 
 def test_rate_limit():

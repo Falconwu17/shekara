@@ -48,9 +48,11 @@ def coverage() -> list[dict]:
 def paired() -> dict:
     p = pl.read_csv(RES / "paired.csv")
     out = {}
-    for vs in ("isolation", "operator"):
-        x = p.filter((pl.col("mode") == "C_L3") & (pl.col("vs") == vs))
-        out[vs] = {"diff": x["diff"].mean(), "sig": int((x["lo"] > 0).sum()), "n": x.height}
+    # isolation / operator: ШЕКАРА L3 против базы; bank_vs_operator: изолированный банк против оператора (без обмена)
+    for key, mode, vs in (("isolation", "C_L3", "isolation"), ("operator", "C_L3", "operator"),
+                          ("bank_vs_operator", "isolation", "operator")):
+        x = p.filter((pl.col("mode") == mode) & (pl.col("vs") == vs))
+        out[key] = {"diff": x["diff"].mean(), "sig": int((x["lo"] > 0).sum()), "n": x.height}
     return out
 
 

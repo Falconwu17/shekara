@@ -77,7 +77,8 @@ def paired_table() -> str:
     f = RES / "paired.csv"
     if not f.exists():
         return NA
-    p = pl.read_csv(f).filter(pl.col("mode").str.starts_with("C_"))
+    p = pl.read_csv(f).filter(pl.col("mode").str.starts_with("C_")
+                              | ((pl.col("mode") == "isolation") & (pl.col("vs") == "operator")))
     g = p.group_by("mode", "vs").agg(pl.col("diff").mean(), pl.col("lo").mean(), pl.col("hi").mean(),
                                      (pl.col("lo") > 0).sum().alias("sig"), pl.len().alias("n")).sort("vs", "mode")
     head = "| Режим | Против | Разность F1 | 95% интервал (среднее по seed) | seed, где интервал > 0 |\n|---|---|---|---|---|"

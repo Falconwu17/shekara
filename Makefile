@@ -3,7 +3,7 @@
 # Окружение: .venv на диске D (py -m venv .venv; .venv\Scripts\python -m pip install -r requirements.txt).
 PY ?= .venv/Scripts/python.exe
 
-.PHONY: stats data case experiment metrics demo app test
+.PHONY: stats data case experiment ablation metrics demo app test
 
 stats:
 	$(PY) -m data.stats
@@ -15,8 +15,11 @@ case:
 	$(PY) -m demo.pick_case
 
 experiment:
+	powershell -ExecutionPolicy Bypass -File experiments/run_all.ps1
+	powershell -ExecutionPolicy Bypass -File experiments/run_after.ps1
+
+ablation:
 	$(PY) -m model.train_rounds
-	$(PY) -m model.metrics
 
 metrics:
 	$(PY) -m model.metrics

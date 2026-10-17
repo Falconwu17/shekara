@@ -23,7 +23,7 @@ from typing import Literal, Sequence
 import numpy as np
 from pathlib import Path
 
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -54,6 +54,15 @@ class Network:
             self.desks[b] = IncidentDesk(gw, incidents_mode, active)
             self.queues[b] = AlertQueue(alert_budget(active))
             self.hub.register(gw, self.desks[b])
+
+    def reset(self) -> None:
+        """Состояние протокола с нуля: журнал, выпуски, учёт ε, инциденты, очереди."""
+        self.hub.log.clear()
+        self.operator = Operator()
+        for b, gw in self.gateways.items():
+            gw.reset_state()
+            self.desks[b].reset_state()
+            self.queues[b] = AlertQueue(self.queues[b].budget)
 
     def bank(self, bank: str) -> tuple[Gateway, IncidentDesk]:
         if bank not in self.gateways:
@@ -155,6 +164,15 @@ def require_admin(token: str) -> None:
         raise HTTPException(403, "управление временем стенда: только с ключом администратора")
 
 
+def admin_only(x_admin_token: str = Header(default="")) -> None:
+    """Низкоуровневые эндпоинты протокола (произвольное `now`, выпуски, инциденты от имени любого
+    банка): в публичном режиме только с ключом администратора. Сайт ими не пользуется."""
+    require_admin(x_admin_token)
+
+
+PROTOCOL_GUARD = [Depends(admin_only)]
+
+
 def require_operator(role: str, token: str) -> None:
     if role != "operator":
         raise HTTPException(403, "доступно только роли «оператор»")
@@ -207,14 +225,14 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
                         "result": "ok" if isinstance(res, str) else res["error"]})
         return out
 
-    @app.post("/v1/signals/query")
+    @app.post("/v1/signals/query", dependencies=PROTOCOL_GUARD)
     def signals_query(q: QueryIn):
         resp = net.hub.query(q.requester_bank, q.target_bank, q.tx_ref_hmac, q.now)
         if "error" in resp:
             return resp
         return {"pseudonym": resp["pseudonym"], "release": _release_json(resp["release"])}
 
-    @app.post("/v1/banks/{bank}/releases/nightly")
+    @app.post("/v1/banks/{bank}/releases/nightly", dependencies=PROTOCOL_GUARD)
     def nightly(bank: str, body: NightlyIn):
         gw, _ = net.bank(bank)
         rng = np.random.default_rng(body.seed)
@@ -232,7 +250,7 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
     def health():
         return {"banks": sorted(net.gateways), "incidents_mode": next(iter(net.desks.values())).mode if net.desks else None}
 
-    @app.post("/v1/incidents")
+    @app.post("/v1/incidents", dependencies=PROTOCOL_GUARD)
     def open_incident(body: IncidentIn):
         _, desk = net.bank(body.origin_bank)
         iid = desk.open(body.account, body.kind, body.now, body.anchor)
@@ -240,14 +258,14 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
             return iid
         return {"incident_id": iid, "hops": _hops(body.origin_bank, desk, iid, body.account, body.now)}
 
-    @app.post("/v1/incidents/{incident_id}/forward")
+    @app.post("/v1/incidents/{incident_id}/forward", dependencies=PROTOCOL_GUARD)
     def forward(incident_id: str, body: ForwardIn):
         _, desk = net.bank(body.bank)
         if not desk.has(incident_id):
             raise HTTPException(404, "инцидент не найден у этого банка")
         return {"hops": _hops(body.bank, desk, incident_id, body.account, body.now)}
 
-    @app.post("/v1/incidents/{incident_id}/segment")
+    @app.post("/v1/incidents/{incident_id}/segment", dependencies=PROTOCOL_GUARD)
     def submit_segment(incident_id: str, bank: str):
         _, desk = net.bank(bank)
         if not desk.has(incident_id):
@@ -271,7 +289,7 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
         except PermissionError as e:
             raise HTTPException(403, str(e))
 
-    @app.post("/v1/banks/{bank}/alerts")
+    @app.post("/v1/banks/{bank}/alerts", dependencies=PROTOCOL_GUARD)
     def offer_alert(bank: str, body: AlertIn):
         net.bank(bank)
         return {"queued": net.queues[bank].offer(body.account, body.score, body.day)}
@@ -288,7 +306,7 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
 
     @app.get("/v1/audit/verify")
     def audit_verify():
-        return {"ok": net.hub.log.verify(), "entries": len(net.hub.log.entries())}
+        return {"ok": net.hub.log.verify(), "entries": net.hub.log.count()}
 
     @app.get("/v1/audit/entries")
     def audit_entries(offset: int = 0, limit: int = 50):

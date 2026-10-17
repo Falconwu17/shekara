@@ -154,3 +154,4 @@
 | `eps_strict_week` | 2.5243 |
 | `paired_main_iso` | {"diff": 0.019712844279749637, "lo": -0.015609612596222346, "hi": 0.06202568593306886, "seeds_positive": 0, "seeds_diff_positive": 3, "seeds": 3} |
 | `paired_main_op` | {"diff": 0.17972144942174184, "lo": 0.11865644549300619, "hi": 0.24581135381845706, "seeds_positive": 3, "seeds_diff_positive": 3, "seeds": 3} |
+| `paired_iso_op` | {"diff": 0.1600086051419922, "lo": 0.10090913459834423, "hi": 0.22682155750784047, "seeds_positive": 3, "seeds_diff_positive": 3, "seeds": 3} |

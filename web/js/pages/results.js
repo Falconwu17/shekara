@@ -15,9 +15,10 @@ const SLICES = [["all_max", "Все межбанковские"], ["pp_sender", 
 let cache = null;
 
 function summary(r) {
-  const { operator, isolation } = r.paired;
+  const { bank_vs_operator: bank, operator, isolation } = r.paired;
   return kpiStrip([
-    { label: "Банк против центрального оператора", value: `F1 +${decimal(operator.diff)}`, note: `значимо в ${operator.sig} из ${operator.n} запусков` },
+    { label: "Банк против центрального оператора", value: `F1 +${decimal(bank.diff)}`,
+      note: `без обмена, значимо в ${bank.sig} из ${bank.n} запусков; с обменом +${decimal(operator.diff)}` },
     { label: "Прирост от обмена, PR-AUC", value: `+${percent(r.views.C_L3.all_max.ap / r.views.isolation.all_max.ap - 1)}`, note: `значимо в ${isolation.sig} из ${isolation.n} запусков` },
     { label: "Деньги на счёте, H1", value: percent(r.retention.C_L3.h1), note: `без задержки ${percent(r.retention.C_L3.h0_15)}` },
     { label: "Проверка при зачислении", value: `${decimal(r.latency.inbound_ms_p50, 1)} мс`, note: "медиана, один поток CPU" },

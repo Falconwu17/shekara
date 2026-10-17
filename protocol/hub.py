@@ -67,6 +67,12 @@ class AuditLog:
             self._db.executemany("INSERT INTO audit VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", batch)
             self._db.commit()
 
+    def clear(self) -> None:
+        """Новая цепочка с генезиса: стенд начинает тестовые дни заново (иначе журнал растёт без конца)."""
+        with self._lock:
+            self._db.execute("DELETE FROM audit")
+            self._db.commit()
+
     def count(self) -> int:
         return self._db.execute("SELECT COUNT(*) FROM audit").fetchone()[0]
 

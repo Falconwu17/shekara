@@ -22,6 +22,8 @@ services:
       - ../experiments/results:/app/experiments/results:ro
     expose:
       - "8000"
+    # потолок памяти: при утечке перезапускается контейнер, а не зависает вся машина (swap на Oracle нет)
+    mem_limit: 6g
     read_only: true
     tmpfs:
       - /tmp

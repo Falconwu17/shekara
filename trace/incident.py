@@ -60,6 +60,9 @@ class IncidentDesk:
         self.gw = gateway
         self.mode = mode
         self.soft_quota = math.ceil(SOFT_QUOTA_SHARE * active_accounts)
+        self.reset_state()
+
+    def reset_state(self) -> None:
         self.flags: dict[str, set[str]] = defaultdict(set)
         self._soft_opened: Counter = Counter()
         self._incidents: dict[str, Incident] = {}

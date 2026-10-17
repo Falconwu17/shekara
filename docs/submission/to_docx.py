@@ -1,4 +1,4 @@
-"""Документы заявки из Markdown в Word: one-pager и техническое приложение.
+"""Техническое приложение и доклад из Markdown в Word.
 
 Оформление как у резюме и заявки (resume.py): Times New Roman, A4, таблицы с сеткой и серой шапкой.
 Понимает заголовки #, ##, ###, абзацы, списки «- » и «1. », таблицы и **жирный**, *курсив*, `код`.
@@ -20,8 +20,8 @@ from docx.shared import Cm, Pt
 
 from docs.submission.resume import FONT, HERE, _fixed_widths, _font, _para
 
-# файл → (результат, размер основного шрифта): one-pager крупнее, у него одна страница
-FILES = {"one_pager_ru.md": ("one_pager_ru.docx", 12), "tech_appendix_ru.md": ("tech_appendix_ru.docx", 11)}
+# файл → (результат, размер основного шрифта); one-pager собирается отдельно: one_pager.py
+FILES = {"tech_appendix_ru.md": ("tech_appendix_ru.docx", 11), "doklad_ru.md": ("doklad_ru.docx", 12)}
 TEXT_WIDTH_CM = 17.5
 INLINE = re.compile(r"(\*\*.+?\*\*|`[^`]+`|(?<!\*)\*[^*\s][^*]*?\*(?!\*))")
 HEADING_SIZE = {1: 15, 2: 13, 3: 11.5}

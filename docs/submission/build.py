@@ -113,6 +113,7 @@ def numbers() -> dict:
         n[f"ret|{m}|h1"] = ret(r, m, "amlworld", "H1")
     n["paired_main_iso"] = paired(MAIN, "isolation")
     n["paired_main_op"] = paired(MAIN, "operator")
+    n["paired_iso_op"] = paired("isolation", "operator")
     n["eps_private"] = epsilon(30, noise_multiplier("L1", 0.25))
     n["eps_strict"] = epsilon(30, noise_multiplier("L1", 4.0))
     n["eps_strict_week"] = epsilon(4, noise_multiplier("L1", 4.0))
@@ -126,14 +127,15 @@ def rel_gain(n, slice_="all_max", col="ap", mode=MAIN):
 
 def results_ru(n) -> str:
     g = rel_gain(n)
-    pi, po = n.get("paired_main_iso") or {}, n.get("paired_main_op") or {}
+    pi, po, pb = n.get("paired_main_iso") or {}, n.get("paired_main_op") or {}, n.get("paired_iso_op") or {}
     cmp_iso, cmp_main = n[f"ret|isolation|cmp15"], n[f"ret|{MAIN}|cmp15"]
     return (
         f"Один банк видит в среднем {pct(n['share_seen'])} схемы отмывания, а {pct(n['interbank'])} переводов отмывания "
-        f"пересекают границу банков (AMLworld). (1) Модели на графах самих банков значимо сильнее центрального оператора, "
-        f"видящего только межбанковские потоки (подход MITS): PR-AUC {fmt(n['isolation|all_max|ap'])}-{fmt(n[f'{MAIN}|all_max|ap'])} "
-        f"против {fmt(n['operator|all_max|ap'])}, разность F1 +{fmt(po.get('diff'), 2)} (парный бутстреп по паттернам, "
-        f"значимо в {po.get('seeds_positive', NA)} из {po.get('seeds', NA)} запусков). (2) Обмен оценками при 30 участниках "
+        f"пересекают границу банков (AMLworld). (1) Модель на графе самого банка, ещё без обмена, значимо сильнее "
+        f"центрального оператора, видящего только межбанковские потоки (подход MITS): PR-AUC {fmt(n['isolation|all_max|ap'])} "
+        f"против {fmt(n['operator|all_max|ap'])}, разность F1 +{fmt(pb.get('diff'), 2)} (парный бутстреп по паттернам, "
+        f"значимо в {pb.get('seeds_positive', NA)} из {pb.get('seeds', NA)} запусков); с обменом оценками разность "
+        f"растёт до +{fmt(po.get('diff'), 2)}. (2) Обмен оценками при 30 участниках "
         f"({n['pos_all'] or NA} положительных переводов в тесте, из них лишь около 19% между двумя участниками) поднимает "
         f"PR-AUC с {fmt(n['isolation|all_max|ap'])} до {fmt(n[f'{MAIN}|all_max|ap'])} ({pct(g)}) во всех трёх запусках, "
         f"но прирост F1 (+{fmt(pi.get('diff'), 3)}) статистически не значим; около половины прироста даёт сочетание двух "
@@ -149,13 +151,14 @@ def results_en(n) -> str:
     g = rel_gain(n)
     f = lambda v, d=3: NA if v is None else f"{v:.{d}f}"
     p = lambda v, d=0: NA if v is None else f"{v * 100:.{d}f}%"
-    pi, po = n.get("paired_main_iso") or {}, n.get("paired_main_op") or {}
+    pi, po, pb = n.get("paired_main_iso") or {}, n.get("paired_main_op") or {}, n.get("paired_iso_op") or {}
     return (
         f"A single bank sees on average {p(n['share_seen'])} of a laundering pattern, and {p(n['interbank'])} of "
-        f"laundering transfers cross a bank boundary (AMLworld). (1) Models on each bank's own graph clearly beat a central "
-        f"operator that sees only interbank flows (the MITS approach): PR-AUC {f(n['isolation|all_max|ap'])}-"
-        f"{f(n[f'{MAIN}|all_max|ap'])} versus {f(n['operator|all_max|ap'])}, F1 +{f(po.get('diff'), 2)} (paired bootstrap "
-        f"over patterns, significant in {po.get('seeds_positive', NA)} of {po.get('seeds', NA)} runs). (2) With 30 participating banks "
+        f"laundering transfers cross a bank boundary (AMLworld). (1) A model on the bank's own graph, even before any "
+        f"exchange, clearly beats a central operator that sees only interbank flows (the MITS approach): PR-AUC "
+        f"{f(n['isolation|all_max|ap'])} versus {f(n['operator|all_max|ap'])}, F1 +{f(pb.get('diff'), 2)} (paired bootstrap "
+        f"over patterns, significant in {pb.get('seeds_positive', NA)} of {pb.get('seeds', NA)} runs); with exchange the gap "
+        f"grows to +{f(po.get('diff'), 2)}. (2) With 30 participating banks "
         f"({n['pos_all'] or NA} positive test transfers, only ~19% of them between two participants) exchanging risk "
         f"estimates raises PR-AUC from {f(n['isolation|all_max|ap'])} to {f(n[f'{MAIN}|all_max|ap'])} ({p(g)}) in all "
         f"three runs, but the F1 gain (+{f(pi.get('diff'))}) is not statistically significant; about half of it comes from "
@@ -224,7 +227,7 @@ def numbers_sheet(n) -> str:
     lines = ["# Цифры для слайдов и документов", "", "Все числа: из experiments/results (см. docs/submission/build.py).",
              "Значения «[нет данных]» нельзя выносить на слайды.", "", "| Ключ | Значение |", "|---|---|"]
     lines += [f"| `{k}` | {NA if v is None else (f'{v:.4f}' if isinstance(v, float) else v)} |" for k, v in rows]
-    for k in ("paired_main_iso", "paired_main_op"):
+    for k in ("paired_main_iso", "paired_main_op", "paired_iso_op"):
         p = n.get(k)
         lines.append(f"| `{k}` | {NA if p is None else json.dumps(p, ensure_ascii=False)} |")
     return "\n".join(lines) + "\n"

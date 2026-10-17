@@ -55,8 +55,8 @@ RU = {
     ],
     "results_head": "Результаты",
     "results": [
-        "Модель на графе самого банка значимо сильнее центрального оператора: PR-AUC 0,315-0,354 против 0,162, "
-        "F1 +0,18 (значимо в 3 из 3 запусков).",
+        "Модель на графе самого банка значимо сильнее центрального оператора: PR-AUC 0,315 против 0,162, "
+        "F1 +0,16 (значимо в 3 из 3 запусков).",
         "Обмен оценками поднимает PR-AUC с 0,315 до 0,354 (+13%) во всех запусках; прирост пока статистически не значим.",
         "Цена приватности измерена: один зашумлённый балл (L1) не помогает, польза появляется при векторном выпуске (L2, L3).",
         "Проверка при зачислении занимает 0,7 мс; с временной задержкой исходящих для верхушки очереди деньги "
@@ -101,8 +101,8 @@ EN = {
     ],
     "results_head": "Results",
     "results": [
-        "A model on the bank's own graph significantly beats the central operator: PR-AUC 0.315-0.354 versus "
-        "0.162, F1 +0.18 (significant in 3 of 3 runs).",
+        "A model on the bank's own graph significantly beats the central operator: PR-AUC 0.315 versus "
+        "0.162, F1 +0.16 (significant in 3 of 3 runs).",
         "Exchanging estimates raises PR-AUC from 0.315 to 0.354 (+13%) in every run; the gain is not yet statistically significant.",
         "The price of privacy is measured: a single noisy score (L1) does not help; benefit appears with vector releases (L2, L3).",
         "The incoming-credit check takes 0.7 ms; a temporary hold on outgoing payments for the top of the queue "

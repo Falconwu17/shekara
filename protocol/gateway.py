@@ -129,6 +129,13 @@ class Gateway:
             )
         raise ValueError(f"в базе банка {self.bank_id} чужой перевод: {row}")
 
+    def reset_state(self) -> None:
+        """Забыть выпуски, запросы и учёт ε; переводы и ключи пар остаются."""
+        self.ledger = PrivacyLedger()
+        self._queries.clear()
+        self._releases.clear()
+        self._external.clear()
+
     def is_partner(self, bank: str) -> bool:
         return bank in self._keys
 
