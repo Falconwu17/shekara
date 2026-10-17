@@ -236,27 +236,32 @@ class GBTExperiment(Experiment):
         return [make_mats(g, self.participants, None if extras is None else extras[i]) for i, g in enumerate(graphs)]
 
     # ---------- выпуски ----------
+    @staticmethod
+    def _edge_aggregates(g: Graph, pe: np.ndarray) -> np.ndarray:
+        """Максимум и среднее баллов входящих и исходящих переводов каждого узла: [n, 4]."""
+        s, d = g.edge_index
+        n = g.num_nodes
+        return np.column_stack([_scatter_max(pe, d, n), _scatter_mean(pe[:, None], d, n)[:, 0],
+                                _scatter_max(pe, s, n), _scatter_mean(pe[:, None], s, n)[:, 0]])
+
     def releases(self, models: Models, mats: list[Mats], fold_models: list[Models] | None = None) -> dict:
         out = {}
         for m in mats:
             g = m.g
             pe, pn = self.score(models, m)
+            agg = self._edge_aggregates(g, pe)
             if fold_models is not None:
+                # Выпуск о счёте фолда k целиком из модели k: она не видела меток ни одного перевода
+                # этого счёта. Раньше перевод v → x мог оценить фолд x, видевший другие переводы v,
+                # и на днях обучения метки v протекали в его выпуск.
                 folds = np.array([account_fold(b, a) for b, a in zip(g.node_bank, g.node_account)])
                 for k, fm in enumerate(fold_models):
                     pek, pnk = self.score(fm, m)
-                    pn = np.where(folds == k, pnk, pn)
-                    s, d = g.edge_index
-                    # балл перевода о счёте фолда k: из модели, не видевшей рёбер этого счёта
-                    pe = np.where((folds[s] == k) | (folds[d] == k), pek, pe)
-            s, d = g.edge_index
-            n = g.num_nodes
-            in_max, out_max = _scatter_max(pe, d, n), _scatter_max(pe, s, n)
-            in_mean = _scatter_mean(pe[:, None], d, n)[:, 0]
-            out_mean = _scatter_mean(pe[:, None], s, n)[:, 0]
+                    mine = folds == k
+                    pn = np.where(mine, pnk, pn)
+                    agg = np.where(mine[:, None], self._edge_aggregates(g, pek), agg)
             x = g.x
-            h = np.stack([pn, in_max, in_mean, out_max, out_mean,
-                          x[:, 6], x[:, 5], x[:, 10]], axis=1)  # fwd_10m, new_cp_in, interbank_out
+            h = np.column_stack([pn, agg, x[:, 6], x[:, 5], x[:, 10]])  # fwd_10m, new_cp_in, interbank_out
             h = 2 * h - 1
             own = x[:, 0] < 0.5
             for i in np.flatnonzero(own):

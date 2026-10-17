@@ -73,3 +73,29 @@ def test_pair_features_count_pair_and_bank_contacts(tmp_path):
         assert pf[i, 2] == int(((s == u) & (banks[d] == banks[v])).sum() + ((d == u) & (banks[s] == banks[v])).sum())
     m = make_mats(g, ["001"])
     assert m.ex.shape[1] == len(feature_names()) and feature_names()[-3:] == PAIR_NAMES
+
+
+def test_release_of_fold_account_comes_only_from_its_fold_model(tmp_path):
+    """Кросс-фиттинг: все переводы счёта фолда k для его выпуска оценивает модель k."""
+    from model.gbt import GBTExperiment, Models
+
+    class Const:
+        def __init__(self, p):
+            self.p = p
+
+        def predict_proba(self, X):
+            return np.column_stack([1 - np.full(len(X), self.p), np.full(len(X), self.p)])
+
+    g = _graph(tmp_path)
+    m = make_mats(g, ["001"])
+    full = Models(Const(0.9), Const(0.9))
+    folds = [Models(Const(0.1 * (k + 1)), Const(0.1 * (k + 1))) for k in range(K_FOLDS)]
+    rel = GBTExperiment.releases(object.__new__(GBTExperiment), full, [m], folds)
+    fold_of = np.array([account_fold(b, a) for b, a in zip(g.node_bank, g.node_account)])
+    s, d = g.edge_index
+    for i in np.flatnonzero(g.x[:, 0] < 0.5):
+        p, h = rel[(g.node_bank[i], g.node_account[i])]
+        expect = 0.1 * (fold_of[i] + 1)
+        assert np.isclose(p, expect)
+        if (d == i).any():  # максимум баллов входящих: h = 2·балл − 1
+            assert np.isclose(h[1], 2 * expect - 1, atol=1e-6)
