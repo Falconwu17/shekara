@@ -132,11 +132,11 @@ def check_retrain() -> list[tuple[str, bool, str]]:
             f"было {runs['f1'][0]:.4f}, повтор {res['f1']:.4f}" if runs.height else "нет записи")]
 
     class Shuffled(gb.GBTExperiment):
-        def fit(self, rows, fold=None):
+        def fit(self, rows, fold=None, **kw):
             rng = np.random.default_rng(0)
             for r in rows:
                 r.ye = rng.permutation(r.ye)
-            return super().fit(rows, fold)
+            return super().fit(rows, fold, **kw)
 
     sh = Shuffled(1, log=lambda m: None).run_mode("isolation")
     base_rate = sh["test_pos"] / sh["test_edges"]

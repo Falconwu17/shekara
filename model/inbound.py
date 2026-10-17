@@ -18,12 +18,11 @@ import sys
 import time
 from datetime import date, timedelta
 
-import lightgbm as lgb
 import numpy as np
 import polars as pl
 
 from data.features import Graph
-from model.gbt import LGB_PARAMS, GBTExperiment, make_mats, mode_spec, proba
+from model.gbt import GBTExperiment, fit_lgb, make_mats, mode_spec, proba
 from model.train_rounds import PREDS_DIR, average_precision
 
 
@@ -68,7 +67,12 @@ class InboundExperiment(GBTExperiment):
             for g, em, ex in self.inbound_rows(d, make):
                 X.append(ex)
                 y.append(g.edge_label[em])
-        model = lgb.LGBMClassifier(**LGB_PARAMS, random_state=self.seed * 100 + 77).fit(np.vstack(X), np.concatenate(y))
+        vx, vy = [], []
+        for d in self.val_days:  # день валидации: ранняя остановка, как у остальных моделей
+            for g, em, ex in self.inbound_rows(d, make):
+                vx.append(ex)
+                vy.append(g.edge_label[em])
+        model = fit_lgb(np.vstack(X), np.concatenate(y), self.seed * 100 + 77, (np.vstack(vx), np.concatenate(vy)))
         frames = []
         for d in self.val_days + self.test_days:
             for g, em, ex in self.inbound_rows(d, make):

@@ -108,3 +108,17 @@ def test_pair_features_on_empty_graph(tmp_path):
     g = _graph(tmp_path, end_offset=-1)
     assert g.edge_index.shape[1] == 0
     assert pair_features(g).shape == (0, 3) and make_mats(g, ["001"]).ex.shape[0] == 0
+
+
+def test_fit_lgb_stops_on_validation_and_respects_trees():
+    from model.gbt import LGB_PARAMS, fit_lgb, n_trees
+
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(3000, 5))
+    y = (X[:, 0] + rng.normal(scale=2, size=3000) > 2.5).astype(int)  # шумная задача: дальше переобучение
+    Xv = rng.normal(size=(1000, 5))
+    yv = (Xv[:, 0] + rng.normal(scale=2, size=1000) > 2.5).astype(int)
+    m = fit_lgb(X, y, 1, (Xv, yv))
+    assert 0 < n_trees(m) < LGB_PARAMS["n_estimators"]  # остановилась по валидации раньше потолка
+    assert n_trees(fit_lgb(X, y, 1, trees=37)) == 37
+    assert n_trees(fit_lgb(X, y, 1, (Xv, np.zeros(1000, dtype=int)))) == LGB_PARAMS["n_estimators"]  # нет положительных: без остановки

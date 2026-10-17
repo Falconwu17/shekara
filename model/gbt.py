@@ -48,6 +48,12 @@ PAIR_FEATURES = True
 PAIR_NAMES = ["переводов между отправителем и получателем", "переводов получателя с клиентами банка отправителя",
               "переводов отправителя с клиентами банка получателя"]
 
+# Число деревьев каждой модели (не больше n_estimators) выбирается по PR-AUC на дне валидации:
+# остановка, если 100 деревьев подряд не улучшают AP. Правило одно для всех режимов; тест в выборе
+# не участвует. Введено 17.10.2026: без него модели с выпусками переобучались (AP обучения 0,98) и в
+# отдельных запусках проваливались до 0,11, что было видно уже на валидации.
+EARLY_STOP_ROUNDS = 100
+
 SIGMAS_L1 = (0.1, 0.25, 0.5, 2.0, 4.0)
 SIGMAS_L2 = (0.1, 0.25, 0.5)
 
@@ -156,6 +162,23 @@ def feature_names(extra_dim: int = 0) -> list[str]:
     return edge + [f"отправитель: {n}" for n in node] + [f"получатель: {n}" for n in node] + pairs
 
 
+def fit_lgb(X: np.ndarray, y: np.ndarray, seed: int, val: tuple[np.ndarray, np.ndarray] | None = None,
+            trees: int | None = None) -> lgb.LGBMClassifier:
+    """LightGBM с ранней остановкой по AP на валидации (`val`) или с заданным числом деревьев (`trees`)."""
+    params = dict(LGB_PARAMS, random_state=seed)
+    if trees:
+        params["n_estimators"] = trees
+    model = lgb.LGBMClassifier(**params)
+    if val is None or not len(val[1]) or not val[1].sum():
+        return model.fit(X, y)
+    model.set_params(metric="average_precision")
+    return model.fit(X, y, eval_set=[val], callbacks=[lgb.early_stopping(EARLY_STOP_ROUNDS, verbose=False)])
+
+
+def n_trees(model: lgb.LGBMClassifier) -> int:
+    return model.best_iteration_ or model.n_estimators
+
+
 def proba(model: lgb.LGBMClassifier, X: np.ndarray) -> np.ndarray:
     return model.predict_proba(X)[:, 1] if len(X) else np.zeros(0)
 
@@ -212,7 +235,10 @@ class GBTExperiment(Experiment):
         """(день, ночь выпусков) для обучения: дни 2…6, выпуски ночи d − 1."""
         return [(d, d - timedelta(days=1)) for d in self.train_days[1:]]
 
-    def fit(self, rows: list[TrainRows], fold: int | None = None) -> Models:
+    def fit(self, rows: list[TrainRows], fold: int | None = None, val: list[TrainRows] | None = None,
+            trees: tuple[int, int] | None = None) -> Models:
+        """Модель перевода и модель счёта. `val`: строки дня валидации для ранней остановки;
+        `trees`: число деревьев (фолдовые модели берут его у полной модели раунда)."""
         ex = np.vstack([r.ex for r in rows])
         ye = np.concatenate([r.ye for r in rows])
         nx = np.vstack([r.nx for r in rows])
@@ -222,9 +248,18 @@ class GBTExperiment(Experiment):
             nm = np.concatenate([r.n_fold != fold for r in rows])
             ex, ye, nx, yn = ex[em], ye[em], nx[nm], yn[nm]
         seed = self.seed * 100 + (fold if fold is not None else 9)
-        e = lgb.LGBMClassifier(**LGB_PARAMS, random_state=seed).fit(ex, ye)
-        n = lgb.LGBMClassifier(**LGB_PARAMS, random_state=seed + 50).fit(nx, yn)
+        ve = vn = None
+        if val:
+            ve = (np.vstack([r.ex for r in val]), np.concatenate([r.ye for r in val]))
+            vn = (np.vstack([r.nx for r in val]), np.concatenate([r.yn for r in val]))
+        e = fit_lgb(ex, ye, seed, ve, trees[0] if trees else None)
+        n = fit_lgb(nx, yn, seed + 50, vn, trees[1] if trees else None)
         return Models(e, n)
+
+    def val_rows(self, make) -> list[TrainRows]:
+        """Строки дня валидации (как строки обучения: переводы этого дня на его графе), без пропуска выпусков."""
+        _, (va_end, va_days, va_night), _ = self.windows()
+        return [train_rows(m, va_days[0]) for m in make(va_end, va_night)]
 
     def collect(self, make, drop: float = 0.0) -> list[TrainRows]:
         return [train_rows(m, day) for day, night in self.train_windows() for m in make(day, night, drop=drop)]
@@ -291,8 +326,9 @@ class GBTExperiment(Experiment):
                 return [make_mats(g, self.participants, e) for g, e in zip(graphs, extras)]
 
         rows = self.collect(make, drop=RELEASE_DROP if prev is not None else 0.0)
-        model = self.fit(rows)
-        folds = [self.fit(rows, fold=k) for k in range(K_FOLDS)] if need_folds else None
+        model = self.fit(rows, val=self.val_rows(make))
+        trees = (n_trees(model.edge), n_trees(model.node))
+        folds = [self.fit(rows, fold=k, trees=trees) for k in range(K_FOLDS)] if need_folds else None
         return model, folds, make
 
     def release_features_h(self, g: Graph, releases: dict, level: str, sigma: float, rng, drop: float) -> np.ndarray:
@@ -312,7 +348,7 @@ class GBTExperiment(Experiment):
         spec = mode_spec(mode)
         if spec is None and mode in ("operator", "oracle"):
             mats_for = lambda end, night, **kw: [make_mats(self.pooled_graph(mode, end), self.participants)]
-            model = self.fit(self.collect(mats_for))
+            model = self.fit(self.collect(mats_for), val=self.val_rows(mats_for))
         elif spec is None:
             r0 = self.run_round0()
             model, mats_for = r0["model"], r0["make"]

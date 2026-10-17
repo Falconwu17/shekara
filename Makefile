@@ -15,8 +15,7 @@ case:
 	$(PY) -m demo.pick_case
 
 experiment:
-	powershell -ExecutionPolicy Bypass -File experiments/run_all.ps1
-	powershell -ExecutionPolicy Bypass -File experiments/run_after.ps1
+	powershell -ExecutionPolicy Bypass -File experiments/run_full.ps1
 
 ablation:
 	$(PY) -m model.train_rounds
