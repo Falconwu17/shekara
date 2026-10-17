@@ -1,0 +1,8 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+{'view': 'isolation', 'pairs': False, 'seed': 1, 'seconds': 50.1335, 'ap_all_max': 0.3174, 'f1_all_max': np.float64(0.3902), 'ap_external': 0.2503, 'f1_external': np.float64(0.3289), 'ap_pp_max': 0.5906, 'f1_pp_max': np.float64(0.5918)}
+{'view': 'isolation', 'pairs': True, 'seed': 1, 'seconds': 43.4601, 'ap_all_max': 0.3118, 'f1_all_max': np.float64(0.4051), 'ap_external': 0.2339, 'f1_external': np.float64(0.3193), 'ap_pp_max': 0.6217, 'f1_pp_max': np.float64(0.6667)}
+{'view': 'oracle', 'pairs': False, 'seed': 1, 'seconds': 52.2483, 'ap_all_max': 0.203, 'f1_all_max': np.float64(0.2358), 'ap_external': 0.1783, 'f1_external': np.float64(0.2072), 'ap_pp_max': 0.3346, 'f1_pp_max': np.float64(0.3714)}
+{'view': 'oracle', 'pairs': True, 'seed': 1, 'seconds': 48.0091, 'ap_all_max': 0.3179, 'f1_all_max': np.float64(0.3772), 'ap_external': 0.2621, 'f1_external': np.float64(0.3252), 'ap_pp_max': 0.55, 'f1_pp_max': np.float64(0.5833)}
+{'view': 'operator', 'pairs': False, 'seed': 1, 'seconds': 47.6192, 'ap_all_max': 0.1323, 'f1_all_max': np.float64(0.2426), 'ap_external': 0.0968, 'f1_external': np.float64(0.2043), 'ap_pp_max': 0.3912, 'f1_pp_max': np.float64(0.3862)}
+{'view': 'operator', 'pairs': True, 'seed': 1, 'seconds': 33.2809, 'ap_all_max': 0.2729, 'f1_all_max': np.float64(0.3655), 'ap_external': 0.2095, 'f1_external': np.float64(0.3013), 'ap_pp_max': 0.5275, 'f1_pp_max': np.float64(0.3817)}

@@ -55,3 +55,6 @@ docs/submission/application_private.json
 
 # Лог локального сервера стенда
 experiments/logs/server.log
+
+# Диагностические прогоны: баллы
+experiments/probe/
