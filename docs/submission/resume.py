@@ -55,12 +55,12 @@ RU = {
     ],
     "results_head": "Результаты",
     "results": [
-        "Модель на графе самого банка значимо сильнее центрального оператора: PR-AUC 0,315 против 0,162, "
-        "F1 +0,16 (значимо в 3 из 3 запусков).",
-        "Обмен оценками поднимает PR-AUC с 0,315 до 0,354 (+13%) во всех запусках; прирост пока статистически не значим.",
-        "Цена приватности измерена: один зашумлённый балл (L1) не помогает, польза появляется при векторном выпуске (L2, L3).",
+        "Сложить данные банков в одно место выигрыша не даёт: общий граф 0,313 против 0,313 у изолированного банка "
+        "(PR-AUC); центральный оператор слабее всех: 0,251, ШЕКАРА сильнее его на +0,07 по F1 (значимо в 2 из 3 запусков).",
+        "Обмен оценками поднимает PR-AUC с 0,313 до 0,337 (+8%) во всех запусках; прирост пока статистически не доказан.",
+        "Цена приватности измерена: выпуски с шумом (L1, L2) дают немногим больше контроля, заметная польза только у выпуска без шума (L3).",
         "Проверка при зачислении занимает 0,7 мс; с временной задержкой исходящих для верхушки очереди деньги "
-        "остаются на счёте в 30% звеньев отмывания.",
+        "остаются на счёте в 31% звеньев отмывания.",
     ],
     "tail": ("Готовность и внедрение", "TRL 4. Работает прототип: шлюзы банков, хаб с журналом, трассировка "
              "инцидентов, кабинет оператора; код открыт, 22 автоматические проверки пройдены. Следующий шаг: "
@@ -101,12 +101,12 @@ EN = {
     ],
     "results_head": "Results",
     "results": [
-        "A model on the bank's own graph significantly beats the central operator: PR-AUC 0.315 versus "
-        "0.162, F1 +0.16 (significant in 3 of 3 runs).",
-        "Exchanging estimates raises PR-AUC from 0.315 to 0.354 (+13%) in every run; the gain is not yet statistically significant.",
-        "The price of privacy is measured: a single noisy score (L1) does not help; benefit appears with vector releases (L2, L3).",
+        "Pooling banks' data in one place brings no gain: a shared graph scores 0.313, the same as an isolated bank "
+        "(PR-AUC); a central operator is weakest at 0.251, and SHEKARA beats it by F1 +0.07 (significant in 2 of 3 runs).",
+        "Exchanging estimates raises PR-AUC from 0.313 to 0.337 (+8%) in every run; the gain is not yet statistically proven.",
+        "The price of privacy is measured: noisy releases (L1, L2) add little over a control; a clear benefit comes only from the noise-free release (L3).",
         "The incoming-credit check takes 0.7 ms; a temporary hold on outgoing payments for the top of the queue "
-        "keeps money in place on 30% of laundering hops.",
+        "keeps money in place on 31% of laundering hops.",
     ],
     "tail": ("Readiness and roll-out", "TRL 4. Working prototype: bank gateways, a logged hub, incident tracing "
              "and an operator view; open-source code, 22 automated checks passing. Next step: a two-bank pilot in "
