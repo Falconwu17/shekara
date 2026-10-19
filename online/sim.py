@@ -29,6 +29,7 @@ from data.amlworld import transfer_keys
 from data.stats import DECISION_FILE
 from model.explain import merge
 from online.alerts import AlertQueue
+from protocol.hub import HeadWitness
 from trace.cascade import SOFT_SHARE, thresholds
 from trace.incident import TRACE_WINDOW
 from trace.replay_all import ALERT_SHARE, PREDS_DIR, active_accounts
@@ -110,6 +111,8 @@ class Simulator:
             self.incidents: dict[str, dict] = {}
             self.counters: Counter = Counter()
             self.nights_done: set[date] = set()
+            # новый круг: новая цепочка журнала, поэтому и засвидетельствованные головы начинаются заново
+            self.witness: dict[str, HeadWitness] = {b: HeadWitness() for b in self.participants}
 
     def control(self, action: str | None = None, speed: float | None = None, mode: str | None = None) -> None:
         with self.lock:
@@ -258,6 +261,9 @@ class Simulator:
             delivered += self.net.hub.broadcast(b, msgs, stamp)
         self.counters["releases_sent"] += sent
         self.counters["releases_delivered"] += delivered
+        head = self.net.hub.signed_head()  # каждый банк сохраняет подписанную голову журнала у себя
+        for b in self.participants:
+            self.witness[b].record(head)
         self._event("night", text=f"Ночная рассылка {day.strftime('%d.%m')}: {delivered} выпусков доставлено", sent=sent, delivered=delivered)
 
     # ---------- чтение ----------
@@ -327,7 +333,7 @@ class Simulator:
             if "error" in resp:
                 return resp
             sealed = len(resp.get("sealed", b""))  # столько байт шифротекста прошло через хаб
-            resp = gw.open_answer(t.counterparty_bank, resp)
+            resp = gw.open_answer(t.counterparty_bank, resp, gw.ref_hmac(t), self.clock.date())
             rel = resp["release"]
             return {"to_bank": t.counterparty_bank, "pseudonym": resp["pseudonym"], "sealed_bytes": sealed,
                     "release": None if rel is None else {"value": rel.value if not hasattr(rel.value, "tolist") else rel.value.tolist(),

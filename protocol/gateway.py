@@ -16,7 +16,7 @@ import numpy as np
 
 from protocol.accountant import PrivacyLedger
 from protocol.matching import TransferKey, compute_tx_refs
-from protocol.sealing import Sealer
+from protocol.sealing import ContextError, Sealer
 from protocol.tokens import account_pseudonym, tx_ref_hmac
 
 CHANNEL = "amlworld"
@@ -181,14 +181,15 @@ class Gateway:
         pseudonym = account_pseudonym(self._keys[requester], t.own_account)
         release = self._releases.get(t.own_account)
         if self.sealer.knows(requester):
-            return {"sealed": self.sealer.seal_answer(requester, pseudonym, release)}
+            return {"sealed": self.sealer.seal_answer(requester, pseudonym, release, ref_hmac, now.date())}
         return {"pseudonym": pseudonym, "release": release}
 
-    def open_answer(self, sender: str, resp: dict) -> dict:
-        """Ответ банка `sender` на свой запрос: расшифровать, если пришёл зашифрованным."""
+    def open_answer(self, sender: str, resp: dict, ref: str | None = None, day: date | None = None) -> dict:
+        """Ответ банка `sender` на свой запрос: расшифровать, если пришёл зашифрованным; при `ref`
+        и `day` проверить, что ответ именно на этот запрос этого дня (иначе ContextError)."""
         if "sealed" not in resp:
             return resp
-        return self.sealer.open_answer(sender, resp["sealed"])
+        return self.sealer.open_answer(sender, resp["sealed"], ref, day)
 
     def publish_nightly(
         self,
@@ -210,7 +211,7 @@ class Gateway:
             for bank, t in self._latest_per_bank(account, now).items():
                 ref = tx_ref_hmac(self._keys[bank], CHANNEL, t.tx_ref)
                 if self.sealer.knows(bank):
-                    out.append(Broadcast(bank, ref, None, self.sealer.seal_release(bank, rel)))
+                    out.append(Broadcast(bank, ref, None, self.sealer.seal_release(bank, rel, ref)))
                 else:
                     out.append(Broadcast(bank, ref, rel))
         return out
@@ -220,8 +221,15 @@ class Gateway:
         t = self.resolve(sender, msg.tx_ref_hmac, now)
         if t is None:
             return False
-        release = msg.release if msg.sealed is None else self.sealer.open_release(sender, msg.sealed)
-        self._external[(sender, t.counterparty_account)] = release
+        try:
+            release = msg.release if msg.sealed is None else self.sealer.open_release(sender, msg.sealed, msg.tx_ref_hmac)
+        except ContextError:
+            return False  # выпуск перенаправлен хабом на другую ссылку
+        key = (sender, t.counterparty_account)
+        prev = self._external.get(key)
+        if release.date > now.date() or (prev is not None and release.date < prev.date):
+            return False  # выпуск из будущего или повтор старого выпуска поверх нового
+        self._external[key] = release
         return True
 
     def external_release(self, bank: str, account: str) -> Release | None:

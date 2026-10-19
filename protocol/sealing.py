@@ -33,6 +33,13 @@ def _release_from_json(data: dict | None):
     return Release(value, data["level"], date.fromisoformat(data["date"]))
 
 
+PAD = 512  # байт открытого текста до шифрования: длина шифротекста одинакова для любых ответов
+
+
+class ContextError(ValueError):
+    """Сообщение расшифровано, но относится к другому запросу, ссылке или дню (подмена хабом)."""
+
+
 class Sealer:
     """Ключ банка и открытые ключи остальных; Box на пару кэшируется (X25519 считается один раз)."""
 
@@ -59,22 +66,37 @@ class Sealer:
         return self._boxes[bank]
 
     def seal(self, bank: str, payload: dict) -> bytes:
-        return bytes(self._box(bank).encrypt(json.dumps(payload, separators=(",", ":")).encode("utf-8")))
+        """Шифрует сообщение банку `bank`; открытый текст дополняется пробелами до PAD байт,
+        чтобы по длине шифротекста хаб не отличал «выпуска нет» от выпуска и один балл от другого."""
+        text = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+        if len(text) < PAD:
+            text += b" " * (PAD - len(text))
+        return bytes(self._box(bank).encrypt(text))
 
     def open(self, bank: str, sealed: bytes) -> dict:
         """Расшифровать сообщение от банка `bank`; чужая подпись или правка даёт nacl.exceptions.CryptoError."""
         return json.loads(self._box(bank).decrypt(sealed).decode("utf-8"))
 
     # ---------- содержимое протокола ----------
-    def seal_answer(self, bank: str, pseudonym: str, release) -> bytes:
-        return self.seal(bank, {"pseudonym": pseudonym, "release": _release_to_json(release)})
+    def seal_answer(self, bank: str, pseudonym: str, release, ref: str, day: date) -> bytes:
+        """Ответ привязан к запросу: ссылка, день и адресат внутри шифротекста (хаб не переставит ответы)."""
+        return self.seal(bank, {"to": bank, "ref": ref, "day": day.isoformat(), "pseudonym": pseudonym,
+                                "release": _release_to_json(release)})
 
-    def open_answer(self, bank: str, sealed: bytes) -> dict:
+    def open_answer(self, bank: str, sealed: bytes, ref: str | None = None, day: date | None = None) -> dict:
         data = self.open(bank, sealed)
+        if ref is not None and data.get("ref") != ref:
+            raise ContextError("ответ относится к другому запросу")
+        if day is not None and data.get("day") != day.isoformat():
+            raise ContextError("ответ относится к другому дню")
         return {"pseudonym": data["pseudonym"], "release": _release_from_json(data["release"])}
 
-    def seal_release(self, bank: str, release) -> bytes:
-        return self.seal(bank, _release_to_json(release))
+    def seal_release(self, bank: str, release, ref: str) -> bytes:
+        """Выпуск привязан к ссылке-адресу: хаб не перенаправит его на другой перевод."""
+        return self.seal(bank, {"ref": ref, "release": _release_to_json(release)})
 
-    def open_release(self, bank: str, sealed: bytes):
-        return _release_from_json(self.open(bank, sealed))
+    def open_release(self, bank: str, sealed: bytes, ref: str):
+        data = self.open(bank, sealed)
+        if data.get("ref") != ref:
+            raise ContextError("выпуск адресован другой ссылке")
+        return _release_from_json(data["release"])

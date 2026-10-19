@@ -280,7 +280,7 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
         net.operator.submit(desk.my_segment(incident_id))
         return {"submitted": True}
 
-    @app.get("/v1/banks/{bank}/incidents/{incident_id}/my-segment")
+    @app.get("/v1/banks/{bank}/incidents/{incident_id}/my-segment", dependencies=PROTOCOL_GUARD)
     def my_segment(bank: str, incident_id: str):
         _, desk = net.bank(bank)
         if not desk.has(incident_id):
@@ -301,7 +301,7 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
         net.bank(bank)
         return {"queued": net.queues[bank].offer(body.account, body.score, body.day)}
 
-    @app.get("/v1/banks/{bank}/alerts")
+    @app.get("/v1/banks/{bank}/alerts", dependencies=PROTOCOL_GUARD)
     def alerts(bank: str, day: date):
         net.bank(bank)
         q = net.queues[bank]

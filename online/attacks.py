@@ -15,6 +15,7 @@ from collections import Counter
 from nacl.exceptions import CryptoError
 
 from protocol.hub import AuditLog, verify_head
+from protocol.sealing import ContextError
 
 
 def _pick_pair(sim) -> tuple[str, str]:
@@ -119,7 +120,7 @@ def signature_forgery(sim) -> dict:
     forged = head["hash"][:-1] + ("0" if head["hash"][-1] != "0" else "1")
     real_ok = verify_head(head["public_key"], head["seq"], head["hash"], head["signature"])
     fake_ok = verify_head(head["public_key"], head["seq"], forged, head["signature"])
-    return {"title": "Подделка подписи", "attack": "Хаб подменяет голову журнала (переписал историю) и предъявляет банкам старую подпись.",
+    return {"title": "Подделка подписи", "attack": "Посторонний подменяет голову журнала и предъявляет банкам старую подпись хаба.",
             "rows": [["настоящая голова", "подпись верна" if real_ok else "неверна"], ["подменённая голова", "подпись верна" if fake_ok else "ПОДПИСЬ НЕВЕРНА"]],
             "defense": "Голова подписана Ed25519 ключом хаба; без закрытого ключа подпись для другой головы не подобрать.",
             "ok": real_ok and not fake_ok}
@@ -149,8 +150,132 @@ def hub_eavesdrop(sim) -> dict:
             "ok": third_read != "прочитал"}
 
 
+def _sandbox_full(gw):
+    """Копия шлюза со своими запросами и своим кэшем чужих выпусков."""
+    clone = _sandbox(gw)
+    clone._external = dict(gw._external)
+    return clone
+
+
+def _shared_transfers(sim, a: str, b: str, n: int = 2):
+    gw_b = sim.net.gateways[b]
+    return [t for t in gw_b.transfers if t.counterparty_bank == a and t.time <= sim.clock][-n:]
+
+
+def answer_swap(sim) -> dict:
+    a, b = _pick_pair(sim)
+    gw_b = _sandbox(sim.net.gateways[b])
+    t1, t2 = _shared_transfers(sim, a, b)
+    r1, r2 = gw_b.ref_hmac(t1), gw_b.ref_hmac(t2)
+    resp2 = gw_b.query(a, r2, sim.clock)
+    try:
+        sim.net.gateways[a].open_answer(b, resp2, r1, sim.clock.date())
+        outcome = "ПРИНЯТ: оценка чужого счёта"
+    except ContextError:
+        outcome = "отклонён: ответ на другой запрос"
+    return {"title": "Хаб переставил ответы",
+            "attack": f"Банк {a} спросил банк {b} о двух переводах. Хаб отдаёт ответ на второй запрос вместо первого: "
+                      "оценка одного счёта приписывается другому.",
+            "rows": [["подменённый ответ", outcome]],
+            "defense": "Внутри шифротекста ссылка на перевод, день и адресат: банк проверяет, что ответ именно на его запрос.",
+            "ok": outcome.startswith("отклонён")}
+
+
+def release_replay(sim) -> dict:
+    from datetime import timedelta
+
+    from protocol.gateway import Broadcast, Release
+    a, b = _pick_pair(sim)
+    gw_a, gw_b = _sandbox_full(sim.net.gateways[a]), sim.net.gateways[b]
+    (t,) = _shared_transfers(sim, a, b, 1)
+    ref = gw_b.ref_hmac(t)
+    today, old = sim.clock.date(), sim.clock.date() - timedelta(days=3)
+    fresh = Broadcast(a, ref, None, gw_b.sealer.seal_release(a, Release(0.12, "L1", today), ref))
+    stale = Broadcast(a, ref, None, gw_b.sealer.seal_release(a, Release(0.97, "L1", old), ref))
+    ok_fresh = gw_a.receive_broadcast(b, fresh, sim.clock)
+    ok_stale = gw_a.receive_broadcast(b, stale, sim.clock)
+    return {"title": "Хаб повторил старый выпуск",
+            "attack": f"Сегодня банк {b} сообщил о счёте низкий балл 0,12. Хаб подсовывает банку {a} записанный три дня назад "
+                      "выпуск с баллом 0,97, чтобы поднять тревогу на честном счёте.",
+            "rows": [["свежий выпуск", "принят" if ok_fresh else "отклонён"],
+                     ["старый выпуск поверх свежего", "ПРИНЯТ" if ok_stale else "отклонён"]],
+            "defense": "Дата выпуска внутри шифротекста: банк не принимает выпуск старше уже полученного и выпуск из будущего.",
+            "ok": ok_fresh and not ok_stale}
+
+
+def release_redirect(sim) -> dict:
+    from protocol.gateway import Broadcast, Release
+    a, b = _pick_pair(sim)
+    gw_a, gw_b = _sandbox_full(sim.net.gateways[a]), sim.net.gateways[b]
+    t1, t2 = _shared_transfers(sim, a, b)
+    r1, r2 = gw_b.ref_hmac(t1), gw_b.ref_hmac(t2)
+    sealed = gw_b.sealer.seal_release(a, Release(0.97, "L1", sim.clock.date()), r1)
+    accepted = gw_a.receive_broadcast(b, Broadcast(a, r2, None, sealed), sim.clock)
+    return {"title": "Хаб перенаправил выпуск",
+            "attack": f"Выпуск банка {b} о счёте из перевода 1 хаб переадресует на ссылку перевода 2: высокий балл достаётся другому счёту.",
+            "rows": [["перенаправленный выпуск", "ПРИНЯТ" if accepted else "отклонён"]],
+            "defense": "Ссылка-адрес зашифрована вместе с выпуском: если хаб меняет адрес на конверте, содержимое его не подтверждает.",
+            "ok": not accepted}
+
+
+def length_leak(sim) -> dict:
+    from protocol.gateway import Release
+    a, b = _pick_pair(sim)
+    sealer = sim.net.gateways[b].sealer
+    day = sim.clock.date()
+    cases = [("выпуска нет", None), ("балл 0,15", Release(0.15, "L1", day)), ("балл 0,97", Release(0.97, "L1", day)),
+             ("вектор L3", Release([0.1] * 8, "L3", day))]
+    lengths = {name: len(sealer.seal_answer(a, "x" * 64, rel, "0" * 64, day)) for name, rel in cases}
+    return {"title": "Балл по длине шифротекста",
+            "attack": "Хаб не может расшифровать ответ, но смотрит на его длину: вдруг высокий балл и «выпуска нет» отличаются.",
+            "rows": [[name, f"{n} байт"] for name, n in lengths.items()],
+            "defense": "Открытый текст дополняется до 512 байт перед шифрованием: длина одинакова для любого ответа.",
+            "ok": len(set(lengths.values())) == 1}
+
+
+def history_rewrite(sim) -> dict:
+    from protocol.hub import GENESIS, HeadWitness, _entry_hash, sign_head
+    a, _ = _pick_pair(sim)
+    src = sim.net.hub.log
+    mem = sqlite3.connect(":memory:", check_same_thread=False)
+    with src._lock:
+        src._db.backup(mem)
+    log = AuditLog.__new__(AuditLog)
+    log._db, log._lock = mem, src._lock.__class__()
+    witness = HeadWitness()
+    witness.heads = list(sim.witness[a].heads)
+    if not witness.heads:
+        witness.record(sim.net.hub.signed_head())
+    total = mem.execute("SELECT COUNT(*) FROM audit").fetchone()[0]
+    if total < 2:
+        return {"title": "Хаб переписал историю", "attack": "В журнале пока нет записей: запустите стенд.", "rows": [], "defense": "", "ok": True}
+    seq = max(1, witness.heads[0]["seq"] // 2)
+    mem.execute("UPDATE audit SET dst = ? WHERE seq = ?", ("XXXX", seq))
+    prev = GENESIS if seq == 1 else mem.execute("SELECT hash FROM audit WHERE seq = ?", (seq - 1,)).fetchone()[0]
+    rows = mem.execute("SELECT seq, ts, kind, src, dst, ref_hash, detail FROM audit WHERE seq >= ? ORDER BY seq", (seq,)).fetchall()
+    for s, *values in rows:
+        h = _entry_hash(prev, values)
+        mem.execute("UPDATE audit SET prev_hash = ?, hash = ? WHERE seq = ?", (prev, h, s))
+        prev = h
+    head_seq, head_hash = log.head()
+    new_sig = sign_head(sim.net.hub.signing_key, head_seq, head_hash)
+    chain_ok = log.verify()
+    sig_ok = verify_head(sim.net.hub.public_key, head_seq, head_hash, new_sig)
+    caught = witness.check(log)
+    return {"title": "Хаб переписал историю",
+            "attack": f"Хаб правит запись № {seq}, пересчитывает хэши всех записей после неё и подписывает новую голову своим настоящим ключом.",
+            "rows": [["хэш-цепочка", "цела (хэши пересчитаны)" if chain_ok else "нарушена"],
+                     ["подпись новой головы", "верна" if sig_ok else "неверна"],
+                     [f"сверка с головами, сохранёнными банком {a}",
+                      f"РАСХОЖДЕНИЕ на {len(caught)} из {len(witness.heads)}" if caught else "совпадает"]],
+            "defense": "Каждую ночь банки сохраняют подписанную голову журнала у себя. Хаб не может переписать то, что уже засвидетельствовали банки: "
+                       "хэш на сохранённой позиции не сойдётся.",
+            "ok": chain_ok and sig_ok and bool(caught)}
+
 ATTACKS = {"brute": brute_force, "foreign": foreign_transfer, "quota": quota_drain,
-           "journal": journal_tamper, "signature": signature_forgery, "eavesdrop": hub_eavesdrop}
+           "journal": journal_tamper, "signature": signature_forgery, "eavesdrop": hub_eavesdrop,
+           "swap": answer_swap, "replay": release_replay, "redirect": release_redirect, "length": length_leak,
+           "rewrite": history_rewrite}
 
 
 def run(sim, name: str) -> dict:

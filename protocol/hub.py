@@ -76,6 +76,10 @@ class AuditLog:
     def count(self) -> int:
         return self._db.execute("SELECT COUNT(*) FROM audit").fetchone()[0]
 
+    def hash_at(self, seq: int) -> str | None:
+        row = self._db.execute("SELECT hash FROM audit WHERE seq = ?", (seq,)).fetchone()
+        return row[0] if row else None
+
     def page(self, offset: int, limit: int) -> list[dict]:
         cur = self._db.execute(f"SELECT seq, {', '.join(_FIELDS)}, hash FROM audit ORDER BY seq DESC LIMIT ? OFFSET ?",
                                (limit, offset))
@@ -110,6 +114,27 @@ def verify_head(public_key_hex: str, seq: int, head_hash: str, signature_hex: st
         return True
     except (BadSignatureError, ValueError):
         return False
+
+
+class HeadWitness:
+    """Банк хранит подписанные головы журнала, которые видел (каждую ночь). Хаб может переписать историю,
+    пересчитать все хэши и подписать новую голову своим ключом: проверка цепочки и подписи это пропустят,
+    но хэш на уже засвидетельствованной позиции разойдётся с тем, что сохранил банк."""
+
+    def __init__(self, keep: int = 60):
+        self.heads: list[dict] = []
+        self.keep = keep
+
+    def record(self, head: dict) -> bool:
+        """Сохранить голову, если подпись верна. Ложь: подпись не сходится, голова не принята."""
+        if not verify_head(head["public_key"], head["seq"], head["hash"], head["signature"]):
+            return False
+        self.heads = (self.heads + [dict(head)])[-self.keep:]
+        return True
+
+    def check(self, log: "AuditLog") -> list[int]:
+        """Номера засвидетельствованных записей, хэш которых в журнале теперь другой (история переписана)."""
+        return [h["seq"] for h in self.heads if h["seq"] and log.hash_at(h["seq"]) != h["hash"]]
 
 
 class Hub:
