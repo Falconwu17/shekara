@@ -65,3 +65,4 @@ experiments/results_v2/
 video/node_modules/
 video/out/
 video/public/voice/
+.arena/
