@@ -77,6 +77,12 @@ class AnalystBot:
             self.log("telegram: токен не принят, бот не запущен")
             return
         self.log(f"telegram: бот @{me['result']['username']} запущен")
+        self.call("setMyCommands", commands=[
+            {"command": "start", "description": "Выбрать банк"},
+            {"command": "last", "description": "Последний алерт моего банка"},
+            {"command": "bank", "description": "Сменить банк: /bank 0116"},
+            {"command": "stop", "description": "Не присылать алерты"},
+        ])
         threading.Thread(target=self.poll_updates, daemon=True, name="tg-updates").start()
         threading.Thread(target=self.push_alerts, daemon=True, name="tg-alerts").start()
 

@@ -1,20 +1,23 @@
 // Журнал хаба: голова с подписью Ed25519, проверка хэш-цепочки и подписи, последние записи.
 
 import { dataTable } from "../components/table.js";
-import { note, panel, result } from "../components/ui.js";
+import { chip, note, panel, result } from "../components/ui.js";
 import { api } from "../core/api.js";
 import { h, render } from "../core/dom.js";
 import { integer, shortTime } from "../core/format.js";
 import { every } from "../core/poll.js";
 
+const KIND = { query: "запрос выпуска", release: "ночной выпуск", incident_soft: "шаг мягкого инцидента",
+  incident_confirmed: "шаг подтверждённого инцидента", incident_open: "инцидент открыт" };
+
 const ENTRY_COLUMNS = [
   { title: "№", align: "right", cell: e => e.seq },
   { title: "Время", cell: e => h("span", { class: "mono" }, shortTime(e.ts)) },
-  { title: "Тип", cell: e => e.kind },
+  { title: "Тип", cell: e => KIND[e.kind] ?? e.kind },
   { title: "От", cell: e => e.src },
   { title: "Кому", cell: e => e.dst },
   { title: "Хэш ссылки", cell: e => h("span", { class: "mono" }, (e.ref_hash || "").slice(0, 16)) },
-  { title: "Итог", cell: e => e.detail },
+  { title: "Итог", cell: e => (e.detail.includes("подтверждён") ? chip(e.detail, "risk") : e.detail) },
 ];
 
 function headView(head) {

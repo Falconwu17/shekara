@@ -206,7 +206,8 @@ class Simulator:
         self.active_inc[(bank, account)].append((iid, anchor or self.clock))
         self.counters[f"incidents_{kind}"] += 1
         # оператор узнаёт о факте инцидента (без счёта и сумм): запись в журнале хаба сразу при открытии
-        self.net.hub.log.append(self.clock, "incident_open", bank, "operator", "", f"{kind} {iid}")
+        self.net.hub.log.append(self.clock, "incident_open", bank, "operator", "",
+                               f"{iid}: " + ("подтверждён аналитиком" if kind == "confirmed" else "мягкий, открыт автоматически"))
         self._event("incident", bank=bank, account=account, incident=iid, incident_kind=kind)
         self._forward(iid, bank, account, self.clock)
         return {"incident_id": iid}
