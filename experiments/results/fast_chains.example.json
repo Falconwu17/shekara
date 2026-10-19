@@ -1,0 +1,205 @@
+{
+  "note": "идентификаторы банков и счетов: синтетические AMLworld, как в demo_case.json",
+  "steps": [
+    {
+      "row_no": 3162479,
+      "time": "2022/09/08 08:35",
+      "from_bank": "018511",
+      "from_account": "80C813A70",
+      "from_label": "Счёт A",
+      "to_bank": "011",
+      "to_account": "80005F430",
+      "to_label": "Счёт B",
+      "amount": "5935.92",
+      "currency": "Euro",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 85
+    },
+    {
+      "row_no": 3162481,
+      "time": "2022/09/08 10:00",
+      "from_bank": "011",
+      "from_account": "80005F430",
+      "from_label": "Счёт B",
+      "to_bank": "0240774",
+      "to_account": "80EDF8C80",
+      "to_label": "Счёт C",
+      "amount": "6366.97",
+      "currency": "Swiss Franc",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": true,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 293
+    },
+    {
+      "row_no": 3162483,
+      "time": "2022/09/08 14:53",
+      "from_bank": "0240774",
+      "from_account": "80EDF8C80",
+      "from_label": "Счёт C",
+      "to_bank": "00513",
+      "to_account": "801771410",
+      "to_label": "Счёт D",
+      "amount": "7295.37",
+      "currency": "US Dollar",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 48
+    },
+    {
+      "row_no": 3162485,
+      "time": "2022/09/08 15:41",
+      "from_bank": "00513",
+      "from_account": "801771410",
+      "from_label": "Счёт D",
+      "to_bank": "0235551",
+      "to_account": "80D59FF50",
+      "to_label": "Счёт E",
+      "amount": "41321.30",
+      "currency": "Brazil Real",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 248
+    },
+    {
+      "row_no": 3162487,
+      "time": "2022/09/08 19:49",
+      "from_bank": "0235551",
+      "from_account": "80D59FF50",
+      "from_label": "Счёт E",
+      "to_bank": "0234222",
+      "to_account": "80DCF9990",
+      "to_label": "Счёт F",
+      "amount": "5977.73",
+      "currency": "Euro",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 298
+    },
+    {
+      "row_no": 3162489,
+      "time": "2022/09/09 00:47",
+      "from_bank": "0234222",
+      "from_account": "80DCF9990",
+      "from_label": "Счёт F",
+      "to_bank": "010",
+      "to_account": "8005F0660",
+      "to_label": "Счёт G",
+      "amount": "7225.51",
+      "currency": "US Dollar",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": true,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 251
+    },
+    {
+      "row_no": 3162491,
+      "time": "2022/09/09 04:58",
+      "from_bank": "010",
+      "from_account": "8005F0660",
+      "from_label": "Счёт G",
+      "to_bank": "0015747",
+      "to_account": "80F95BC50",
+      "to_label": "Счёт H",
+      "amount": "7225.51",
+      "currency": "US Dollar",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": true,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 168
+    },
+    {
+      "row_no": 3162493,
+      "time": "2022/09/09 07:46",
+      "from_bank": "0015747",
+      "from_account": "80F95BC50",
+      "from_label": "Счёт H",
+      "to_bank": "0223",
+      "to_account": "811B86440",
+      "to_label": "Счёт I",
+      "amount": "26554.30",
+      "currency": "Saudi Riyal",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 2042
+    },
+    {
+      "row_no": 3162496,
+      "time": "2022/09/10 17:48",
+      "from_bank": "0223",
+      "from_account": "811B86440",
+      "from_label": "Счёт I",
+      "to_bank": "016109",
+      "to_account": "803E47E50",
+      "to_label": "Счёт J",
+      "amount": "7079.07",
+      "currency": "US Dollar",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": 64
+    },
+    {
+      "row_no": 3162497,
+      "time": "2022/09/10 18:52",
+      "from_bank": "016109",
+      "from_account": "803E47E50",
+      "from_label": "Счёт J",
+      "to_bank": "01601",
+      "to_account": "808FE2E00",
+      "to_label": "Счёт K",
+      "amount": "7104.28",
+      "currency": "US Dollar",
+      "channel": "межбанковский перевод по реквизитам (клиринг)",
+      "from_participant": false,
+      "to_participant": false,
+      "pattern": [
+        217,
+        "CYCLE"
+      ],
+      "wait_before_next_min": null
+    }
+  ]
+}

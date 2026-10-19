@@ -311,10 +311,64 @@ def answer_suppress(sim) -> dict:
             "ok": forged == "отклонён" and reused == "отклонён" and honest.startswith("ПРИНЯТ")}
 
 
+def bank_covers_drops(sim) -> dict:
+    """Злонамеренный банк: в ночных выпусках ставит балл 0 своим дропам, о которых знает,
+    чтобы соседи не заметили его дропов. Ловит ретроспективная сверка выпусков с инцидентами."""
+    from datetime import timedelta
+
+    from protocol.reputation import ReputationBook
+
+    incidents = []  # (банк, счёт, день): счёт участвовал в подтверждённом отмывочном переводе
+    seen = set()
+    for _, t, fb, fa, tb, ta, *_rest, laundering in sim.timeline:
+        if not laundering:
+            continue
+        for b, acc in ((fb, fa), (tb, ta)):
+            if b in sim.participants and (b, acc) not in seen:
+                seen.add((b, acc))
+                incidents.append((b, acc, t.date()))
+    counts = Counter(b for b, _, _ in incidents)
+    attacker = counts.most_common(1)[0][0]
+
+    own_drops = {acc for b, acc, _ in incidents if b == attacker}  # банк знает своих дропов и прикрывает их
+
+    def release(bank, day):
+        rel = sim.node_p.get((bank, day - timedelta(days=1)))
+        if rel is None or bank != attacker:
+            return rel
+        return {a: (0.0 if a in own_drops else s) for a, s in rel.items()}
+
+    book, flagged_at = ReputationBook(), None
+    for b, acc, day in incidents:
+        rel = release(b, day)
+        if rel is None or acc not in rel:
+            continue
+        book.add_incident(b, acc, rel)
+        if b == attacker and flagged_at is None and book.verdict(b).status == "на проверку":
+            flagged_at = book.verdict(b).n
+    verdicts = book.verdicts()
+    v = verdicts[attacker]
+    judged = [x for x in verdicts.values() if x.bank != attacker and x.status != "мало данных"]
+    honest_flagged = [x.bank for x in judged if x.status == "на проверку"]
+    return {"title": "Банк покрывает дропов",
+            "attack": f"Банк {attacker} в сговоре со своими дропами: в ночных выпусках ставит им балл 0, "
+                      "чтобы соседи пропустили переводы к ним. Антифрод-центр сверяет выпуски задним числом "
+                      "с подтверждёнными инцидентами: какой балл банк дал счёту накануне.",
+            "rows": [[f"качество выпусков банка {attacker}", f"{v.quality:.2f} (случайный выпуск: 0,50)".replace(".", ",", 1)],
+                     ["решение", f"{v.status.upper()}: {v.reason}" if v.status == "на проверку" else v.status],
+                     ["флаг поставлен на инциденте №", flagged_at if flagged_at else "не поставлен"],
+                     ["честных банков с выборкой", f"{len(judged)}, из них на проверку: {len(honest_flagged)}"]],
+            "defense": "Репутация банка: процентиль балла каждого подтверждённого дропа в выпуске его банка за ночь до инцидента. "
+                       "Если оценки хуже случайных (граница интервала Уилсона ниже 0,5) или резко хуже соседей, "
+                       "выпуски банка перестают подаваться в модели соседей до разбора регулятором.",
+            "ok": v.status == "на проверку"}
+
+
 ATTACKS = {"brute": brute_force, "foreign": foreign_transfer, "quota": quota_drain,
            "journal": journal_tamper, "signature": signature_forgery, "eavesdrop": hub_eavesdrop,
            "swap": answer_swap, "replay": release_replay, "redirect": release_redirect, "length": length_leak,
-           "rewrite": history_rewrite, "suppress": answer_suppress}
+           "rewrite": history_rewrite, "suppress": answer_suppress,
+           "cover": bank_covers_drops}
 
 
 def run(sim, name: str) -> dict:

@@ -20,7 +20,7 @@ def sim():
 
 
 @pytest.mark.parametrize("name", ["brute", "foreign", "quota", "journal", "signature", "eavesdrop",
-                                  "swap", "replay", "redirect", "length", "rewrite", "suppress"])
+                                  "swap", "replay", "redirect", "length", "rewrite", "suppress", "cover"])
 def test_attack_repelled_on_fresh_stand(sim, name):
     from online.attacks import run
 
