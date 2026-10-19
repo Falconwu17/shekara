@@ -83,12 +83,19 @@ class Sealer:
         return self.seal(bank, {"to": bank, "ref": ref, "day": day.isoformat(), "pseudonym": pseudonym,
                                 "release": _release_to_json(release)})
 
+    def seal_refusal(self, bank: str, error: str, ref: str, day: date) -> bytes:
+        """Отказ («не найдено», «квота») тоже запечатан ключом ответчика и привязан к запросу:
+        хаб не может сам отказать от имени банка и тем подавить ответ."""
+        return self.seal(bank, {"to": bank, "ref": ref, "day": day.isoformat(), "error": error})
+
     def open_answer(self, bank: str, sealed: bytes, ref: str | None = None, day: date | None = None) -> dict:
         data = self.open(bank, sealed)
         if ref is not None and data.get("ref") != ref:
             raise ContextError("ответ относится к другому запросу")
         if day is not None and data.get("day") != day.isoformat():
             raise ContextError("ответ относится к другому дню")
+        if "error" in data:
+            return {"error": data["error"]}
         return {"pseudonym": data["pseudonym"], "release": _release_from_json(data["release"])}
 
     def seal_release(self, bank: str, release, ref: str) -> bytes:

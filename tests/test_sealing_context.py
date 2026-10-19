@@ -35,6 +35,17 @@ def test_release_bound_to_reference():
         a.open_release("B", sealed, "ref2")  # хаб перенаправил выпуск
 
 
+def test_refusal_sealed_and_bound():
+    a, b = pair()
+    day = date(2022, 9, 8)
+    sealed = b.seal_refusal("A", "not_found", "ref1", day)
+    assert a.open_answer("B", sealed, "ref1", day) == {"error": "not_found"}
+    with pytest.raises(ContextError):
+        a.open_answer("B", sealed, "ref2", day)  # отказ на другой запрос
+    # отказ и ответ одной длины: хаб не отличит их по шифротексту
+    assert len(sealed) == len(b.seal_answer("A", "p" * 64, Release(0.5, "L1", day), "ref1", day))
+
+
 def test_ciphertext_length_does_not_leak_score():
     _, b = pair()
     day = date(2022, 9, 8)

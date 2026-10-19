@@ -232,11 +232,11 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
     @app.post("/v1/signals/query", dependencies=PROTOCOL_GUARD)
     def signals_query(q: QueryIn):
         resp = net.hub.query(q.requester_bank, q.target_bank, q.tx_ref_hmac, q.now)
-        if "error" in resp:
-            return resp
         # хаб передал шифротекст; расшифровывает узел запрашивающего банка (в MVP: тот же процесс)
         sealed = len(resp.get("sealed", b""))
         answer = net.gateways[q.requester_bank].open_answer(q.target_bank, resp) if q.requester_bank in net.gateways else resp
+        if "error" in answer:
+            return {"error": answer["error"]}
         return {"pseudonym": answer["pseudonym"], "release": _release_json(answer["release"]), "sealed_bytes": sealed}
 
     @app.post("/v1/banks/{bank}/releases/nightly", dependencies=PROTOCOL_GUARD)

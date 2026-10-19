@@ -282,10 +282,39 @@ def history_rewrite(sim) -> dict:
                        "хэш на сохранённой позиции не сойдётся.",
             "ok": chain_ok and sig_ok and bool(caught)}
 
+def answer_suppress(sim) -> dict:
+    a, b = _pick_pair(sim)
+    gw_b = _sandbox(sim.net.gateways[b])
+    t1, t2 = _shared_transfers(sim, a, b)
+    r1, r2 = gw_b.ref_hmac(t1), gw_b.ref_hmac(t2)
+    day = sim.clock.date()
+    gw_a = sim.net.gateways[a]
+
+    def verdict(resp, ref):
+        try:
+            out = gw_a.open_answer(b, resp, ref, day)
+        except ContextError:
+            return "отклонён"
+        return "ПРИНЯТ: " + out.get("error", "ответ")
+
+    gw_b.query(a, r1, sim.clock)  # настоящий ответ на первый запрос хаб выбрасывает
+    forged = verdict({"error": "not_found"}, r1)  # и пишет отказ от имени банка
+    stale = gw_b.query(a, secrets.token_hex(32), sim.clock)  # настоящий запечатанный отказ на другой запрос
+    reused = verdict(stale, r1)
+    honest = verdict(gw_b.query(a, r2, sim.clock), r2)
+    return {"title": "Хаб подавил ответ",
+            "attack": f"Банк {a} спросил банк {b} о переводе. Хаб выбрасывает ответ и отдаёт отказ «не найдено»: "
+                      "сначала написанный сам, затем настоящий отказ банка на другой запрос.",
+            "rows": [["отказ, написанный хабом", forged], ["чужой настоящий отказ", reused], ["честный ответ", honest]],
+            "defense": "Отказ тоже запечатан ключом банка-ответчика вместе со ссылкой и днём. Хаб видит статус для журнала, "
+                       "но не может ни написать отказ сам, ни подсунуть отказ на другой запрос.",
+            "ok": forged == "отклонён" and reused == "отклонён" and honest.startswith("ПРИНЯТ")}
+
+
 ATTACKS = {"brute": brute_force, "foreign": foreign_transfer, "quota": quota_drain,
            "journal": journal_tamper, "signature": signature_forgery, "eavesdrop": hub_eavesdrop,
            "swap": answer_swap, "replay": release_replay, "redirect": release_redirect, "length": length_leak,
-           "rewrite": history_rewrite}
+           "rewrite": history_rewrite, "suppress": answer_suppress}
 
 
 def run(sim, name: str) -> dict:

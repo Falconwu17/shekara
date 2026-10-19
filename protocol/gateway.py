@@ -174,22 +174,34 @@ class Gateway:
         slot = (requester, now.date())
         self._queries[slot] += 1
         if self._queries[slot] > self.quota(requester, now):
-            return quota_exceeded()
+            return self._refuse(requester, quota_exceeded(), ref_hmac, now)
         t = self.resolve(requester, ref_hmac, now)
         if t is None:
-            return not_found()
+            return self._refuse(requester, not_found(), ref_hmac, now)
         pseudonym = account_pseudonym(self._keys[requester], t.own_account)
         release = self._releases.get(t.own_account)
         if self.sealer.knows(requester):
             return {"sealed": self.sealer.seal_answer(requester, pseudonym, release, ref_hmac, now.date())}
         return {"pseudonym": pseudonym, "release": release}
 
+    def _refuse(self, requester: str, refusal: dict, ref_hmac: str, now: datetime) -> dict:
+        """Статус отказа хаб видит открыто (для журнала), но доказательство запечатано ответчиком."""
+        if not self.sealer.knows(requester):
+            return refusal
+        return {**refusal, "sealed": self.sealer.seal_refusal(requester, refusal["error"], ref_hmac, now.date())}
+
     def open_answer(self, sender: str, resp: dict, ref: str | None = None, day: date | None = None) -> dict:
         """Ответ банка `sender` на свой запрос: расшифровать, если пришёл зашифрованным; при `ref`
-        и `day` проверить, что ответ именно на этот запрос этого дня (иначе ContextError)."""
+        и `day` проверить, что ответ именно на этот запрос этого дня (иначе ContextError).
+        Отказ без печати ответчика от банка с известным ключом не принимается: его мог написать хаб."""
         if "sealed" not in resp:
+            if "error" in resp and self.sealer.knows(sender):
+                raise ContextError("отказ не запечатан банком-ответчиком")
             return resp
-        return self.sealer.open_answer(sender, resp["sealed"], ref, day)
+        opened = self.sealer.open_answer(sender, resp["sealed"], ref, day)
+        if "error" in resp and opened.get("error") != resp["error"]:
+            raise ContextError("открытый статус отказа не совпадает с запечатанным")
+        return opened
 
     def publish_nightly(
         self,

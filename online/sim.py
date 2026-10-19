@@ -30,6 +30,7 @@ from data.stats import DECISION_FILE
 from model.explain import merge
 from online.alerts import AlertQueue
 from protocol.hub import HeadWitness
+from protocol.sealing import ContextError
 from trace.cascade import SOFT_SHARE, thresholds
 from trace.incident import TRACE_WINDOW
 from trace.replay_all import ALERT_SHARE, PREDS_DIR, active_accounts
@@ -330,10 +331,13 @@ class Simulator:
             resp = self.net.hub.query(bank, t.counterparty_bank, gw.ref_hmac(t), self.clock)
             self.counters["queries"] += 1
             self._event("query", bank=bank, to_bank=t.counterparty_bank, result=resp.get("error", "ok"))
-            if "error" in resp:
-                return resp
             sealed = len(resp.get("sealed", b""))  # столько байт шифротекста прошло через хаб
-            resp = gw.open_answer(t.counterparty_bank, resp, gw.ref_hmac(t), self.clock.date())
+            try:
+                resp = gw.open_answer(t.counterparty_bank, resp, gw.ref_hmac(t), self.clock.date())
+            except ContextError:
+                return {"error": "forged", "text": "ответ отклонён: не запечатан банком-ответчиком"}
+            if "error" in resp:
+                return {"error": resp["error"]}
             rel = resp["release"]
             return {"to_bank": t.counterparty_bank, "pseudonym": resp["pseudonym"], "sealed_bytes": sealed,
                     "release": None if rel is None else {"value": rel.value if not hasattr(rel.value, "tolist") else rel.value.tolist(),
