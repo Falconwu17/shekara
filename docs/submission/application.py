@@ -69,7 +69,7 @@ def build(person: dict):
 
     _runs(_para(doc, after=8),
           f"{UNIVERSITY} выдвигает для участия в конкурсе работу «{PROJECT}» "
-          "(треки AI for Finance (антифрод) и Digital Banking (AML/regtech)). Участие индивидуальное.")
+          "(треки AI for Finance (антифрод) и Digital Banking (AML/regtech)).")
 
     _para(doc, "1. Организация высшего и послевузовского образования", bold=True, align=WD_ALIGN_PARAGRAPH.LEFT, after=3)
     _table(doc, [
