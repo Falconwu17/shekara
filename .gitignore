@@ -60,3 +60,8 @@ experiments/logs/server.log
 experiments/probe/
 experiments/results_v1/
 experiments/results_v2/
+
+# Ролик (video/): зависимости, готовые ролики, записи голоса
+video/node_modules/
+video/out/
+video/public/voice/

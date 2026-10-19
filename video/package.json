@@ -1,0 +1,21 @@
+{
+  "name": "shekara-video",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "full": "remotion render Full out/shekara_full.mp4",
+    "short": "remotion render Short out/shekara_60s.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.536",
+    "@remotion/google-fonts": "4.0.536",
+    "@remotion/media-utils": "4.0.536",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.536"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.31",
+    "typescript": "5.9.3"
+  }
+}
