@@ -39,7 +39,7 @@ def main() -> int:
     for mode in MODES:
         for f in sorted(PREDS_DIR.glob(f"{mode}_s*_test_views.parquet")):
             seed = int(f.name[len(mode) + 2: -len("_test_views.parquet")])
-            test = slices(pl.read_parquet(f), pp)["all_max"]
+            test = slices(pl.read_parquet(f), pp)["all_max"].sort("row_no")  # порядок при равных баллах не зависит от группировки
             s, y = test["score"].to_numpy(), test["label"].to_numpy()
             for r in RECALLS:
                 rows.append({"mode": mode, "seed": seed, "recall": r, "alerts": alerts_needed(s, y, r), "pos": int(y.sum()), "n": len(y)})
