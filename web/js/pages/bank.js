@@ -2,6 +2,7 @@
 
 import { dataTable } from "../components/table.js";
 import { chip, note, panel, result, scoreBar, toast } from "../components/ui.js";
+import { whyList, whyShort } from "../components/why.js";
 import { api } from "../core/api.js";
 import { h, render } from "../core/dom.js";
 import { amount, decimal, shortTime } from "../core/format.js";
@@ -13,6 +14,7 @@ function queueTable(queue, threshold, openAccount) {
     { title: "Счёт", cell: a => [h("span", { class: "mono" }, a.account), a.incident_flags.length ? [" ", chip("инцидент", "risk")] : null] },
     { title: "Балл", cell: a => scoreBar(a.score, threshold) },
     { title: "Пришло из", cell: a => a.from_bank ?? "-" },
+    { title: "Главная причина", cell: a => whyShort(a.why) },
     { title: "Сумма", align: "right", cell: a => (a.amount ? amount(a.amount, a.currency) : "-") },
     { title: "Разметка", cell: a => (a.laundering ? chip("отмывание", "risk") : chip("нет")) },
   ], queue, { onRowClick: a => openAccount(a.account), empty: "Сегодня алертов пока нет." });
@@ -45,6 +47,11 @@ function accountCard(card, bank, onIncident) {
     h("div", { class: "kv" },
       h("span", {}, "Переводов к этому моменту"), h("span", {}, card.total),
       h("span", {}, "Флаги инцидентов"), h("span", {}, card.incident_flags.length ? card.incident_flags.map(id => chip(id, "risk")) : "нет")),
+    card.alert ? h("div", { class: "why-box" },
+      h("div", { class: "why-head" }, h("b", {}, "Почему алерт"),
+        h("span", { class: "muted" }, ` балл ${decimal(card.alert.score)} при зачислении из банка ${card.alert.from_bank}`)),
+      whyList(card.alert.why),
+      h("div", { class: "muted why-note" }, "Вклад признаков в балл модели (разложение LightGBM). Профиль счетов: на прошлую ночь, поэтому объяснение доступно в момент зачисления.")) : null,
     h("div", { class: "scroll scroll-short" }, dataTable([
       { title: "Время", cell: t => h("span", { class: "mono" }, shortTime(t.t)) },
       { title: "", cell: t => (t.side === "in" ? "вход" : "выход") },

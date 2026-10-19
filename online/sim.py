@@ -27,6 +27,7 @@ import polars as pl
 from data.split import BANKS_DIR, FULL_DAYS_FILE, load_bank
 from data.amlworld import transfer_keys
 from data.stats import DECISION_FILE
+from model.explain import merge
 from online.alerts import AlertQueue
 from trace.cascade import SOFT_SHARE, thresholds
 from trace.incident import TRACE_WINDOW
@@ -35,6 +36,19 @@ from trace.replay_all import ALERT_SHARE, PREDS_DIR, active_accounts
 MODES = {"isolation": "Изоляция", "C_L3": "ШЕКАРА"}
 RELEASE_LEVEL, RELEASE_SIGMA = "L1", 0.25
 TICK_SEC = 0.25
+
+
+def load_explanations(preds_dir: Path, seed: int) -> dict[str, dict[tuple[int, str], list[dict]]]:
+    """Объяснения баллов проверки при зачислении (model/explain.py): изоляция как есть, ШЕКАРА:
+    сочетание изоляции и L3 с весом 1/2. Нет файлов: объяснений нет, стенд работает без них."""
+    def read(mode: str) -> dict[tuple[int, str], list[dict]]:
+        f = preds_dir / f"inbound_{mode}_s{seed}_explain.parquet"
+        if not f.exists():
+            return {}
+        e = pl.read_parquet(f)
+        return {(r, v): json.loads(i) for r, v, i in zip(e["row_no"].to_list(), e["view"].to_list(), e["items"].to_list())}
+    iso, l3 = read("isolation"), read("L3")
+    return {"isolation": iso, "C_L3": {k: merge(iso.get(k, []), l3.get(k, [])) for k in iso.keys() | l3.keys()}}
 
 
 class Simulator:
@@ -64,6 +78,7 @@ class Simulator:
             self.scores[m] = dict(zip(zip(p["row_no"].to_list(), p["view"].to_list()), p["score"].to_list()))
             inc = p.select("row_no", "score", pl.col("view").alias("bank")).join(trans.select("row_no", "day"), on="row_no")
             self.thr[m] = thresholds(inc, self.active, val_day)
+        self.why = load_explanations(Path(preds_dir), seed)
         nodes = pl.read_parquet(Path(preds_dir) / f"isolation_s{seed}_nodes.parquet").filter(pl.col("bank").is_in(part))
         self.node_p: dict[tuple[str, date], dict[str, float]] = defaultdict(dict)
         for b, acc, end, sc in nodes.select("bank", "account", "end_day", "score").iter_rows():
@@ -170,7 +185,8 @@ class Simulator:
             q = self.queues.setdefault((tb, day), AlertQueue(self.budget.get((tb, day), 1)))
             if q.offer(ta, score, day):
                 self.alert_info[(tb, ta, day)] = {"row_no": row_no, "t": t.isoformat(), "from_bank": fb, "amount": amount,
-                                                  "currency": cur, "score": score, "laundering": bool(laund)}
+                                                  "currency": cur, "score": score, "laundering": bool(laund),
+                                                  "why": self.why.get(self.mode, {}).get((row_no, tb), [])}
                 self.counters["alerts"] += 1
                 self.counters["alerts_laundering"] += bool(laund)
                 self._event("alert", bank=tb, account=ta, score=round(score, 3), from_bank=fb, laundering=bool(laund))
@@ -287,8 +303,10 @@ class Simulator:
                              "cp_account": t.counterparty_account, "amount": t.amount, "partner": gw.is_partner(t.counterparty_bank),
                              "release": None if rel is None else {"value": rel.value if not hasattr(rel.value, "tolist") else rel.value.tolist(),
                                                                    "date": rel.date.isoformat(), "level": rel.level}})
+            alert = self.alert_info.get((bank, account, self.clock.date()))
             return {"bank": bank, "account": account, "transfers": rows, "total": len(own),
-                    "incident_flags": sorted(self.net.desks[bank].flags.get(account, []))}
+                    "incident_flags": sorted(self.net.desks[bank].flags.get(account, [])),
+                    "alert": None if alert is None else {k: alert[k] for k in ("t", "score", "from_bank", "why")}}
 
     def query_counterparty(self, bank: str, row_no: int) -> dict:
         """Банк спрашивает банк-контрагента о счёте на другом конце СВОЕГО перевода."""

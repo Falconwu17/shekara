@@ -11,7 +11,8 @@ RUN pip install --no-cache-dir "numpy>=1.26" "polars>=1.0" "duckdb>=0.10" "pyarr
 COPY protocol/ protocol/
 COPY trace/ trace/
 COPY online/ online/
-COPY data/__init__.py data/amlworld.py data/split.py data/stats.py data/labels.py data/channel_map.py data/
+COPY data/__init__.py data/amlworld.py data/split.py data/stats.py data/labels.py data/channel_map.py data/features.py data/
+COPY model/__init__.py model/explain.py model/
 COPY data/split_decision.json data/
 COPY demo/ demo/
 COPY dashboard/ dashboard/

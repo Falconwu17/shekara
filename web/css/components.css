@@ -85,3 +85,15 @@ select, .input { border: 1px solid var(--line); background: var(--panel); border
 @media (max-width: 760px) {
   .bar-row { grid-template-columns: 120px minmax(0, 1fr) 48px }
 }
+
+/* «почему алерт» (js/components/why.js) */
+.why-box { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-left: 3px solid var(--amber); border-radius: 0 10px 10px 0; background: var(--panel-2) }
+.why-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline }
+.why { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px }
+.why-item { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; align-items: center }
+.why-bar { height: 8px; border-radius: 4px; background: var(--panel); border: 1px solid var(--line); overflow: hidden }
+.why-bar i { display: block; height: 100% }
+.why-bar i.up { background: var(--amber) }
+.why-bar i.down { background: var(--ok) }
+.why-short { font-size: 12.5px; color: var(--ink-2) }
+.why-note { font-size: 11.5px }

@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 from datetime import date, timedelta
@@ -22,8 +23,12 @@ import numpy as np
 import polars as pl
 
 from data.features import Graph
+from model.explain import explain_rows, inbound_keys
 from model.gbt import GBTExperiment, fit_lgb, make_mats, mode_spec, proba
 from model.train_rounds import PREDS_DIR, average_precision
+
+
+EXPLAIN_MIN_SCORE = 0.01  # объяснения храним для переводов с баллом не ниже этого (алерты стенда выше)
 
 
 class InboundExperiment(GBTExperiment):
@@ -47,6 +52,18 @@ class InboundExperiment(GBTExperiment):
             s, d = g.edge_index[:, em]
             out.append((g, em, np.hstack([g.edge_attr[em], nx[s], nx[d]]).astype(np.float32)))
         return out
+
+    def explain_inbound(self, model, g: Graph, em: np.ndarray, ex: np.ndarray, dd: np.ndarray) -> list[dict]:
+        """Объяснения для межбанковских зачислений своему клиенту с заметным баллом (model/explain.py)."""
+        score = proba(model, ex)
+        mask = (g.node_bank[dd] == g.owner) & (g.edge_attr[em, 3] > 0.5) & (score >= EXPLAIN_MIN_SCORE)
+        if not mask.any():
+            return []
+        contrib = model.booster_.predict(ex[mask], pred_contrib=True)
+        texts = explain_rows(contrib, ex[mask], inbound_keys(ex.shape[1]))
+        rows = g.edge_row_no[em][mask]
+        return [{"row_no": int(r), "view": g.owner, "score": float(sc), "bias": float(c[-1]), "items": json.dumps(t, ensure_ascii=False)}
+                for r, sc, c, t in zip(rows, score[mask], contrib, texts)]
 
     def night_maker(self, mode: str):
         """Функция «матрицы узлов ночного графа» для режима: изоляция: без выпусков."""
@@ -73,10 +90,12 @@ class InboundExperiment(GBTExperiment):
                 vx.append(ex)
                 vy.append(g.edge_label[em])
         model = fit_lgb(np.vstack(X), np.concatenate(y), self.seed * 100 + 77, (np.vstack(vx), np.concatenate(vy)))
-        frames = []
+        frames, explained = [], []
         for d in self.val_days + self.test_days:
             for g, em, ex in self.inbound_rows(d, make):
                 s, dd = g.edge_index[:, em]
+                if d in self.test_days:
+                    explained += self.explain_inbound(model, g, em, ex, dd)
                 frames.append(pl.DataFrame({
                     "row_no": g.edge_row_no[em], "day": g.edge_day[em], "label": g.edge_label[em].astype(np.int8),
                     "score": proba(model, ex), "view": g.owner,
@@ -86,6 +105,8 @@ class InboundExperiment(GBTExperiment):
         preds = pl.concat(frames)
         PREDS_DIR.mkdir(parents=True, exist_ok=True)
         preds.write_parquet(PREDS_DIR / f"inbound_{mode}_s{self.seed}.parquet")
+        if explained:
+            pl.DataFrame(explained).write_parquet(PREDS_DIR / f"inbound_{mode}_s{self.seed}_explain.parquet")
         test = preds.filter(pl.col("day").is_in(self.test_days) & pl.col("interbank") & pl.col("view_is_receiver"))
         ap = average_precision(test["score"].to_numpy(), test["label"].to_numpy())
         self.log(f"  при зачислении {mode}: AP получателя (тест) {ap:.4f}, {time.time() - t0:.0f} с")

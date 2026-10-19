@@ -10,6 +10,9 @@ $bundle = "shekara-data.tgz"
 $preds = @("experiments/results/preds/inbound_isolation_s1.parquet", "experiments/results/preds/inbound_C_L3_s1.parquet",
            "experiments/results/preds/isolation_s1_nodes.parquet")
 foreach ($p in $preds) { if (-not (Test-Path $p)) { throw "нет ${p}: сначала эксперимент (README)" } }
+# объяснения алертов (model/explain.py): если их нет, стенд работает без блока «Почему алерт»
+$preds += @("experiments/results/preds/inbound_isolation_s1_explain.parquet", "experiments/results/preds/inbound_L3_s1_explain.parquet") |
+          Where-Object { Test-Path $_ }
 $results = Get-ChildItem experiments/results -File | Where-Object { $_.Extension -in ".csv", ".json", ".md" } | ForEach-Object { "experiments/results/$($_.Name)" }
 
 Write-Host "== Архив данных"
