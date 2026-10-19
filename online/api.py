@@ -436,6 +436,10 @@ def main() -> int:
         if os.environ.get("SHEKARA_AUTOPLAY"):
             sim.loop_forever = True
             sim.control("play", speed=float(os.environ.get("SHEKARA_SPEED", "600")))
+        from online.telegram import load_env_file, start_bot
+
+        load_env_file()
+        start_bot(sim, log=lambda m: print(m, flush=True))
     # IP клиента из X-Forwarded-For берём только от доверенного прокси (в прод-сборке: Caddy в сети Docker),
     # иначе любой подставит себе чужой адрес и обойдёт лимиты
     trusted = os.environ.get("SHEKARA_TRUSTED_PROXIES", "127.0.0.1")

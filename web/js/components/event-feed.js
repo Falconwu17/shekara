@@ -18,6 +18,7 @@ const DESCRIBE = {
   night: e => [chip("ночь", "ok"), e.text],
   query: e => [chip("запрос", "accent"), `${e.bank} спросил ${e.to_bank} о контрагенте перевода · ${e.result === "ok" ? "выпуск получен" : e.result}`],
   mode: e => [chip("режим"), e.text],
+  dismiss: e => [chip("ложная", "ok"), ["аналитик банка ", h("b", {}, e.bank), " закрыл алерт по счёту ", h("span", { class: "mono" }, e.account), " как ложный"]],
 };
 
 export function eventRow(event, { fresh = false } = {}) {

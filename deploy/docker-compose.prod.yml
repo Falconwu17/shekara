@@ -12,6 +12,10 @@ services:
       SHEKARA_ADMIN_TOKEN: ${SHEKARA_ADMIN_TOKEN:?задайте в deploy/.env}
       SHEKARA_OPERATOR_TOKEN: ${SHEKARA_OPERATOR_TOKEN:?задайте в deploy/.env}
       SHEKARA_PUBLIC: "1"
+      # Telegram-бот аналитика (online/telegram.py): без токена не запускается
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_ALLOWED_CHATS: ${TELEGRAM_ALLOWED_CHATS:-}
+      SHEKARA_PUBLIC_URL: https://${SHEKARA_DOMAIN}
       # приложение доступно только из сети Docker (expose, не ports): заголовки X-Forwarded-For ставит Caddy
       SHEKARA_TRUSTED_PROXIES: "*"
       SHEKARA_AUTOPLAY: "1"
