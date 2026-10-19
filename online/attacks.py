@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import secrets
 import sqlite3
 import time
@@ -92,23 +93,38 @@ def quota_drain(sim) -> dict:
             "ok": refused > 0}
 
 
-def journal_tamper(sim) -> dict:
+def _journal_copy(sim) -> tuple[AuditLog, sqlite3.Connection, bool]:
+    """Копия журнала хаба в памяти. На только что сброшенном стенде журнал пуст:
+    тогда в копию пишутся настоящие обращения пары банков, чтобы атаке было что править."""
     src = sim.net.hub.log
     mem = sqlite3.connect(":memory:", check_same_thread=False)
     with src._lock:
         src._db.backup(mem)
     log = AuditLog.__new__(AuditLog)
     log._db, log._lock = mem, src._lock.__class__()
+    filled = mem.execute("SELECT COUNT(*) FROM audit").fetchone()[0] < 4
+    if filled:
+        a, b = _pick_pair(sim)
+        gw_b = _sandbox(sim.net.gateways[b])
+        for tr in _shared_transfers(sim, a, b, 6):
+            ref = gw_b.ref_hmac(tr)
+            answer = gw_b.query(a, ref, sim.clock)
+            log.append(sim.clock, "query", a, b, hashlib.sha256(ref.encode()).hexdigest()[:16],
+                       answer.get("error", "ok"))
+    return log, mem, filled
+
+
+def journal_tamper(sim) -> dict:
+    log, mem, filled = _journal_copy(sim)
     total = mem.execute("SELECT COUNT(*) FROM audit").fetchone()[0]
-    if total < 2:
-        return {"title": "Подделка журнала", "attack": "В журнале пока нет записей: запустите стенд.", "rows": [], "defense": "", "ok": True}
     seq = total // 2
     before = mem.execute("SELECT kind, src, dst, detail FROM audit WHERE seq = ?", (seq,)).fetchone()
     intact = log.verify()
     mem.execute("UPDATE audit SET dst = ? WHERE seq = ?", ("XXXX", seq))
     broken = log.verify()
     return {"title": "Подделка журнала", "attack": f"Оператор хаба тихо меняет получателя в записи № {seq} из {total} "
-                                                f"({before[0]}, {before[1]} → {before[2]}) на «XXXX».",
+                                                f"({before[0]}, {before[1]} → {before[2]}) на «XXXX»."
+                                                + (" Стенд только что сброшен: журнал копии заполнен настоящими запросами пары банков." if filled else ""),
             "rows": [["цепочка до правки", "цела" if intact else "нарушена"], ["цепочка после правки", "цела" if broken else "НАРУШЕНА"]],
             "defense": "Каждая запись содержит хэш предыдущей (SHA-256): правка любой записи ломает все хэши после неё. "
                        "Голова цепочки подписана, банки хранят подписанные головы у себя.",
@@ -236,19 +252,13 @@ def length_leak(sim) -> dict:
 def history_rewrite(sim) -> dict:
     from protocol.hub import GENESIS, HeadWitness, _entry_hash, sign_head
     a, _ = _pick_pair(sim)
-    src = sim.net.hub.log
-    mem = sqlite3.connect(":memory:", check_same_thread=False)
-    with src._lock:
-        src._db.backup(mem)
-    log = AuditLog.__new__(AuditLog)
-    log._db, log._lock = mem, src._lock.__class__()
+    log, mem, filled = _journal_copy(sim)
     witness = HeadWitness()
-    witness.heads = list(sim.witness[a].heads)
-    if not witness.heads:
-        witness.record(sim.net.hub.signed_head())
-    total = mem.execute("SELECT COUNT(*) FROM audit").fetchone()[0]
-    if total < 2:
-        return {"title": "Хаб переписал историю", "attack": "В журнале пока нет записей: запустите стенд.", "rows": [], "defense": "", "ok": True}
+    witness.heads = [] if filled else list(sim.witness[a].heads)
+    if not witness.heads:  # ночей ещё не было: банк засвидетельствовал текущую голову
+        seq0, h0 = log.head()
+        witness.record({"seq": seq0, "hash": h0, "signature": sign_head(sim.net.hub.signing_key, seq0, h0),
+                        "public_key": sim.net.hub.public_key})
     seq = max(1, witness.heads[0]["seq"] // 2)
     mem.execute("UPDATE audit SET dst = ? WHERE seq = ?", ("XXXX", seq))
     prev = GENESIS if seq == 1 else mem.execute("SELECT hash FROM audit WHERE seq = ?", (seq - 1,)).fetchone()[0]

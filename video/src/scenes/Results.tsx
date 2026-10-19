@@ -1,5 +1,5 @@
 // 06. Результаты третьей версии эксперимента (docs/submission/numbers.md): столбцы растут на полу сцены,
-// камера облетает их, значения досчитываются, «+34%» ставится штампом.
+// камера облетает их, значения досчитываются, «0,337 против 0,251» ставится штампом.
 import { interpolate, useCurrentFrame } from "remotion";
 import { CountUp, Words, useStamp } from "../kinetic";
 import { At, Backdrop, Ground, Layer, Space, useCamera } from "../space";
@@ -63,7 +63,7 @@ export const Results = ({ short }: SceneProps) => {
         <Layer z={160}>
           <At x={-650} y={-150}>
             <div style={{ ...stamp, padding: "22px 36px", borderRadius: 22, background: COLOR.accent, color: COLOR.paper, fontSize: 52, fontWeight: 700,
-              whiteSpace: "nowrap", boxShadow: "0 24px 50px rgba(168,74,20,.35)" }}>+34% к оператору</div>
+              whiteSpace: "nowrap", boxShadow: "0 24px 50px rgba(168,74,20,.35)" }}>0,337 против 0,251</div>
           </At>
         </Layer>
       </Space>
