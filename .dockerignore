@@ -7,4 +7,6 @@ experiments/
 docs/
 tests/
 model/
+!model/__init__.py
+!model/explain.py
 **/__pycache__/
