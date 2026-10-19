@@ -22,7 +22,8 @@ from docs.submission.resume import FONT, HERE, _fixed_widths, _font, _para
 
 # файл → (результат, размер основного шрифта); one-pager собирается отдельно: one_pager.py
 FILES = {"tech_appendix_ru.md": ("tech_appendix_ru.docx", 11), "doklad_ru.md": ("doklad_ru.docx", 12),
-         "legal_ru.md": ("legal_ru.docx", 10.5)}
+         "legal_ru.md": ("legal_ru.docx", 10.5), "threat_model_ru.md": ("threat_model_ru.docx", 10),
+         "economics_ru.md": ("economics_ru.docx", 10.5)}
 TEXT_WIDTH_CM = 17.5
 INLINE = re.compile(r"(\*\*.+?\*\*|`[^`]+`|(?<!\*)\*[^*\s][^*]*?\*(?!\*))")
 HEADING_SIZE = {1: 15, 2: 13, 3: 11.5}
