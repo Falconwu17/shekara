@@ -1,0 +1,19 @@
+{
+  "protocol": {
+    "transfers": 442432,
+    "seconds": 3.9,
+    "transfers_per_s": 112644,
+    "releases": 69851,
+    "alerts": 136,
+    "hops": 2,
+    "journal_entries": 69902,
+    "banks": 30,
+    "load_seconds": 18.5
+  },
+  "model": {
+    "checks_per_s_one_core": 14380,
+    "checks_per_s_all_cores": 160856,
+    "cores": 16
+  },
+  "note": "CPU ноутбука (16 потоков); протокол в одном процессе, сеть между банками не учитывается"
+}
