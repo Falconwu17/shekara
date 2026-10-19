@@ -1,0 +1,49 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+  раунд 0 + 3 фолда: 21 с
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+обучено за 49 с; деревьев: изоляция 4, L3 15
+изоляция: AP 0.3050 (сохранено 0.3050)
+{'seed': 2, 'scenario': 'none', 'frac': 0.0, 'rep': 0, 'delivered_share': 1.0, 'ap_C_L3': 0.3447, 'ap_L3': 0.3314, 'ap_isolation': 0.305, 'f1_C_L3': 0.4118, 'f1_L3': 0.3074, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 75 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.2, 'rep': 0, 'delivered_share': 0.7987, 'ap_C_L3': 0.3463, 'ap_L3': 0.3318, 'ap_isolation': 0.305, 'f1_C_L3': 0.4143, 'f1_L3': 0.3065, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 84 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.2, 'rep': 1, 'delivered_share': 0.8007, 'ap_C_L3': 0.3467, 'ap_L3': 0.3325, 'ap_isolation': 0.305, 'f1_C_L3': 0.4139, 'f1_L3': 0.3102, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 93 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.2, 'rep': 2, 'delivered_share': 0.7999, 'ap_C_L3': 0.3458, 'ap_L3': 0.3314, 'ap_isolation': 0.305, 'f1_C_L3': 0.4135, 'f1_L3': 0.3098, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 102 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.2, 'rep': 3, 'delivered_share': 0.8031, 'ap_C_L3': 0.3456, 'ap_L3': 0.3317, 'ap_isolation': 0.305, 'f1_C_L3': 0.4135, 'f1_L3': 0.3099, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 111 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.2, 'rep': 4, 'delivered_share': 0.8003, 'ap_C_L3': 0.3439, 'ap_L3': 0.3298, 'ap_isolation': 0.305, 'f1_C_L3': 0.4122, 'f1_L3': 0.3063, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 120 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.2, 'rep': 0, 'delivered_share': 0.827, 'ap_C_L3': 0.3454, 'ap_L3': 0.3303, 'ap_isolation': 0.305, 'f1_C_L3': 0.4135, 'f1_L3': 0.3113, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 129 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.2, 'rep': 1, 'delivered_share': 0.7929, 'ap_C_L3': 0.3439, 'ap_L3': 0.3278, 'ap_isolation': 0.305, 'f1_C_L3': 0.413, 'f1_L3': 0.309, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 138 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.2, 'rep': 2, 'delivered_share': 0.8247, 'ap_C_L3': 0.3479, 'ap_L3': 0.333, 'ap_isolation': 0.305, 'f1_C_L3': 0.413, 'f1_L3': 0.31, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 146 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.2, 'rep': 3, 'delivered_share': 0.766, 'ap_C_L3': 0.3465, 'ap_L3': 0.3322, 'ap_isolation': 0.305, 'f1_C_L3': 0.4127, 'f1_L3': 0.3105, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 155 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.2, 'rep': 4, 'delivered_share': 0.7808, 'ap_C_L3': 0.3411, 'ap_L3': 0.3241, 'ap_isolation': 0.305, 'f1_C_L3': 0.4111, 'f1_L3': 0.3069, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 164 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.5, 'rep': 0, 'delivered_share': 0.4912, 'ap_C_L3': 0.3488, 'ap_L3': 0.3347, 'ap_isolation': 0.305, 'f1_C_L3': 0.4163, 'f1_L3': 0.3113, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 173 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.5, 'rep': 1, 'delivered_share': 0.5056, 'ap_C_L3': 0.3486, 'ap_L3': 0.3319, 'ap_isolation': 0.305, 'f1_C_L3': 0.4143, 'f1_L3': 0.3189, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 183 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.5, 'rep': 2, 'delivered_share': 0.4984, 'ap_C_L3': 0.3504, 'ap_L3': 0.335, 'ap_isolation': 0.305, 'f1_C_L3': 0.4167, 'f1_L3': 0.3108, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 192 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.5, 'rep': 3, 'delivered_share': 0.5021, 'ap_C_L3': 0.3493, 'ap_L3': 0.3335, 'ap_isolation': 0.305, 'f1_C_L3': 0.416, 'f1_L3': 0.3222, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 201 с
+{'seed': 2, 'scenario': 'node', 'frac': 0.5, 'rep': 4, 'delivered_share': 0.4957, 'ap_C_L3': 0.3463, 'ap_L3': 0.3282, 'ap_isolation': 0.305, 'f1_C_L3': 0.4167, 'f1_L3': 0.3091, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 210 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.5, 'rep': 0, 'delivered_share': 0.4673, 'ap_C_L3': 0.3464, 'ap_L3': 0.3292, 'ap_isolation': 0.305, 'f1_C_L3': 0.4177, 'f1_L3': 0.3271, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 219 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.5, 'rep': 1, 'delivered_share': 0.5498, 'ap_C_L3': 0.3432, 'ap_L3': 0.326, 'ap_isolation': 0.305, 'f1_C_L3': 0.4123, 'f1_L3': 0.3102, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 228 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.5, 'rep': 2, 'delivered_share': 0.5168, 'ap_C_L3': 0.3462, 'ap_L3': 0.3268, 'ap_isolation': 0.305, 'f1_C_L3': 0.4118, 'f1_L3': 0.3081, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 237 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.5, 'rep': 3, 'delivered_share': 0.5687, 'ap_C_L3': 0.3463, 'ap_L3': 0.3307, 'ap_isolation': 0.305, 'f1_C_L3': 0.4152, 'f1_L3': 0.3189, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 246 с
+{'seed': 2, 'scenario': 'bank', 'frac': 0.5, 'rep': 4, 'delivered_share': 0.3878, 'ap_C_L3': 0.3477, 'ap_L3': 0.3275, 'ap_isolation': 0.305, 'f1_C_L3': 0.4135, 'f1_L3': 0.3143, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 255 с
+{'seed': 2, 'scenario': 'node', 'frac': 1.0, 'rep': 0, 'delivered_share': 0.0, 'ap_C_L3': 0.3509, 'ap_L3': 0.3292, 'ap_isolation': 0.305, 'f1_C_L3': 0.4186, 'f1_L3': 0.3295, 'saved_ap_C_L3': 0.3447, 'saved_ap_L3': 0.3314} 264 с
+shape: (6, 10)
+┌──────────┬────────┬──────────┬──────────┬─────────┬─────────┬─────────┬─────────┬──────┬─────────┐
+│ scenario ┆ frac   ┆ delivere ┆ ap_C_L3_ ┆ ap_C_L3 ┆ ap_C_L3 ┆ ap_L3_m ┆ f1_C_L3 ┆ reps ┆ gain_ke │
+│ ---      ┆ ---    ┆ d_share  ┆ mean     ┆ _min    ┆ _max    ┆ ean     ┆ _mean   ┆ ---  ┆ pt      │
+│ str      ┆ f64    ┆ ---      ┆ ---      ┆ ---     ┆ ---     ┆ ---     ┆ ---     ┆ u32  ┆ ---     │
+│          ┆        ┆ f64      ┆ f64      ┆ f64     ┆ f64     ┆ f64     ┆ f64     ┆      ┆ f64     │
+╞══════════╪════════╪══════════╪══════════╪═════════╪═════════╪═════════╪═════════╪══════╪═════════╡
+│ bank     ┆ 0.2000 ┆ 0.7983   ┆ 0.3450   ┆ 0.3411  ┆ 0.3479  ┆ 0.3295  ┆ 0.4127  ┆ 5    ┆ 1.0055  │
+│ bank     ┆ 0.5000 ┆ 0.4981   ┆ 0.3460   ┆ 0.3432  ┆ 0.3477  ┆ 0.3281  ┆ 0.4141  ┆ 5    ┆ 1.0308  │
+│ node     ┆ 0.2000 ┆ 0.8005   ┆ 0.3457   ┆ 0.3439  ┆ 0.3467  ┆ 0.3315  ┆ 0.4135  ┆ 5    ┆ 1.0235  │
+│ node     ┆ 0.5000 ┆ 0.4986   ┆ 0.3487   ┆ 0.3463  ┆ 0.3504  ┆ 0.3327  ┆ 0.4160  ┆ 5    ┆ 1.0989  │
+│ node     ┆ 1.0000 ┆ 0.0000   ┆ 0.3509   ┆ 0.3509  ┆ 0.3509  ┆ 0.3292  ┆ 0.4186  ┆ 1    ┆ 1.1557  │
+│ none     ┆ 0.0000 ┆ 1.0000   ┆ 0.3447   ┆ 0.3447  ┆ 0.3447  ┆ 0.3314  ┆ 0.4118  ┆ 1    ┆ 1.0000  │
+└──────────┴────────┴──────────┴──────────┴─────────┴─────────┴─────────┴─────────┴──────┴─────────┘

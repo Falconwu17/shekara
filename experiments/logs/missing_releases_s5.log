@@ -1,0 +1,25 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+  раунд 0 + 3 фолда: 16 с
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+обучено за 41 с; деревьев: изоляция 4, L3 17
+изоляция: AP 0.3179 (сохранено 0.3179)
+{'seed': 5, 'scenario': 'none', 'frac': 0.0, 'rep': 0, 'delivered_share': 1.0, 'ap_C_L3': 0.3482, 'ap_L3': 0.3203, 'ap_isolation': 0.3179, 'f1_C_L3': 0.4114, 'f1_L3': 0.0859, 'saved_ap_C_L3': 0.3482, 'saved_ap_L3': 0.3203} 67 с
+{'seed': 5, 'scenario': 'node', 'frac': 1.0, 'rep': 0, 'delivered_share': 0.0, 'ap_C_L3': 0.3516, 'ap_L3': 0.3203, 'ap_isolation': 0.3179, 'f1_C_L3': 0.4287, 'f1_L3': 0.0855, 'saved_ap_C_L3': 0.3482, 'saved_ap_L3': 0.3203} 76 с
+shape: (2, 10)
+┌──────────┬────────┬──────────┬──────────┬─────────┬─────────┬─────────┬─────────┬──────┬─────────┐
+│ scenario ┆ frac   ┆ delivere ┆ ap_C_L3_ ┆ ap_C_L3 ┆ ap_C_L3 ┆ ap_L3_m ┆ f1_C_L3 ┆ reps ┆ gain_ke │
+│ ---      ┆ ---    ┆ d_share  ┆ mean     ┆ _min    ┆ _max    ┆ ean     ┆ _mean   ┆ ---  ┆ pt      │
+│ str      ┆ f64    ┆ ---      ┆ ---      ┆ ---     ┆ ---     ┆ ---     ┆ ---     ┆ u32  ┆ ---     │
+│          ┆        ┆ f64      ┆ f64      ┆ f64     ┆ f64     ┆ f64     ┆ f64     ┆      ┆ f64     │
+╞══════════╪════════╪══════════╪══════════╪═════════╪═════════╪═════════╪═════════╪══════╪═════════╡
+│ node     ┆ 1.0000 ┆ 0.0000   ┆ 0.3516   ┆ 0.3516  ┆ 0.3516  ┆ 0.3203  ┆ 0.4287  ┆ 1    ┆ 1.1124  │
+│ none     ┆ 0.0000 ┆ 1.0000   ┆ 0.3482   ┆ 0.3482  ┆ 0.3482  ┆ 0.3203  ┆ 0.4114  ┆ 1    ┆ 1.0000  │
+└──────────┴────────┴──────────┴──────────┴─────────┴─────────┴─────────┴─────────┴──────┴─────────┘
