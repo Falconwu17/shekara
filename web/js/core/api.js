@@ -56,4 +56,5 @@ export const api = {
   auditVerifySignature: head => request("POST", "/v1/audit/verify-signature", head),
 
   results: () => request("GET", "/v1/results"),
+  securityCheck: attack => request("POST", `/v1/security/${attack}`),
 };

@@ -6,8 +6,9 @@ import * as bank from "./pages/bank.js";
 import * as network from "./pages/network.js";
 import * as operator from "./pages/operator.js";
 import * as results from "./pages/results.js";
+import * as security from "./pages/security.js";
 
-const ROUTES = { network, bank, operator, audit, results };
+const ROUTES = { network, bank, operator, audit, security, results };
 const DEFAULT_ROUTE = "network";
 
 function parseHash() {

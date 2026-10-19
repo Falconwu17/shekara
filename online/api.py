@@ -389,6 +389,16 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
             with sim.lock:
                 return sim.open_incident(bank, account, body.kind)
 
+        @app.post("/v1/security/{attack}")
+        def security_attack(attack: str, request: Request):
+            """Проверка защиты (online/attacks.py): атака на копии протокола, стенд не меняется."""
+            from online.attacks import ATTACKS, run
+
+            if attack not in ATTACKS:
+                raise HTTPException(404, "нет такой проверки")
+            limit.check(request.client.host if request.client else "?")
+            return run(sim, attack)
+
         @app.get("/v1/operator/incidents")
         def operator_incidents(x_role: str = Header(default=""), x_operator_token: str = Header(default="")):
             require_operator(x_role, x_operator_token)
