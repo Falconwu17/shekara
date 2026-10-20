@@ -47,6 +47,8 @@ def test_query_after_nightly_release_and_uniform_refusal():
                                             "now": "2022-09-02T08:00:00"}).json()
     future = c.post("/v1/signals/query", json={"requester_bank": "A", "target_bank": "B",
                                                "tx_ref_hmac": ref_from(net, "A", "B", MASTER[0]), "now": "2022-09-01T19:00:00"}).json()
+    # квитанция о включении в журнал своя у каждого запроса; сам отказ одинаков
+    assert bad.pop("receipt")["seq"] < future.pop("receipt")["seq"]
     assert bad == future == {"error": "not_found"}
 
 
@@ -93,16 +95,17 @@ def test_hub_carries_only_ciphertext():
     assert net.gateways["A"].external_release("B", "a1") is None
     assert net.gateways["A"].external_release("B", "b1").value == 0.9  # адресат расшифровал сам
 
-    resp = net.hub.query("A", "B", ref_from(net, "A", "B", MASTER[0]), datetime(2022, 9, 2, 8))
+    ref, now = ref_from(net, "A", "B", MASTER[0]), datetime(2022, 9, 2, 8)
+    resp = net.hub.query("A", "B", ref, now, net.gateways["A"].sign_query("B", ref, now))
     assert set(resp) == {"sealed"}  # ни псевдонима, ни балла в открытом виде
     pseudonym = account_pseudonym(net.gateways["B"]._keys["A"], "b1")
     assert pseudonym.encode() not in resp["sealed"]
-    answer = net.gateways["A"].open_answer("B", resp)
+    answer = net.gateways["A"].open_answer("B", resp, ref, now.date())
     assert answer["pseudonym"] == pseudonym and answer["release"].value == 0.9
     with pytest.raises(CryptoError):  # третий банк ответ не откроет
-        net.gateways["C"].open_answer("B", resp)
+        net.gateways["C"].open_answer("B", resp, ref, now.date())
     with pytest.raises(CryptoError):  # правка шифротекста в пути обнаруживается
-        net.gateways["A"].open_answer("B", {"sealed": resp["sealed"][:-1] + bytes([resp["sealed"][-1] ^ 1])})
+        net.gateways["A"].open_answer("B", {"sealed": resp["sealed"][:-1] + bytes([resp["sealed"][-1] ^ 1])}, ref, now.date())
     api = c.post("/v1/signals/query", json={"requester_bank": "A", "target_bank": "B",
                                             "tx_ref_hmac": ref_from(net, "A", "B", MASTER[0]), "now": "2022-09-02T08:00:00"}).json()
     assert api["release"]["value"] == 0.9 and api["sealed_bytes"] > 0
@@ -160,7 +163,7 @@ def test_public_mode_closes_protocol_writes(monkeypatch):
     for path, body in calls:
         assert c.post(path, json=body).status_code == 403, path
     r = c.post("/v1/signals/query", json=query, headers={"X-Admin-Token": "a" * 32})
-    assert r.json() == {"error": "not_found"}
+    assert r.json()["error"] == "not_found"
 
 
 def test_rate_limit():

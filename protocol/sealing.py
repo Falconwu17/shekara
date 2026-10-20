@@ -8,12 +8,15 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import date
 from typing import Mapping
 
 import numpy as np
+from nacl.exceptions import BadSignatureError
 from nacl.public import Box, PrivateKey, PublicKey
+from nacl.signing import SigningKey, VerifyKey
 
 
 def _release_to_json(release) -> dict | None:
@@ -88,11 +91,12 @@ class Sealer:
         хаб не может сам отказать от имени банка и тем подавить ответ."""
         return self.seal(bank, {"to": bank, "ref": ref, "day": day.isoformat(), "error": error})
 
-    def open_answer(self, bank: str, sealed: bytes, ref: str | None = None, day: date | None = None) -> dict:
+    def open_answer(self, bank: str, sealed: bytes, ref: str, day: date) -> dict:
+        """Ссылка и день обязательны: ответ без привязки к запросу хаб мог бы переставить."""
         data = self.open(bank, sealed)
-        if ref is not None and data.get("ref") != ref:
+        if data.get("ref") != ref:
             raise ContextError("ответ относится к другому запросу")
-        if day is not None and data.get("day") != day.isoformat():
+        if data.get("day") != day.isoformat():
             raise ContextError("ответ относится к другому дню")
         if "error" in data:
             return {"error": data["error"]}
@@ -107,3 +111,63 @@ class Sealer:
         if data.get("ref") != ref:
             raise ContextError("выпуск адресован другой ссылке")
         return _release_from_json(data["release"])
+
+    def seal_receipt(self, bank: str, day: date, count: int) -> bytes:
+        """Ночная квитанция ответчика адресату: «за ночь day выпусков для тебя count».
+        Хаб не может ни написать её сам, ни выдать вчерашнюю за сегодняшнюю."""
+        return self.seal(bank, {"to": bank, "kind": "receipt", "day": day.isoformat(), "count": int(count)})
+
+    def open_receipt(self, bank: str, sealed: bytes, day: date) -> int:
+        data = self.open(bank, sealed)
+        if data.get("kind") != "receipt" or data.get("day") != day.isoformat():
+            raise ContextError("квитанция относится к другой ночи")
+        return int(data["count"])
+
+
+SIG_SEP = "\x1f"
+
+
+def ref_digest(ref_hmac: str) -> str:
+    """Хэш ссылки, который хаб пишет в журнал (сама ссылка в журнал не попадает)."""
+    return hashlib.sha256(ref_hmac.encode("utf-8")).hexdigest()
+
+
+def request_message(requester: str, target: str, ref_hash: str, ts: str) -> bytes:
+    """Что подписывает банк-запрашивающий: кто, кому, хэш ссылки, время. Всё это есть в записи журнала."""
+    return SIG_SEP.join(("query", requester, target, ref_hash, ts)).encode("utf-8")
+
+
+def verify_request(public_key_hex: str, signature_hex: str, requester: str, target: str, ref_hash: str, ts: str) -> bool:
+    try:
+        VerifyKey(bytes.fromhex(public_key_hex)).verify(request_message(requester, target, ref_hash, ts),
+                                                        bytes.fromhex(signature_hex))
+        return True
+    except (BadSignatureError, ValueError):
+        return False
+
+
+class Signer:
+    """Ключ подписи банка Ed25519 (рядом с ключом шифрования Sealer). Банк подписывает свои запросы:
+    хаб не может приписать банку запрос, которого тот не делал, а ответчик не отвечает на неподписанный."""
+
+    def __init__(self, signing_key: SigningKey | None = None):
+        self._sk = signing_key or SigningKey.generate()
+        self._peers: dict[str, str] = {}
+
+    @property
+    def public_key(self) -> str:
+        return self._sk.verify_key.encode().hex()
+
+    def add_peers(self, keys: Mapping[str, str]) -> None:
+        self._peers.update(keys)
+
+    def knows(self, bank: str) -> bool:
+        return bank in self._peers
+
+    def sign_request(self, requester: str, target: str, ref_hmac: str, ts: str) -> str:
+        return self._sk.sign(request_message(requester, target, ref_digest(ref_hmac), ts)).signature.hex()
+
+    def verify_peer_request(self, signature_hex: str | None, requester: str, target: str, ref_hmac: str, ts: str) -> bool:
+        if not signature_hex or requester not in self._peers:
+            return False
+        return verify_request(self._peers[requester], signature_hex, requester, target, ref_digest(ref_hmac), ts)

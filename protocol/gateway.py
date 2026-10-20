@@ -16,7 +16,7 @@ import numpy as np
 
 from protocol.accountant import PrivacyLedger
 from protocol.matching import TransferKey, compute_tx_refs
-from protocol.sealing import ContextError, Sealer
+from protocol.sealing import ContextError, Sealer, Signer
 from protocol.tokens import account_pseudonym, tx_ref_hmac
 
 CHANNEL = "amlworld"
@@ -29,6 +29,10 @@ INT8_RANGE = 4.0  # квантование L2: [-4, 4] → [-127, 127]; шум �
 
 QUOTA_FACTOR = 1.2
 QUOTA_SLACK = 50
+
+# Срок жизни выпуска: старше двух ночей выпуск не принимается и не читается в признаки.
+# Без него хаб мог бы удержать свежий выпуск и отдать старый (порядок «старый без свежего»).
+MAX_RELEASE_AGE = timedelta(days=2)
 
 
 @dataclass(frozen=True)
@@ -63,6 +67,16 @@ def not_found() -> dict:
 
 def quota_exceeded() -> dict:
     return {"error": "quota"}
+
+
+def unsigned() -> dict:
+    return {"error": "unsigned"}
+
+
+def release_fresh(release: "Release", now: datetime) -> bool:
+    """Выпуск не из будущего и не старше MAX_RELEASE_AGE относительно текущей даты."""
+    age = now.date() - release.date
+    return timedelta(0) <= age <= MAX_RELEASE_AGE
 
 
 def release_l1(p: float, sigma: float, rng: np.random.Generator) -> float:
@@ -101,6 +115,7 @@ class Gateway:
     def __init__(self, bank_id: str, rows: Sequence[TransferKey], pair_keys: Mapping[str, bytes]):
         self.bank_id = bank_id
         self.sealer = Sealer()
+        self.signer = Signer()  # подпись своих запросов (Ed25519), ключ рядом с ключом шифрования
         self.ledger = PrivacyLedger()
         self._keys = dict(pair_keys)
         self._index: dict[str, dict[str, Transfer]] = {b: {} for b in self._keys}
@@ -109,6 +124,9 @@ class Gateway:
         self._queries: Counter[tuple[str, date]] = Counter()
         self._releases: dict[str, Release] = {}
         self._external: dict[tuple[str, str], Release] = {}
+        self._received: Counter[tuple[str, date]] = Counter()  # принято выпусков от банка за ночь
+        self.receipts_seen: dict[tuple[str, date], dict] = {}  # сверка с ночными квитанциями ответчиков
+        self.shortfalls: dict[tuple[str, date], int] = {}  # недоставка: квитанция говорит больше, чем дошло
         self.transfers: list[Transfer] = []  # все свои переводы в порядке строк базы банка
 
         for row, ref in zip(rows, compute_tx_refs(rows)):
@@ -141,6 +159,9 @@ class Gateway:
         self._queries.clear()
         self._releases.clear()
         self._external.clear()
+        self._received.clear()
+        self.receipts_seen.clear()
+        self.shortfalls.clear()
 
     def is_partner(self, bank: str) -> bool:
         return bank in self._keys
@@ -166,11 +187,20 @@ class Gateway:
             return None
         return t
 
-    def query(self, requester: str, ref_hmac: str, now: datetime) -> dict:
+    def sign_query(self, target: str, ref_hmac: str, now: datetime) -> str:
+        """Подпись своего запроса банку `target`: кто, кому, хэш ссылки, время (хаб пишет её в журнал)."""
+        return self.signer.sign_request(self.bank_id, target, ref_hmac, now.isoformat())
+
+    def query(self, requester: str, ref_hmac: str, now: datetime, signature: str | None = None) -> dict:
         """Дневной запрос `/v1/signals/query`. Квота считается до поиска перевода,
-        чтобы неверные ссылки тоже её расходовали и отказ ничего не выдавал."""
+        чтобы неверные ссылки тоже её расходовали и отказ ничего не выдавал.
+        Если ключ подписи запрашивающего известен, запрос без его верной подписи не обслуживается
+        и квоту не тратит: хаб не может спрашивать от имени банка."""
         if requester not in self._keys:
             return not_found()
+        if self.signer.knows(requester) and not self.signer.verify_peer_request(
+                signature, requester, self.bank_id, ref_hmac, now.isoformat()):
+            return unsigned()
         slot = (requester, now.date())
         self._queries[slot] += 1
         if self._queries[slot] > self.quota(requester, now):
@@ -190,9 +220,9 @@ class Gateway:
             return refusal
         return {**refusal, "sealed": self.sealer.seal_refusal(requester, refusal["error"], ref_hmac, now.date())}
 
-    def open_answer(self, sender: str, resp: dict, ref: str | None = None, day: date | None = None) -> dict:
-        """Ответ банка `sender` на свой запрос: расшифровать, если пришёл зашифрованным; при `ref`
-        и `day` проверить, что ответ именно на этот запрос этого дня (иначе ContextError).
+    def open_answer(self, sender: str, resp: dict, ref: str, day: date) -> dict:
+        """Ответ банка `sender` на свой запрос: расшифровать, если пришёл зашифрованным, и проверить,
+        что ответ именно на запрос `ref` дня `day` (иначе ContextError). Привязка обязательна.
         Отказ без печати ответчика от банка с известным ключом не принимается: его мог написать хаб."""
         if "sealed" not in resp:
             if "error" in resp and self.sealer.knows(sender):
@@ -239,13 +269,42 @@ class Gateway:
             return False  # выпуск перенаправлен хабом на другую ссылку
         key = (sender, t.counterparty_account)
         prev = self._external.get(key)
-        if release.date > now.date() or (prev is not None and release.date < prev.date):
-            return False  # выпуск из будущего или повтор старого выпуска поверх нового
+        if not release_fresh(release, now) or (prev is not None and release.date < prev.date):
+            return False  # выпуск из будущего, старше срока жизни или старее уже полученного
         self._external[key] = release
+        self._received[(sender, release.date)] += 1
         return True
 
-    def external_release(self, bank: str, account: str) -> Release | None:
-        return self._external.get((bank, account))
+    def external_release(self, bank: str, account: str, now: datetime | None = None) -> Release | None:
+        """Чужой выпуск о счёте. С `now` (так читают признаки) выпуск старше срока жизни не отдаётся."""
+        rel = self._external.get((bank, account))
+        if rel is not None and now is not None and not release_fresh(rel, now):
+            return None
+        return rel
+
+    # ---------- ночная квитанция: недоставка выпусков видна адресату ----------
+    def nightly_receipts(self, msgs: Sequence[Broadcast], now: datetime) -> dict[str, bytes]:
+        """Квитанция каждому участнику с известным ключом: «за ночь выпусков для тебя N», в том числе N = 0,
+        чтобы удержанная хабом квитанция тоже была заметна."""
+        counts = Counter(m.target_bank for m in msgs)
+        return {b: self.sealer.seal_receipt(b, now.date(), counts.get(b, 0))
+                for b in self._keys if self.sealer.knows(b)}
+
+    def accept_receipt(self, sender: str, sealed: bytes, now: datetime) -> dict:
+        """Сверить квитанцию ответчика с числом принятых от него выпусков этой ночи.
+        ContextError: квитанция другой ночи (хаб подсунул старую)."""
+        day = now.date()
+        expected = self.sealer.open_receipt(sender, sealed, day)
+        received = self._received[(sender, day)]
+        check = {"day": day.isoformat(), "expected": expected, "received": received, "missing": max(expected - received, 0)}
+        self.receipts_seen[(sender, day)] = check
+        if check["missing"]:
+            self.shortfalls[(sender, day)] = check["missing"]
+        return check
+
+    def missing_receipts(self, banks: Sequence[str], day: date) -> list[str]:
+        """Банки, от которых квитанция за ночь `day` не пришла (хаб мог удержать и её)."""
+        return [b for b in banks if (b, day) not in self.receipts_seen]
 
     def _latest_per_bank(self, account: str, now: datetime) -> dict[str, Transfer]:
         latest: dict[str, Transfer] = {}

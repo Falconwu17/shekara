@@ -100,3 +100,4 @@ select, .input { border: 1px solid var(--line); background: var(--panel); border
 
 /* проверка защиты (js/pages/security.js) */
 .attack-text { margin: 0; font-size: 13.5px; color: var(--ink) }
+.check-group { margin-top: 18px }

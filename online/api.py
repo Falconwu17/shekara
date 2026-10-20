@@ -32,6 +32,7 @@ from protocol.accountant import noise_multiplier
 from protocol.gateway import CHANNEL, Gateway, Release
 from protocol.hub import Hub
 from protocol.matching import TransferKey
+from protocol.sealing import ContextError
 from protocol.tokens import new_pair_key
 from trace.incident import IncidentDesk, Operator
 
@@ -55,9 +56,12 @@ class Network:
             self.queues[b] = AlertQueue(alert_budget(active))
             self.hub.register(gw, self.desks[b])
         # обмен открытыми ключами при подключении: дальше ответы и выпуски шифруются адресату
+        # и ключами подписи: ответчик обслуживает только запрос, подписанный самим банком-запрашивающим
         public = {b: gw.sealer.public_key for b, gw in self.gateways.items()}
+        signing = {b: gw.signer.public_key for b, gw in self.gateways.items()}
         for b, gw in self.gateways.items():
             gw.sealer.add_peers({o: k for o, k in public.items() if o != b})
+            gw.signer.add_peers({o: k for o, k in signing.items() if o != b})
 
     def reset(self) -> None:
         """Состояние протокола с нуля: журнал, выпуски, учёт ε, инциденты, очереди."""
@@ -231,20 +235,32 @@ def create_app(net: Network | None = None, sim=None) -> FastAPI:
 
     @app.post("/v1/signals/query", dependencies=PROTOCOL_GUARD)
     def signals_query(q: QueryIn):
-        resp = net.hub.query(q.requester_bank, q.target_bank, q.tx_ref_hmac, q.now)
-        # хаб передал шифротекст; расшифровывает узел запрашивающего банка (в MVP: тот же процесс)
+        # запрос подписывает шлюз банка-запрашивающего (в MVP узлы в одном процессе); хаб пишет подпись в журнал
+        own = net.gateways.get(q.requester_bank)
+        signature = own.sign_query(q.target_bank, q.tx_ref_hmac, q.now) if own else None
+        resp, receipt = net.hub.query_with_receipt(q.requester_bank, q.target_bank, q.tx_ref_hmac, q.now, signature)
+        receipt_out = {"seq": receipt["seq"], "hash": receipt["hash"], "signature": receipt["signature"]}
+        # хаб передал шифротекст; расшифровывает узел запрашивающего банка и проверяет привязку к ссылке и дню
         sealed = len(resp.get("sealed", b""))
-        answer = net.gateways[q.requester_bank].open_answer(q.target_bank, resp) if q.requester_bank in net.gateways else resp
+        if own is None:
+            answer = resp
+        else:
+            try:
+                answer = own.open_answer(q.target_bank, resp, q.tx_ref_hmac, q.now.date())
+            except ContextError:
+                return {"error": "forged", "text": "ответ отклонён: не на этот запрос или не запечатан ответчиком",
+                        "receipt": receipt_out}
         if "error" in answer:
-            return {"error": answer["error"]}
-        return {"pseudonym": answer["pseudonym"], "release": _release_json(answer["release"]), "sealed_bytes": sealed}
+            return {"error": answer["error"], "receipt": receipt_out}
+        return {"pseudonym": answer["pseudonym"], "release": _release_json(answer["release"]), "sealed_bytes": sealed,
+                "receipt": receipt_out}
 
     @app.post("/v1/banks/{bank}/releases/nightly", dependencies=PROTOCOL_GUARD)
     def nightly(bank: str, body: NightlyIn):
         gw, _ = net.bank(bank)
         rng = np.random.default_rng(body.seed)
         msgs = gw.publish_nightly(body.scores, body.level, body.sigma, rng, body.now)
-        delivered = net.hub.broadcast(bank, msgs, body.now)
+        delivered = net.hub.broadcast(bank, msgs, body.now, gw.nightly_receipts(msgs, body.now))
         eps = None
         if body.level != "L3" and body.scores:
             acc = next(iter(body.scores))

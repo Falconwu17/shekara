@@ -257,9 +257,11 @@ class Simulator:
             raw = self.node_p.get((b, prev), {})
             if not raw:
                 continue
-            msgs = self.net.gateways[b].publish_nightly(raw, RELEASE_LEVEL, RELEASE_SIGMA, rng, stamp)
+            gw = self.net.gateways[b]
+            msgs = gw.publish_nightly(raw, RELEASE_LEVEL, RELEASE_SIGMA, rng, stamp)
             sent += len(msgs)
-            delivered += self.net.hub.broadcast(b, msgs, stamp)
+            # вместе с выпусками ответчик шлёт каждому участнику запечатанную квитанцию «выпусков для тебя N»
+            delivered += self.net.hub.broadcast(b, msgs, stamp, gw.nightly_receipts(msgs, stamp))
         self.counters["releases_sent"] += sent
         self.counters["releases_delivered"] += delivered
         head = self.net.hub.signed_head()  # каждый банк сохраняет подписанную голову журнала у себя
@@ -308,7 +310,7 @@ class Simulator:
             own = [t for t in gw.transfers if t.own_account == account and t.time <= self.clock]
             rows = []
             for t in own[-40:][::-1]:
-                rel = gw.external_release(t.counterparty_bank, t.counterparty_account) if gw.is_partner(t.counterparty_bank) else None
+                rel = gw.external_release(t.counterparty_bank, t.counterparty_account, self.clock) if gw.is_partner(t.counterparty_bank) else None
                 rows.append({"t": t.time.isoformat(), "side": "out" if t.outgoing else "in", "cp_bank": t.counterparty_bank,
                              "cp_account": t.counterparty_account, "amount": t.amount, "partner": gw.is_partner(t.counterparty_bank),
                              "release": None if rel is None else {"value": rel.value if not hasattr(rel.value, "tolist") else rel.value.tolist(),
@@ -328,7 +330,10 @@ class Simulator:
             t = gw.transfers[pos]
             if not gw.is_partner(t.counterparty_bank):
                 return {"error": "not_participant", "text": f"банк {t.counterparty_bank} не участник ШЕКАРЫ"}
-            resp = self.net.hub.query(bank, t.counterparty_bank, gw.ref_hmac(t), self.clock)
+            ref = gw.ref_hmac(t)
+            resp, receipt = self.net.hub.query_with_receipt(bank, t.counterparty_bank, ref, self.clock,
+                                                            gw.sign_query(t.counterparty_bank, ref, self.clock))
+            self.witness[bank].record_receipt(receipt)  # квитанция о включении запроса в журнал
             self.counters["queries"] += 1
             self._event("query", bank=bank, to_bank=t.counterparty_bank, result=resp.get("error", "ok"))
             sealed = len(resp.get("sealed", b""))  # столько байт шифротекста прошло через хаб

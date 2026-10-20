@@ -1,5 +1,9 @@
 """Хаб: маршрутизация между шлюзами банков и журнал аудита с хэш-цепочкой
-(разделы 3.2, 3.7). Хаб пишет только метаданные: кто, кому, когда, хэш ссылки, итог."""
+(разделы 3.2, 3.7). Хаб пишет только метаданные: кто, кому, когда, хэш ссылки, итог.
+
+Журнал сам по себе защищает только то, что хаб записал. Поэтому: запрос подписан банком
+(подпись в поле detail после «;sig=»), банк получает квитанцию о включении (номер записи и
+подписанная голова), а банки сверяют сохранённые головы между собой (расщепление журнала)."""
 
 from __future__ import annotations
 
@@ -10,6 +14,7 @@ from datetime import datetime
 from typing import Iterable
 
 from protocol.gateway import Broadcast, Gateway, not_found
+from protocol.sealing import ref_digest, verify_request
 from trace.incident import Hop, IncidentDesk
 
 GENESIS = "0" * 64
@@ -17,8 +22,7 @@ _SEP = "\x1f"
 _FIELDS = ("ts", "kind", "src", "dst", "ref_hash", "detail")
 
 
-def ref_digest(ref_hmac: str) -> str:
-    return hashlib.sha256(ref_hmac.encode("utf-8")).hexdigest()
+SIG_TAG = ";sig="
 
 
 def _entry_hash(prev_hash: str, values: Iterable[str]) -> str:
@@ -41,10 +45,14 @@ class AuditLog:
         return row if row else (0, GENESIS)
 
     def append(self, ts: datetime, kind: str, src: str, dst: str, ref_hash: str = "", detail: str = "") -> str:
+        return self.append_seq(ts, kind, src, dst, ref_hash, detail)[1]
+
+    def append_seq(self, ts: datetime, kind: str, src: str, dst: str, ref_hash: str = "", detail: str = "") -> tuple[int, str]:
+        """Запись и её номер с хэшем (для квитанции о включении)."""
         with self._lock:
             return self._append(ts, kind, src, dst, ref_hash, detail)
 
-    def _append(self, ts: datetime, kind: str, src: str, dst: str, ref_hash: str, detail: str) -> str:
+    def _append(self, ts: datetime, kind: str, src: str, dst: str, ref_hash: str, detail: str) -> tuple[int, str]:
         seq, prev = self.head()
         values = (ts.isoformat(), kind, src, dst, ref_hash, detail)
         h = _entry_hash(prev, values)
@@ -52,7 +60,7 @@ class AuditLog:
             "INSERT INTO audit VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (seq + 1, *values, prev, h)
         )
         self._db.commit()
-        return h
+        return seq + 1, h
 
     def append_many(self, items: list[tuple]) -> None:
         """Пакетная запись (одна транзакция): ночная рассылка даёт десятки тысяч записей."""
@@ -117,13 +125,16 @@ def verify_head(public_key_hex: str, seq: int, head_hash: str, signature_hex: st
 
 
 class HeadWitness:
-    """Банк хранит подписанные головы журнала, которые видел (каждую ночь). Хаб может переписать историю,
-    пересчитать все хэши и подписать новую голову своим ключом: проверка цепочки и подписи это пропустят,
-    но хэш на уже засвидетельствованной позиции разойдётся с тем, что сохранил банк."""
+    """Банк хранит подписанные головы журнала, которые видел (каждую ночь), и квитанции о включении
+    своих запросов. Хаб может переписать историю, пересчитать все хэши и подписать новую голову своим
+    ключом: проверка цепочки и подписи это пропустят, но хэш на уже засвидетельствованной позиции
+    разойдётся с тем, что сохранил банк. Хаб может и показывать разным банкам разные журналы: это ловит
+    сверка голов между банками (`compare`): две подписанные головы на один номер записи."""
 
-    def __init__(self, keep: int = 60):
+    def __init__(self, keep: int = 60, keep_receipts: int = 1000):
         self.heads: list[dict] = []
-        self.keep = keep
+        self.receipts: list[dict] = []
+        self.keep, self.keep_receipts = keep, keep_receipts
 
     def record(self, head: dict) -> bool:
         """Сохранить голову, если подпись верна. Ложь: подпись не сходится, голова не принята."""
@@ -132,9 +143,40 @@ class HeadWitness:
         self.heads = (self.heads + [dict(head)])[-self.keep:]
         return True
 
+    def record_receipt(self, receipt: dict) -> bool:
+        """Квитанция о включении своего запроса: номер записи и подписанная голова сразу после неё."""
+        if not verify_head(receipt["public_key"], receipt["seq"], receipt["hash"], receipt["signature"]):
+            return False
+        self.receipts = (self.receipts + [dict(receipt)])[-self.keep_receipts:]
+        return True
+
+    def _all(self) -> list[dict]:
+        return self.heads + self.receipts
+
     def check(self, log: "AuditLog") -> list[int]:
         """Номера засвидетельствованных записей, хэш которых в журнале теперь другой (история переписана)."""
-        return [h["seq"] for h in self.heads if h["seq"] and log.hash_at(h["seq"]) != h["hash"]]
+        return sorted({h["seq"] for h in self._all() if h["seq"] and log.hash_at(h["seq"]) != h["hash"]})
+
+    def compare(self, other: "HeadWitness") -> list[int]:
+        """Сверка с другим банком: номера записей, на которые хаб подписал двум банкам разные головы.
+        Обе подписи настоящие, поэтому это доказательство расщепления журнала, а не ошибка банка."""
+        mine: dict[int, set[str]] = {}
+        for h in self._all():
+            mine.setdefault(h["seq"], set()).add(h["hash"])
+        return sorted({h["seq"] for h in other._all() if h["seq"] in mine and mine[h["seq"]] != {h["hash"]}})
+
+
+def unconfirmed_requests(log: "AuditLog", bank: str, public_key: str) -> list[int]:
+    """Аудит журнала банком: номера записей-запросов «от bank», которые банк не подписывал
+    (подписи нет, она не сходится с записью или повторяет уже использованную: хаб размножил запрос)."""
+    out, seen = [], set()
+    for seq, ts, src, dst, ref_hash, detail in log._db.execute(
+            "SELECT seq, ts, src, dst, ref_hash, detail FROM audit WHERE kind = 'query' AND src = ? ORDER BY seq", (bank,)):
+        sig = detail.split(SIG_TAG, 1)[1] if SIG_TAG in (detail or "") else ""
+        if not sig or sig in seen or not verify_request(public_key, sig, src, dst, ref_hash, ts):
+            out.append(seq)
+        seen.add(sig)
+    return out
 
 
 class Hub:
@@ -168,20 +210,35 @@ class Hub:
         )
         return result
 
-    def query(self, requester: str, target: str, ref_hmac: str, now: datetime) -> dict:
-        gw = self._gateways.get(target)
-        resp = gw.query(requester, ref_hmac, now) if gw else not_found()
-        self.log.append(now, "query", requester, target, ref_digest(ref_hmac), resp.get("error", "ok"))
-        return resp
+    def query(self, requester: str, target: str, ref_hmac: str, now: datetime, signature: str | None = None) -> dict:
+        return self.query_with_receipt(requester, target, ref_hmac, now, signature)[0]
 
-    def broadcast(self, sender: str, messages: Iterable[Broadcast], now: datetime) -> int:
-        """Доставляет ночную рассылку адресатам; возвращает число принятых выпусков."""
+    def query_with_receipt(self, requester: str, target: str, ref_hmac: str, now: datetime,
+                           signature: str | None = None) -> tuple[dict, dict]:
+        """Передать подписанный банком запрос ответчику и записать в журнал вместе с подписью.
+        Квитанция о включении: номер записи и подписанная хабом голова сразу после неё."""
+        gw = self._gateways.get(target)
+        resp = gw.query(requester, ref_hmac, now, signature) if gw else not_found()
+        detail = resp.get("error", "ok") + (f"{SIG_TAG}{signature}" if signature else "")
+        seq, h = self.log.append_seq(now, "query", requester, target, ref_digest(ref_hmac), detail)
+        receipt = {"seq": seq, "hash": h, "signature": sign_head(self.signing_key, seq, h), "public_key": self.public_key}
+        return resp, receipt
+
+    def broadcast(self, sender: str, messages: Iterable[Broadcast], now: datetime,
+                  receipts: dict[str, bytes] | None = None) -> int:
+        """Доставляет ночную рассылку адресатам, затем ночные квитанции ответчика (`receipts`:
+        банк → шифротекст); возвращает число принятых выпусков."""
         delivered, log = 0, []
         for msg in messages:
             gw = self._gateways.get(msg.target_bank)
             ok = gw is not None and gw.receive_broadcast(sender, msg, now)
             delivered += ok
             log.append((now, "release", sender, msg.target_bank, ref_digest(msg.tx_ref_hmac), "ok" if ok else "not_found"))
+        for target, sealed in (receipts or {}).items():
+            gw = self._gateways.get(target)
+            if gw is not None:
+                check = gw.accept_receipt(sender, sealed, now)
+                log.append((now, "receipt", sender, target, "", f"missing={check['missing']}" if check["missing"] else "ok"))
         if log:
             self.log.append_many(log)
         return delivered
