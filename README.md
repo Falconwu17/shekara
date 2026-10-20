@@ -43,7 +43,7 @@ py -m venv .venv
 powershell -ExecutionPolicy Bypass -File experiments\run_full.ps1    # весь эксперимент: сетка × 3 seed, метрики, удержание, каскад, чек-лист 6.7
 .venv\Scripts\python -m docs.submission.build ; .venv\Scripts\python -m docs.submission.appendix
 .venv\Scripts\python -m docs.submission.resume ; .venv\Scripts\python -m docs.submission.one_pager ; .venv\Scripts\python -m docs.submission.to_docx   # Word для подачи
-.venv\Scripts\python -m pytest            # 114 тестов
+.venv\Scripts\python -m pytest            # 159 тестов
 ```
 
 С установленным `make` те же шаги запускаются целями `make stats / data / case / experiment / test`.
