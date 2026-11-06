@@ -5,7 +5,7 @@
 
 numpy>=1.26
 polars>=1.0            # загрузка и признаки (data/)
-duckdb>=0.10           # базы банков (data/split.py)
+duckdb>=0.10,<2.0      # базы банков (data/split.py)
 pyarrow>=15            # обмен таблицами duckdb ↔ polars
 
 lightgbm>=4.3          # основная модель (model/gbt.py)

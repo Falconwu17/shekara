@@ -5,8 +5,9 @@ FROM python:3.13-slim
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
-RUN pip install --no-cache-dir "numpy>=1.26" "polars>=1.0" "duckdb>=0.10" "pyarrow>=15" \
-    "fastapi>=0.110" "uvicorn>=0.29" "streamlit>=1.33" "pynacl>=1.5"
+# Версии зафиксированы на тех, с которыми проходят тесты: duckdb 2.0 убрал .pl() и уронил стенд 07.11.2026.
+RUN pip install --no-cache-dir "numpy==2.5.4" "polars==2.0.0" "duckdb==1.5.6" "pyarrow==26.0.0" \
+    "fastapi==0.149.0" "starlette==1.9.0" "uvicorn==0.54.0" "streamlit==1.66.0" "pynacl==1.6.2"
 
 COPY protocol/ protocol/
 COPY trace/ trace/
