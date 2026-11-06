@@ -1,5 +1,5 @@
-// 06. Результаты третьей версии эксперимента (docs/submission/numbers.md): столбцы растут на полу сцены,
-// камера облетает их, значения досчитываются, «0,313 = 0,313» (общий граф и изолированный банк) ставится штампом.
+// 06. Результаты перепроверки 06.11 (experiments/results/ai_review.md, разделы E и F): столбцы растут на полу сцены,
+// камера облетает их, значения досчитываются, «вместе точнее» ставится штампом.
 import { interpolate, useCurrentFrame } from "remotion";
 import { CountUp, Words, useStamp } from "../kinetic";
 import { At, Backdrop, Ground, Layer, Space, useCamera } from "../space";
@@ -8,11 +8,12 @@ import type { SceneProps } from "../timeline";
 import { Headline, Kicker, PAD, Stage, useSec } from "../ui";
 
 const ROWS = [
-  { label: "Центральный оператор", sub: "потоки 30 участников", value: 0.251, color: COLOR.grey },
-  { label: "Общий граф", sub: "данные сложены вместе", value: 0.313, color: COLOR.grey },
-  { label: "Изолированный банк", sub: "как сейчас", value: 0.313, color: "#5B6B8C" },
-  { label: "ШЕКАРА", sub: "польза обмена: проверит пилот", value: 0.337, color: COLOR.accent },
+  { label: "Банк", sub: "видит своих клиентов", value: 0.418, color: "#5B6B8C" },
+  { label: "Общий граф", sub: "данные 30 банков вместе", value: 0.433, color: COLOR.grey },
+  { label: "Оператор", sub: "все межбанковские переводы", value: 0.46, color: COLOR.grey },
+  { label: "ШЕКАРА", sub: "банк + Антифрод-центр", value: 0.487, color: COLOR.accent },
 ];
+const TOP = 0.487;
 const MAX_H = 520;
 const FLOOR = 380;
 const GAP = 420;
@@ -21,7 +22,7 @@ function Column({ i, at, grow }: { i: number; at: number; grow: number }) {
   const frame = useCurrentFrame();
   const row = ROWS[i];
   const p = interpolate(frame, [at, at + grow], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const h = (row.value / 0.337) * MAX_H * (1 - Math.pow(1 - p, 3));
+  const h = (row.value / TOP) * MAX_H * (1 - Math.pow(1 - p, 3));
   const x = (i - 1.5) * GAP;
   const strong = row.label === "ШЕКАРА";
   return (
@@ -61,24 +62,24 @@ export const Results = ({ short }: SceneProps) => {
         </Layer>
         <Layer>{ROWS.map((_, i) => <Column key={i} i={i} at={s(1 + step * i)} grow={s(short ? 0.8 : 1.4)} />)}</Layer>
         <Layer z={160}>
-          <At x={-650} y={-150}>
+          <At x={630} y={-300}>
             <div style={{ ...stamp, padding: "22px 36px", borderRadius: 22, background: COLOR.accent, color: COLOR.paper, fontSize: 52, fontWeight: 700,
-              whiteSpace: "nowrap", boxShadow: "0 24px 50px rgba(168,74,20,.35)" }}>0,313 = 0,313</div>
+              whiteSpace: "nowrap", boxShadow: "0 24px 50px rgba(168,74,20,.35)" }}>вместе точнее</div>
           </At>
         </Layer>
       </Space>
       <div style={{ position: "absolute", left: PAD, top: 70, display: "flex", flexDirection: "column", gap: 16 }}>
         <Kicker at={s(0.2)}>Результаты · 5,08 млн переводов · 30 банков</Kicker>
-        <Headline at={s(0.5)} size={62}>Сложить данные в одно место не помогает</Headline>
+        <Headline at={s(0.5)} size={62}>Банк и оператор видят разное</Headline>
       </div>
       {short ? null : (
         <div style={{ position: "absolute", left: PAD, bottom: 96, width: 1600 }}>
-          <Words text="Пользу самой оценки соседа синтетика не доказала: это главный вопрос пилота" at={s(14)} stagger={2}
+          <Words text="Обмен напрямую между банками на синтетике ничего не добавляет: это проверит пилот" at={s(14)} stagger={2}
             style={{ fontSize: 34, color: COLOR.ink }} />
         </div>
       )}
       <div style={{ position: "absolute", left: PAD, bottom: 40, fontSize: 22, color: COLOR.muted }}>
-        PR-AUC, IBM AMLworld HI-Small, тест 8-10.09, среднее по 3 запускам
+        PR-AUC, IBM AMLworld HI-Small, тест 8-10.09, среднее по 3 запускам, перепроверка 06.11.2026
       </div>
     </Stage>
   );
