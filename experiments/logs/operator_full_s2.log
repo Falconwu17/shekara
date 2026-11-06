@@ -1,0 +1,14 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[11:45:01] режим operator_full, seed 2, деревья ранняя остановка
+  operator_full: строк обучения 2042406, положительных 2168, 19 с
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+  operator_full: деревьев 173, 36 с
+  operator_full: {'mode': 'operator_full', 'seed': 2, 'trees_setting': 0, 'trees': 173, 'ap_test': 0.32897231289966045, 'test_edges': 424296, 'test_pos': 519, 'distinct_scores': 139598, 'seconds': 60.564674615859985}
+[11:46:02] режим oracle_full, seed 2, деревья ранняя остановка
+  oracle_full: строк обучения 2134000, положительных 2208, 28 с
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+  oracle_full: деревьев 38, 42 с
+  oracle_full: {'mode': 'oracle_full', 'seed': 2, 'trees_setting': 0, 'trees': 38, 'ap_test': 0.4358995264406715, 'test_edges': 424296, 'test_pos': 519, 'distinct_scores': 5052, 'seconds': 73.05707931518555}

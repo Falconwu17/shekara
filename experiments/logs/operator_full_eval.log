@@ -1,0 +1,103 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+shape: (63, 8)
+┌───────────────┬──────────┬──────────┬─────────┬────────┬────────┬─────────┬───────┐
+│ mode          ┆ rule     ┆ slice    ┆ ap_mean ┆ ap_min ┆ ap_max ┆ f1_mean ┆ seeds │
+│ ---           ┆ ---      ┆ ---      ┆ ---     ┆ ---    ┆ ---    ┆ ---     ┆ ---   │
+│ str           ┆ str      ┆ str      ┆ f64     ┆ f64    ┆ f64    ┆ f64     ┆ u32   │
+╞═══════════════╪══════════╪══════════╪═════════╪════════╪════════╪═════════╪═══════╡
+│ C_F           ┆ max      ┆ all      ┆ 0.3161  ┆ 0.3093 ┆ 0.3258 ┆ 0.4187  ┆ 5     │
+│ C_L3          ┆ max      ┆ all      ┆ 0.3339  ┆ 0.3123 ┆ 0.3482 ┆ 0.4188  ┆ 5     │
+│ isolation     ┆ max      ┆ all      ┆ 0.3105  ┆ 0.3006 ┆ 0.3280 ┆ 0.4170  ┆ 5     │
+│ operator      ┆ max      ┆ all      ┆ 0.2490  ┆ 0.2347 ┆ 0.2654 ┆ 0.3517  ┆ 5     │
+│ operator_full ┆ max      ┆ all      ┆ 0.3283  ┆ 0.3212 ┆ 0.3352 ┆ 0.3894  ┆ 5     │
+│ oracle        ┆ max      ┆ all      ┆ 0.3130  ┆ 0.2978 ┆ 0.3218 ┆ 0.3687  ┆ 3     │
+│ oracle_full   ┆ max      ┆ all      ┆ 0.4517  ┆ 0.4359 ┆ 0.4599 ┆ 0.5288  ┆ 5     │
+│ C_F           ┆ receiver ┆ all      ┆ 0.2809  ┆ 0.2755 ┆ 0.2867 ┆ 0.4064  ┆ 5     │
+│ C_L3          ┆ receiver ┆ all      ┆ 0.3054  ┆ 0.2876 ┆ 0.3165 ┆ 0.4064  ┆ 5     │
+│ isolation     ┆ receiver ┆ all      ┆ 0.2746  ┆ 0.2610 ┆ 0.2898 ┆ 0.4014  ┆ 5     │
+│ operator      ┆ receiver ┆ all      ┆ 0.2490  ┆ 0.2347 ┆ 0.2654 ┆ 0.3517  ┆ 5     │
+│ operator_full ┆ receiver ┆ all      ┆ 0.3283  ┆ 0.3212 ┆ 0.3352 ┆ 0.3894  ┆ 5     │
+│ oracle        ┆ receiver ┆ all      ┆ 0.3130  ┆ 0.2978 ┆ 0.3218 ┆ 0.3687  ┆ 3     │
+│ oracle_full   ┆ receiver ┆ all      ┆ 0.4517  ┆ 0.4359 ┆ 0.4599 ┆ 0.5288  ┆ 5     │
+│ C_F           ┆ sender   ┆ all      ┆ 0.3251  ┆ 0.3200 ┆ 0.3282 ┆ 0.4300  ┆ 5     │
+│ C_L3          ┆ sender   ┆ all      ┆ 0.3493  ┆ 0.3308 ┆ 0.3632 ┆ 0.4327  ┆ 5     │
+│ isolation     ┆ sender   ┆ all      ┆ 0.3222  ┆ 0.3126 ┆ 0.3311 ┆ 0.4250  ┆ 5     │
+│ operator      ┆ sender   ┆ all      ┆ 0.2490  ┆ 0.2347 ┆ 0.2654 ┆ 0.3517  ┆ 5     │
+│ operator_full ┆ sender   ┆ all      ┆ 0.3283  ┆ 0.3212 ┆ 0.3352 ┆ 0.3894  ┆ 5     │
+│ oracle        ┆ sender   ┆ all      ┆ 0.3130  ┆ 0.2978 ┆ 0.3218 ┆ 0.3687  ┆ 3     │
+│ oracle_full   ┆ sender   ┆ all      ┆ 0.4517  ┆ 0.4359 ┆ 0.4599 ┆ 0.5288  ┆ 5     │
+│ C_F           ┆ max      ┆ external ┆ 0.2462  ┆ 0.2408 ┆ 0.2528 ┆ 0.3637  ┆ 5     │
+│ C_L3          ┆ max      ┆ external ┆ 0.2748  ┆ 0.2613 ┆ 0.2874 ┆ 0.3640  ┆ 5     │
+│ isolation     ┆ max      ┆ external ┆ 0.2453  ┆ 0.2305 ┆ 0.2550 ┆ 0.3560  ┆ 5     │
+│ operator      ┆ max      ┆ external ┆ 0.1951  ┆ 0.1843 ┆ 0.2088 ┆ 0.2984  ┆ 5     │
+│ operator_full ┆ max      ┆ external ┆ 0.2803  ┆ 0.2736 ┆ 0.2863 ┆ 0.3452  ┆ 5     │
+│ oracle        ┆ max      ┆ external ┆ 0.2619  ┆ 0.2543 ┆ 0.2678 ┆ 0.3151  ┆ 3     │
+│ oracle_full   ┆ max      ┆ external ┆ 0.4008  ┆ 0.3841 ┆ 0.4086 ┆ 0.4790  ┆ 5     │
+│ C_F           ┆ receiver ┆ external ┆ 0.2462  ┆ 0.2408 ┆ 0.2528 ┆ 0.3671  ┆ 5     │
+│ C_L3          ┆ receiver ┆ external ┆ 0.2748  ┆ 0.2613 ┆ 0.2874 ┆ 0.3640  ┆ 5     │
+│ isolation     ┆ receiver ┆ external ┆ 0.2453  ┆ 0.2305 ┆ 0.2550 ┆ 0.3634  ┆ 5     │
+│ operator      ┆ receiver ┆ external ┆ 0.1951  ┆ 0.1843 ┆ 0.2088 ┆ 0.2984  ┆ 5     │
+│ operator_full ┆ receiver ┆ external ┆ 0.2803  ┆ 0.2736 ┆ 0.2863 ┆ 0.3452  ┆ 5     │
+│ oracle        ┆ receiver ┆ external ┆ 0.2619  ┆ 0.2543 ┆ 0.2678 ┆ 0.3151  ┆ 3     │
+│ oracle_full   ┆ receiver ┆ external ┆ 0.4008  ┆ 0.3841 ┆ 0.4086 ┆ 0.4790  ┆ 5     │
+│ C_F           ┆ sender   ┆ external ┆ 0.2462  ┆ 0.2408 ┆ 0.2528 ┆ 0.3666  ┆ 5     │
+│ C_L3          ┆ sender   ┆ external ┆ 0.2748  ┆ 0.2613 ┆ 0.2874 ┆ 0.3649  ┆ 5     │
+│ isolation     ┆ sender   ┆ external ┆ 0.2453  ┆ 0.2305 ┆ 0.2550 ┆ 0.3579  ┆ 5     │
+│ operator      ┆ sender   ┆ external ┆ 0.1951  ┆ 0.1843 ┆ 0.2088 ┆ 0.2984  ┆ 5     │
+│ operator_full ┆ sender   ┆ external ┆ 0.2803  ┆ 0.2736 ┆ 0.2863 ┆ 0.3452  ┆ 5     │
+│ oracle        ┆ sender   ┆ external ┆ 0.2619  ┆ 0.2543 ┆ 0.2678 ┆ 0.3151  ┆ 3     │
+│ oracle_full   ┆ sender   ┆ external ┆ 0.4008  ┆ 0.3841 ┆ 0.4086 ┆ 0.4790  ┆ 5     │
+│ C_F           ┆ max      ┆ pp       ┆ 0.5921  ┆ 0.5746 ┆ 0.6177 ┆ 0.5991  ┆ 5     │
+│ C_L3          ┆ max      ┆ pp       ┆ 0.5839  ┆ 0.5342 ┆ 0.6039 ┆ 0.5878  ┆ 5     │
+│ isolation     ┆ max      ┆ pp       ┆ 0.5691  ┆ 0.5404 ┆ 0.6131 ┆ 0.6161  ┆ 5     │
+│ operator      ┆ max      ┆ pp       ┆ 0.4614  ┆ 0.4288 ┆ 0.4892 ┆ 0.5357  ┆ 5     │
+│ operator_full ┆ max      ┆ pp       ┆ 0.5439  ┆ 0.5240 ┆ 0.5657 ┆ 0.5620  ┆ 5     │
+│ oracle        ┆ max      ┆ pp       ┆ 0.5246  ┆ 0.4895 ┆ 0.5446 ┆ 0.5590  ┆ 3     │
+│ oracle_full   ┆ max      ┆ pp       ┆ 0.6908  ┆ 0.6851 ┆ 0.6942 ┆ 0.7268  ┆ 5     │
+│ C_F           ┆ receiver ┆ pp       ┆ 0.4365  ┆ 0.4110 ┆ 0.4590 ┆ 0.5446  ┆ 5     │
+│ C_L3          ┆ receiver ┆ pp       ┆ 0.4383  ┆ 0.4232 ┆ 0.4503 ┆ 0.5515  ┆ 5     │
+│ isolation     ┆ receiver ┆ pp       ┆ 0.4041  ┆ 0.3775 ┆ 0.4574 ┆ 0.5384  ┆ 5     │
+│ operator      ┆ receiver ┆ pp       ┆ 0.4614  ┆ 0.4288 ┆ 0.4892 ┆ 0.5357  ┆ 5     │
+│ operator_full ┆ receiver ┆ pp       ┆ 0.5439  ┆ 0.5240 ┆ 0.5657 ┆ 0.5620  ┆ 5     │
+│ oracle        ┆ receiver ┆ pp       ┆ 0.5246  ┆ 0.4895 ┆ 0.5446 ┆ 0.5590  ┆ 3     │
+│ oracle_full   ┆ receiver ┆ pp       ┆ 0.6908  ┆ 0.6851 ┆ 0.6942 ┆ 0.7268  ┆ 5     │
+│ C_F           ┆ sender   ┆ pp       ┆ 0.6417  ┆ 0.6280 ┆ 0.6578 ┆ 0.6950  ┆ 5     │
+│ C_L3          ┆ sender   ┆ pp       ┆ 0.6535  ┆ 0.6237 ┆ 0.6676 ┆ 0.6922  ┆ 5     │
+│ isolation     ┆ sender   ┆ pp       ┆ 0.6358  ┆ 0.6298 ┆ 0.6480 ┆ 0.6914  ┆ 5     │
+│ operator      ┆ sender   ┆ pp       ┆ 0.4614  ┆ 0.4288 ┆ 0.4892 ┆ 0.5357  ┆ 5     │
+│ operator_full ┆ sender   ┆ pp       ┆ 0.5439  ┆ 0.5240 ┆ 0.5657 ┆ 0.5620  ┆ 5     │
+│ oracle        ┆ sender   ┆ pp       ┆ 0.5246  ┆ 0.4895 ┆ 0.5446 ┆ 0.5590  ┆ 3     │
+│ oracle_full   ┆ sender   ┆ pp       ┆ 0.6908  ┆ 0.6851 ┆ 0.6942 ┆ 0.7268  ┆ 5     │
+└───────────────┴──────────┴──────────┴─────────┴────────┴────────┴─────────┴───────┘
+{'rule': 'max', 'a': 'isolation', 'b': 'operator_full', 'seeds': '1', 'ap_diff': -0.0345, 'ap_lo': -0.1014, 'ap_hi': 0.0285, 'ap_p_le_0': 0.863, 'f1_diff': -0.0114, 'f1_lo': -0.0733, 'f1_hi': 0.0492, 'f1_p_le_0': 0.642} 58 с
+{'rule': 'max', 'a': 'isolation', 'b': 'operator_full', 'seeds': '2', 'ap_diff': -0.024, 'ap_lo': -0.086, 'ap_hi': 0.0382, 'ap_p_le_0': 0.775, 'f1_diff': 0.0373, 'f1_lo': -0.0325, 'f1_hi': 0.0994, 'f1_p_le_0': 0.133} 97 с
+{'rule': 'max', 'a': 'isolation', 'b': 'operator_full', 'seeds': '3', 'ap_diff': 0.0068, 'ap_lo': -0.0551, 'ap_hi': 0.0657, 'ap_p_le_0': 0.417, 'f1_diff': 0.0282, 'f1_lo': -0.0374, 'f1_hi': 0.0911, 'f1_p_le_0': 0.191} 149 с
+{'rule': 'max', 'a': 'isolation', 'b': 'operator_full', 'seeds': '4', 'ap_diff': -0.0207, 'ap_lo': -0.0791, 'ap_hi': 0.0374, 'ap_p_le_0': 0.742, 'f1_diff': 0.0448, 'f1_lo': -0.0161, 'f1_hi': 0.1045, 'f1_p_le_0': 0.081} 188 с
+{'rule': 'max', 'a': 'isolation', 'b': 'operator_full', 'seeds': '5', 'ap_diff': -0.0167, 'ap_lo': -0.0741, 'ap_hi': 0.0406, 'ap_p_le_0': 0.712, 'f1_diff': 0.0392, 'f1_lo': -0.0114, 'f1_hi': 0.0898, 'f1_p_le_0': 0.064} 226 с
+{'rule': 'max', 'a': 'isolation', 'b': 'operator_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.0178, 'ap_lo': -0.0786, 'ap_hi': 0.0404, 'ap_p_le_0': 0.722, 'f1_diff': 0.0276, 'f1_lo': -0.0308, 'f1_hi': 0.08, 'f1_p_le_0': 0.166} 388 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '1', 'ap_diff': -0.0034, 'ap_lo': -0.0675, 'ap_hi': 0.0549, 'ap_p_le_0': 0.547, 'f1_diff': 0.0317, 'f1_lo': -0.0305, 'f1_hi': 0.0883, 'f1_p_le_0': 0.139} 425 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '2', 'ap_diff': 0.0158, 'ap_lo': -0.0475, 'ap_hi': 0.0776, 'ap_p_le_0': 0.31, 'f1_diff': 0.0333, 'f1_lo': -0.0286, 'f1_hi': 0.0901, 'f1_p_le_0': 0.14} 473 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '3', 'ap_diff': 0.0115, 'ap_lo': -0.0525, 'ap_hi': 0.0681, 'ap_p_le_0': 0.348, 'f1_diff': 0.0355, 'f1_lo': -0.0319, 'f1_hi': 0.0957, 'f1_p_le_0': 0.126} 523 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '4', 'ap_diff': -0.0094, 'ap_lo': -0.0663, 'ap_hi': 0.0459, 'ap_p_le_0': 0.632, 'f1_diff': 0.0303, 'f1_lo': -0.0271, 'f1_hi': 0.0836, 'f1_p_le_0': 0.142} 559 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '5', 'ap_diff': 0.0135, 'ap_lo': -0.0465, 'ap_hi': 0.0699, 'ap_p_le_0': 0.312, 'f1_diff': 0.0163, 'f1_lo': -0.0469, 'f1_hi': 0.0745, 'f1_p_le_0': 0.288} 592 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '1,2,3,4,5', 'ap_diff': 0.0056, 'ap_lo': -0.0562, 'ap_hi': 0.06, 'ap_p_le_0': 0.422, 'f1_diff': 0.0294, 'f1_lo': -0.0274, 'f1_hi': 0.0828, 'f1_p_le_0': 0.136} 763 с
+{'rule': 'max', 'a': 'operator_full', 'b': 'operator', 'seeds': '1', 'ap_diff': 0.0698, 'ap_lo': 0.0156, 'ap_hi': 0.1202, 'ap_p_le_0': 0.004, 'f1_diff': 0.0651, 'f1_lo': 0.0163, 'f1_hi': 0.1154, 'f1_p_le_0': 0.005} 804 с
+{'rule': 'max', 'a': 'operator_full', 'b': 'operator', 'seeds': '2', 'ap_diff': 0.0943, 'ap_lo': 0.0399, 'ap_hi': 0.1465, 'ap_p_le_0': 0.0, 'f1_diff': 0.0098, 'f1_lo': -0.0393, 'f1_hi': 0.0633, 'f1_p_le_0': 0.375} 840 с
+{'rule': 'max', 'a': 'operator_full', 'b': 'operator', 'seeds': '3', 'ap_diff': 0.0683, 'ap_lo': 0.0124, 'ap_hi': 0.1258, 'ap_p_le_0': 0.006, 'f1_diff': 0.0351, 'f1_lo': -0.0146, 'f1_hi': 0.0839, 'f1_p_le_0': 0.094} 877 с
+{'rule': 'max', 'a': 'operator_full', 'b': 'operator', 'seeds': '4', 'ap_diff': 0.0817, 'ap_lo': 0.0317, 'ap_hi': 0.13, 'ap_p_le_0': 0.001, 'f1_diff': 0.0236, 'f1_lo': -0.0193, 'f1_hi': 0.0689, 'f1_p_le_0': 0.16} 917 с
+{'rule': 'max', 'a': 'operator_full', 'b': 'operator', 'seeds': '5', 'ap_diff': 0.0829, 'ap_lo': 0.0285, 'ap_hi': 0.1355, 'ap_p_le_0': 0.0, 'f1_diff': 0.0548, 'f1_lo': 0.004, 'f1_hi': 0.1067, 'f1_p_le_0': 0.016} 963 с
+{'rule': 'max', 'a': 'operator_full', 'b': 'operator', 'seeds': '1,2,3,4,5', 'ap_diff': 0.0794, 'ap_lo': 0.027, 'ap_hi': 0.1288, 'ap_p_le_0': 0.001, 'f1_diff': 0.0377, 'f1_lo': -0.0076, 'f1_hi': 0.0829, 'f1_p_le_0': 0.048} 1119 с
+{'rule': 'max', 'a': 'oracle_full', 'b': 'operator_full', 'seeds': '1', 'ap_diff': 0.121, 'ap_lo': 0.0806, 'ap_hi': 0.1647, 'ap_p_le_0': 0.0, 'f1_diff': 0.1389, 'f1_lo': 0.0908, 'f1_hi': 0.1879, 'f1_p_le_0': 0.0} 1173 с
+{'rule': 'max', 'a': 'oracle_full', 'b': 'operator_full', 'seeds': '2', 'ap_diff': 0.1069, 'ap_lo': 0.0624, 'ap_hi': 0.1515, 'ap_p_le_0': 0.0, 'f1_diff': 0.1, 'f1_lo': 0.0513, 'f1_hi': 0.1452, 'f1_p_le_0': 0.0} 1216 с
+{'rule': 'max', 'a': 'oracle_full', 'b': 'operator_full', 'seeds': '3', 'ap_diff': 0.1334, 'ap_lo': 0.0944, 'ap_hi': 0.1784, 'ap_p_le_0': 0.0, 'f1_diff': 0.1621, 'f1_lo': 0.1167, 'f1_hi': 0.2094, 'f1_p_le_0': 0.0} 1257 с
+{'rule': 'max', 'a': 'oracle_full', 'b': 'operator_full', 'seeds': '4', 'ap_diff': 0.1304, 'ap_lo': 0.0869, 'ap_hi': 0.1742, 'ap_p_le_0': 0.0, 'f1_diff': 0.1592, 'f1_lo': 0.1153, 'f1_hi': 0.2042, 'f1_p_le_0': 0.0} 1294 с
+{'rule': 'max', 'a': 'oracle_full', 'b': 'operator_full', 'seeds': '5', 'ap_diff': 0.1252, 'ap_lo': 0.086, 'ap_hi': 0.1664, 'ap_p_le_0': 0.0, 'f1_diff': 0.1369, 'f1_lo': 0.0926, 'f1_hi': 0.1849, 'f1_p_le_0': 0.0} 1332 с
+{'rule': 'max', 'a': 'oracle_full', 'b': 'operator_full', 'seeds': '1,2,3,4,5', 'ap_diff': 0.1234, 'ap_lo': 0.0828, 'ap_hi': 0.1643, 'ap_p_le_0': 0.0, 'f1_diff': 0.1394, 'f1_lo': 0.098, 'f1_hi': 0.1819, 'f1_p_le_0': 0.0} 1518 с
+{'rule': 'max', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '1', 'ap_diff': -0.1556, 'ap_lo': -0.2101, 'ap_hi': -0.1039, 'ap_p_le_0': 1.0, 'f1_diff': -0.1503, 'f1_lo': -0.2056, 'f1_hi': -0.0997, 'f1_p_le_0': 1.0} 1557 с
+{'rule': 'max', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '2', 'ap_diff': -0.1309, 'ap_lo': -0.1796, 'ap_hi': -0.085, 'ap_p_le_0': 1.0, 'f1_diff': -0.0627, 'f1_lo': -0.116, 'f1_hi': -0.0127, 'f1_p_le_0': 0.997} 1594 с
+{'rule': 'max', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '3', 'ap_diff': -0.1266, 'ap_lo': -0.1742, 'ap_hi': -0.0811, 'ap_p_le_0': 1.0, 'f1_diff': -0.1338, 'f1_lo': -0.1836, 'f1_hi': -0.0851, 'f1_p_le_0': 1.0} 1629 с
+{'rule': 'max', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '4', 'ap_diff': -0.1511, 'ap_lo': -0.1978, 'ap_hi': -0.1051, 'ap_p_le_0': 1.0, 'f1_diff': -0.1144, 'f1_lo': -0.1675, 'f1_hi': -0.0618, 'f1_p_le_0': 1.0} 1668 с
+{'rule': 'max', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '5', 'ap_diff': -0.1419, 'ap_lo': -0.1867, 'ap_hi': -0.0977, 'ap_p_le_0': 1.0, 'f1_diff': -0.0977, 'f1_lo': -0.1438, 'f1_hi': -0.0556, 'f1_p_le_0': 1.0} 1703 с
+{'rule': 'max', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.1412, 'ap_lo': -0.1874, 'ap_hi': -0.0964, 'ap_p_le_0': 1.0, 'f1_diff': -0.1118, 'f1_lo': -0.1599, 'f1_hi': -0.0674, 'f1_p_le_0': 1.0} 1873 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '1', 'ap_diff': -0.1244, 'ap_lo': -0.1773, 'ap_hi': -0.0749, 'ap_p_le_0': 1.0, 'f1_diff': -0.1072, 'f1_lo': -0.1602, 'f1_hi': -0.0619, 'f1_p_le_0': 1.0} 1916 с

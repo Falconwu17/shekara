@@ -1,0 +1,85 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+shape: (63, 8)
+┌───────────────┬──────────┬──────────┬─────────┬────────┬────────┬─────────┬───────┐
+│ mode          ┆ rule     ┆ slice    ┆ ap_mean ┆ ap_min ┆ ap_max ┆ f1_mean ┆ seeds │
+│ ---           ┆ ---      ┆ ---      ┆ ---     ┆ ---    ┆ ---    ┆ ---     ┆ ---   │
+│ str           ┆ str      ┆ str      ┆ f64     ┆ f64    ┆ f64    ┆ f64     ┆ u32   │
+╞═══════════════╪══════════╪══════════╪═════════╪════════╪════════╪═════════╪═══════╡
+│ C_F           ┆ max      ┆ all      ┆ 0.3161  ┆ 0.3093 ┆ 0.3258 ┆ 0.4187  ┆ 5     │
+│ C_L3          ┆ max      ┆ all      ┆ 0.3339  ┆ 0.3123 ┆ 0.3482 ┆ 0.4188  ┆ 5     │
+│ isolation     ┆ max      ┆ all      ┆ 0.3105  ┆ 0.3006 ┆ 0.3280 ┆ 0.4170  ┆ 5     │
+│ operator      ┆ max      ┆ all      ┆ 0.2490  ┆ 0.2347 ┆ 0.2654 ┆ 0.3517  ┆ 5     │
+│ operator_full ┆ max      ┆ all      ┆ 0.3283  ┆ 0.3212 ┆ 0.3352 ┆ 0.3894  ┆ 5     │
+│ oracle        ┆ max      ┆ all      ┆ 0.3130  ┆ 0.2978 ┆ 0.3218 ┆ 0.3687  ┆ 3     │
+│ oracle_full   ┆ max      ┆ all      ┆ 0.4517  ┆ 0.4359 ┆ 0.4599 ┆ 0.5288  ┆ 5     │
+│ C_F           ┆ receiver ┆ all      ┆ 0.2809  ┆ 0.2755 ┆ 0.2867 ┆ 0.4064  ┆ 5     │
+│ C_L3          ┆ receiver ┆ all      ┆ 0.3054  ┆ 0.2876 ┆ 0.3165 ┆ 0.4064  ┆ 5     │
+│ isolation     ┆ receiver ┆ all      ┆ 0.2746  ┆ 0.2610 ┆ 0.2898 ┆ 0.4014  ┆ 5     │
+│ operator      ┆ receiver ┆ all      ┆ 0.2490  ┆ 0.2347 ┆ 0.2654 ┆ 0.3517  ┆ 5     │
+│ operator_full ┆ receiver ┆ all      ┆ 0.3283  ┆ 0.3212 ┆ 0.3352 ┆ 0.3894  ┆ 5     │
+│ oracle        ┆ receiver ┆ all      ┆ 0.3130  ┆ 0.2978 ┆ 0.3218 ┆ 0.3687  ┆ 3     │
+│ oracle_full   ┆ receiver ┆ all      ┆ 0.4517  ┆ 0.4359 ┆ 0.4599 ┆ 0.5288  ┆ 5     │
+│ C_F           ┆ sender   ┆ all      ┆ 0.3251  ┆ 0.3200 ┆ 0.3282 ┆ 0.4300  ┆ 5     │
+│ C_L3          ┆ sender   ┆ all      ┆ 0.3493  ┆ 0.3308 ┆ 0.3632 ┆ 0.4327  ┆ 5     │
+│ isolation     ┆ sender   ┆ all      ┆ 0.3222  ┆ 0.3126 ┆ 0.3311 ┆ 0.4250  ┆ 5     │
+│ operator      ┆ sender   ┆ all      ┆ 0.2490  ┆ 0.2347 ┆ 0.2654 ┆ 0.3517  ┆ 5     │
+│ operator_full ┆ sender   ┆ all      ┆ 0.3283  ┆ 0.3212 ┆ 0.3352 ┆ 0.3894  ┆ 5     │
+│ oracle        ┆ sender   ┆ all      ┆ 0.3130  ┆ 0.2978 ┆ 0.3218 ┆ 0.3687  ┆ 3     │
+│ oracle_full   ┆ sender   ┆ all      ┆ 0.4517  ┆ 0.4359 ┆ 0.4599 ┆ 0.5288  ┆ 5     │
+│ C_F           ┆ max      ┆ external ┆ 0.2462  ┆ 0.2408 ┆ 0.2528 ┆ 0.3637  ┆ 5     │
+│ C_L3          ┆ max      ┆ external ┆ 0.2748  ┆ 0.2613 ┆ 0.2874 ┆ 0.3640  ┆ 5     │
+│ isolation     ┆ max      ┆ external ┆ 0.2453  ┆ 0.2305 ┆ 0.2550 ┆ 0.3560  ┆ 5     │
+│ operator      ┆ max      ┆ external ┆ 0.1951  ┆ 0.1843 ┆ 0.2088 ┆ 0.2984  ┆ 5     │
+│ operator_full ┆ max      ┆ external ┆ 0.2803  ┆ 0.2736 ┆ 0.2863 ┆ 0.3452  ┆ 5     │
+│ oracle        ┆ max      ┆ external ┆ 0.2619  ┆ 0.2543 ┆ 0.2678 ┆ 0.3151  ┆ 3     │
+│ oracle_full   ┆ max      ┆ external ┆ 0.4008  ┆ 0.3841 ┆ 0.4086 ┆ 0.4790  ┆ 5     │
+│ C_F           ┆ receiver ┆ external ┆ 0.2462  ┆ 0.2408 ┆ 0.2528 ┆ 0.3671  ┆ 5     │
+│ C_L3          ┆ receiver ┆ external ┆ 0.2748  ┆ 0.2613 ┆ 0.2874 ┆ 0.3640  ┆ 5     │
+│ isolation     ┆ receiver ┆ external ┆ 0.2453  ┆ 0.2305 ┆ 0.2550 ┆ 0.3634  ┆ 5     │
+│ operator      ┆ receiver ┆ external ┆ 0.1951  ┆ 0.1843 ┆ 0.2088 ┆ 0.2984  ┆ 5     │
+│ operator_full ┆ receiver ┆ external ┆ 0.2803  ┆ 0.2736 ┆ 0.2863 ┆ 0.3452  ┆ 5     │
+│ oracle        ┆ receiver ┆ external ┆ 0.2619  ┆ 0.2543 ┆ 0.2678 ┆ 0.3151  ┆ 3     │
+│ oracle_full   ┆ receiver ┆ external ┆ 0.4008  ┆ 0.3841 ┆ 0.4086 ┆ 0.4790  ┆ 5     │
+│ C_F           ┆ sender   ┆ external ┆ 0.2462  ┆ 0.2408 ┆ 0.2528 ┆ 0.3666  ┆ 5     │
+│ C_L3          ┆ sender   ┆ external ┆ 0.2748  ┆ 0.2613 ┆ 0.2874 ┆ 0.3649  ┆ 5     │
+│ isolation     ┆ sender   ┆ external ┆ 0.2453  ┆ 0.2305 ┆ 0.2550 ┆ 0.3579  ┆ 5     │
+│ operator      ┆ sender   ┆ external ┆ 0.1951  ┆ 0.1843 ┆ 0.2088 ┆ 0.2984  ┆ 5     │
+│ operator_full ┆ sender   ┆ external ┆ 0.2803  ┆ 0.2736 ┆ 0.2863 ┆ 0.3452  ┆ 5     │
+│ oracle        ┆ sender   ┆ external ┆ 0.2619  ┆ 0.2543 ┆ 0.2678 ┆ 0.3151  ┆ 3     │
+│ oracle_full   ┆ sender   ┆ external ┆ 0.4008  ┆ 0.3841 ┆ 0.4086 ┆ 0.4790  ┆ 5     │
+│ C_F           ┆ max      ┆ pp       ┆ 0.5921  ┆ 0.5746 ┆ 0.6177 ┆ 0.5991  ┆ 5     │
+│ C_L3          ┆ max      ┆ pp       ┆ 0.5839  ┆ 0.5342 ┆ 0.6039 ┆ 0.5878  ┆ 5     │
+│ isolation     ┆ max      ┆ pp       ┆ 0.5691  ┆ 0.5404 ┆ 0.6131 ┆ 0.6161  ┆ 5     │
+│ operator      ┆ max      ┆ pp       ┆ 0.4614  ┆ 0.4288 ┆ 0.4892 ┆ 0.5357  ┆ 5     │
+│ operator_full ┆ max      ┆ pp       ┆ 0.5439  ┆ 0.5240 ┆ 0.5657 ┆ 0.5620  ┆ 5     │
+│ oracle        ┆ max      ┆ pp       ┆ 0.5246  ┆ 0.4895 ┆ 0.5446 ┆ 0.5590  ┆ 3     │
+│ oracle_full   ┆ max      ┆ pp       ┆ 0.6908  ┆ 0.6851 ┆ 0.6942 ┆ 0.7268  ┆ 5     │
+│ C_F           ┆ receiver ┆ pp       ┆ 0.4365  ┆ 0.4110 ┆ 0.4590 ┆ 0.5446  ┆ 5     │
+│ C_L3          ┆ receiver ┆ pp       ┆ 0.4383  ┆ 0.4232 ┆ 0.4503 ┆ 0.5515  ┆ 5     │
+│ isolation     ┆ receiver ┆ pp       ┆ 0.4041  ┆ 0.3775 ┆ 0.4574 ┆ 0.5384  ┆ 5     │
+│ operator      ┆ receiver ┆ pp       ┆ 0.4614  ┆ 0.4288 ┆ 0.4892 ┆ 0.5357  ┆ 5     │
+│ operator_full ┆ receiver ┆ pp       ┆ 0.5439  ┆ 0.5240 ┆ 0.5657 ┆ 0.5620  ┆ 5     │
+│ oracle        ┆ receiver ┆ pp       ┆ 0.5246  ┆ 0.4895 ┆ 0.5446 ┆ 0.5590  ┆ 3     │
+│ oracle_full   ┆ receiver ┆ pp       ┆ 0.6908  ┆ 0.6851 ┆ 0.6942 ┆ 0.7268  ┆ 5     │
+│ C_F           ┆ sender   ┆ pp       ┆ 0.6417  ┆ 0.6280 ┆ 0.6578 ┆ 0.6950  ┆ 5     │
+│ C_L3          ┆ sender   ┆ pp       ┆ 0.6535  ┆ 0.6237 ┆ 0.6676 ┆ 0.6922  ┆ 5     │
+│ isolation     ┆ sender   ┆ pp       ┆ 0.6358  ┆ 0.6298 ┆ 0.6480 ┆ 0.6914  ┆ 5     │
+│ operator      ┆ sender   ┆ pp       ┆ 0.4614  ┆ 0.4288 ┆ 0.4892 ┆ 0.5357  ┆ 5     │
+│ operator_full ┆ sender   ┆ pp       ┆ 0.5439  ┆ 0.5240 ┆ 0.5657 ┆ 0.5620  ┆ 5     │
+│ oracle        ┆ sender   ┆ pp       ┆ 0.5246  ┆ 0.4895 ┆ 0.5446 ┆ 0.5590  ┆ 3     │
+│ oracle_full   ┆ sender   ┆ pp       ┆ 0.6908  ┆ 0.6851 ┆ 0.6942 ┆ 0.7268  ┆ 5     │
+└───────────────┴──────────┴──────────┴─────────┴────────┴────────┴─────────┴───────┘
+{'rule': 'max', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '2', 'ap_diff': -0.0912, 'ap_lo': -0.1402, 'ap_hi': -0.0444, 'ap_p_le_0': 1.0, 'f1_diff': -0.0667, 'f1_lo': -0.112, 'f1_hi': -0.0227, 'f1_p_le_0': 0.998} 56 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '3', 'ap_diff': -0.1219, 'ap_lo': -0.176, 'ap_hi': -0.0743, 'ap_p_le_0': 1.0, 'f1_diff': -0.1266, 'f1_lo': -0.1887, 'f1_hi': -0.0733, 'f1_p_le_0': 1.0} 95 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '4', 'ap_diff': -0.1398, 'ap_lo': -0.1863, 'ap_hi': -0.0939, 'ap_p_le_0': 1.0, 'f1_diff': -0.1289, 'f1_lo': -0.1799, 'f1_hi': -0.0818, 'f1_p_le_0': 1.0} 136 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '5', 'ap_diff': -0.1117, 'ap_lo': -0.1579, 'ap_hi': -0.0671, 'ap_p_le_0': 1.0, 'f1_diff': -0.1207, 'f1_lo': -0.1719, 'f1_hi': -0.073, 'f1_p_le_0': 1.0} 176 с
+{'rule': 'max', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.1178, 'ap_lo': -0.164, 'ap_hi': -0.0718, 'ap_p_le_0': 1.0, 'f1_diff': -0.11, 'f1_lo': -0.1606, 'f1_hi': -0.067, 'f1_p_le_0': 1.0} 355 с
+{'rule': 'sender', 'a': 'isolation', 'b': 'operator_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.0062, 'ap_lo': -0.0646, 'ap_hi': 0.0508, 'ap_p_le_0': 0.577, 'f1_diff': 0.0356, 'f1_lo': -0.023, 'f1_hi': 0.0868, 'f1_p_le_0': 0.098} 525 с
+{'rule': 'sender', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '1,2,3,4,5', 'ap_diff': 0.0209, 'ap_lo': -0.0404, 'ap_hi': 0.0761, 'ap_p_le_0': 0.233, 'f1_diff': 0.0433, 'f1_lo': -0.0147, 'f1_hi': 0.0974, 'f1_p_le_0': 0.072} 701 с
+{'rule': 'sender', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.1295, 'ap_lo': -0.1774, 'ap_hi': -0.0856, 'ap_p_le_0': 1.0, 'f1_diff': -0.1039, 'f1_lo': -0.1501, 'f1_hi': -0.0601, 'f1_p_le_0': 1.0} 878 с
+{'rule': 'sender', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.1025, 'ap_lo': -0.1489, 'ap_hi': -0.0589, 'ap_p_le_0': 1.0, 'f1_diff': -0.0961, 'f1_lo': -0.143, 'f1_hi': -0.0522, 'f1_p_le_0': 1.0} 1046 с
+{'rule': 'receiver', 'a': 'isolation', 'b': 'operator_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.0537, 'ap_lo': -0.1094, 'ap_hi': 0.0061, 'ap_p_le_0': 0.962, 'f1_diff': 0.012, 'f1_lo': -0.0416, 'f1_hi': 0.0605, 'f1_p_le_0': 0.31} 1215 с
+{'rule': 'receiver', 'a': 'C_L3', 'b': 'operator_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.0229, 'ap_lo': -0.0823, 'ap_hi': 0.0318, 'ap_p_le_0': 0.759, 'f1_diff': 0.017, 'f1_lo': -0.0423, 'f1_hi': 0.0709, 'f1_p_le_0': 0.255} 1397 с
+{'rule': 'receiver', 'a': 'isolation', 'b': 'oracle_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.1771, 'ap_lo': -0.223, 'ap_hi': -0.127, 'ap_p_le_0': 1.0, 'f1_diff': -0.1274, 'f1_lo': -0.1755, 'f1_hi': -0.0809, 'f1_p_le_0': 1.0} 1576 с
+{'rule': 'receiver', 'a': 'C_L3', 'b': 'oracle_full', 'seeds': '1,2,3,4,5', 'ap_diff': -0.1463, 'ap_lo': -0.1966, 'ap_hi': -0.0969, 'ap_p_le_0': 1.0, 'f1_diff': -0.1225, 'f1_lo': -0.173, 'f1_hi': -0.0754, 'f1_p_le_0': 1.0} 1737 с

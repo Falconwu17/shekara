@@ -1,0 +1,8 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+  раунд 0 + 3 фолда: 55 с
+[12:33:49] {'mode': 'isolation', 'seed': 1, 'trees_setting': 800, 'trees_edge': 800, 'trees_node': 800, 'seconds': 88.95239424705505}
+[12:38:30] {'mode': 'L3', 'seed': 1, 'trees_setting': 800, 'trees_edge': 800, 'trees_node': 800, 'seconds': 369.6893632411957}
+[12:39:18] {'mode': 'iso_cs', 'seed': 1, 'trees_setting': 800, 'trees_edge': 800, 'trees_node': 800, 'seconds': 417.9183568954468}
+[12:40:05] {'mode': 'iso_reg', 'seed': 1, 'trees_setting': 800, 'trees_edge': 800, 'trees_node': 800, 'seconds': 465.09373688697815}
+[12:41:02] {'mode': 'operator', 'seed': 1, 'trees_setting': 800, 'trees_edge': 800, 'trees_node': 800, 'seconds': 521.8555381298065}

@@ -67,3 +67,5 @@ video/out/
 video/public/voice/
 .arena/
 experiments/results/preds_extra/
+experiments/results/preds_full/
+experiments/results/preds_trees/

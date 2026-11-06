@@ -1,0 +1,6 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[12:14:34] режим operator_full, seed 3, деревья 100
+  operator_full: строк обучения 2042406, положительных 2168, 24 с
+  operator_full: деревьев 100, 36 с
+  operator_full: {'mode': 'operator_full', 'seed': 3, 'trees_setting': 100, 'trees': 100, 'ap_test': 0.3206103352753945, 'test_edges': 424296, 'test_pos': 519, 'distinct_scores': 12735, 'seconds': 63.647390842437744}

@@ -1,0 +1,8 @@
+D:\shekara\.venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[15:46:37] режим operator_full, seed 1, деревья ранняя остановка
+  operator_full: строк обучения 2042406, положительных 2168, 23 с
+D:\shekara\.venv\Lib\site-packages\lightgbm\sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+  operator_full: деревьев 796, 59 с
+  operator_full_cs: {'mode': 'operator_full_cs_reg', 'seed': 1, 'trees_setting': 0, 'trees': 796, 'ap_test': 0.46241197064518175, 'test_edges': 424296, 'test_pos': 519, 'distinct_scores': 422381, 'seconds': 84.76102828979492}
