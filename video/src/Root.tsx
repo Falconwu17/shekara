@@ -10,7 +10,7 @@ async function measure(version: VersionId) {
   const scenes = VERSIONS[version];
   const results = await Promise.all(scenes.map(async scene => {
     try {
-      const seconds = await getAudioDurationInSeconds(staticFile(`voice/${scene.id}.m4a`));
+      const seconds = await getAudioDurationInSeconds(staticFile(`voice/${scene.id}.mp3`));
       return { seconds: seconds + TAIL_SECONDS, voiced: true };
     } catch {
       return { seconds: scene.seconds, voiced: false };

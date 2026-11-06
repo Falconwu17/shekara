@@ -15,7 +15,7 @@ export const Video = ({ version, frames, voiced }: VideoProps) => (
       {VERSIONS[version].map((scene, i) => (
         <Series.Sequence key={scene.id} durationInFrames={frames[i]} name={scene.id}>
           <scene.component short={scene.short} />
-          {voiced[i] ? <Audio src={staticFile(`voice/${scene.id}.m4a`)} /> : null}
+          {voiced[i] ? <Audio src={staticFile(`voice/${scene.id}.mp3`)} /> : null}
         </Series.Sequence>
       ))}
     </Series>

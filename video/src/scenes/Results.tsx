@@ -1,5 +1,5 @@
 // 06. Результаты третьей версии эксперимента (docs/submission/numbers.md): столбцы растут на полу сцены,
-// камера облетает их, значения досчитываются, «0,337 против 0,251» ставится штампом.
+// камера облетает их, значения досчитываются, «0,313 = 0,313» (общий граф и изолированный банк) ставится штампом.
 import { interpolate, useCurrentFrame } from "remotion";
 import { CountUp, Words, useStamp } from "../kinetic";
 import { At, Backdrop, Ground, Layer, Space, useCamera } from "../space";
@@ -8,10 +8,10 @@ import type { SceneProps } from "../timeline";
 import { Headline, Kicker, PAD, Stage, useSec } from "../ui";
 
 const ROWS = [
-  { label: "Центральный оператор", sub: "как Mastercard MITS", value: 0.251, color: COLOR.grey },
+  { label: "Центральный оператор", sub: "потоки 30 участников", value: 0.251, color: COLOR.grey },
   { label: "Общий граф", sub: "данные сложены вместе", value: 0.313, color: COLOR.grey },
   { label: "Изолированный банк", sub: "как сейчас", value: 0.313, color: "#5B6B8C" },
-  { label: "ШЕКАРА", sub: "обмен оценками", value: 0.337, color: COLOR.accent },
+  { label: "ШЕКАРА", sub: "польза обмена: проверит пилот", value: 0.337, color: COLOR.accent },
 ];
 const MAX_H = 520;
 const FLOOR = 380;
@@ -63,7 +63,7 @@ export const Results = ({ short }: SceneProps) => {
         <Layer z={160}>
           <At x={-650} y={-150}>
             <div style={{ ...stamp, padding: "22px 36px", borderRadius: 22, background: COLOR.accent, color: COLOR.paper, fontSize: 52, fontWeight: 700,
-              whiteSpace: "nowrap", boxShadow: "0 24px 50px rgba(168,74,20,.35)" }}>0,337 против 0,251</div>
+              whiteSpace: "nowrap", boxShadow: "0 24px 50px rgba(168,74,20,.35)" }}>0,313 = 0,313</div>
           </At>
         </Layer>
       </Space>
@@ -73,7 +73,7 @@ export const Results = ({ short }: SceneProps) => {
       </div>
       {short ? null : (
         <div style={{ position: "absolute", left: PAD, bottom: 96, width: 1600 }}>
-          <Words text="Обмен оценками добавляет ещё +8% во всех запусках; статистически это пока не доказано, проверит пилот" at={s(14)} stagger={2}
+          <Words text="Пользу самой оценки соседа синтетика не доказала: это главный вопрос пилота" at={s(14)} stagger={2}
             style={{ fontSize: 34, color: COLOR.ink }} />
         </div>
       )}

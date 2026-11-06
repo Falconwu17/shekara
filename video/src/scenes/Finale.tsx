@@ -1,4 +1,4 @@
-// 08. Финал: два банка соединяются светящейся линией (пилот), буквы логотипа влетают из глубины, камера отъезжает.
+// 08. Финал: банки соединяются светящейся линией (пилот), буквы логотипа влетают из глубины, камера отъезжает.
 import { spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Words } from "../kinetic";
 import { At, Backdrop, Ground, Layer, Space, useCamera } from "../space";
@@ -40,7 +40,7 @@ export const Finale = () => {
           <div style={{ position: "absolute", left: -280, top: -333, width: 560 * join, height: 6, borderRadius: 3, background: COLOR.amber,
             boxShadow: `0 0 30px ${COLOR.amber}` }} />
           <At x={0} y={-200}>
-            <Words text="Следующий шаг: пилот с двумя банками в песочнице НБК" at={s(1.6)} stagger={2}
+            <Words text="Следующий шаг: пилот с тремя банками и Антифрод-центром НБК" at={s(1.6)} stagger={2}
               style={{ fontSize: 36, color: COLOR.amber, whiteSpace: "nowrap", flexWrap: "nowrap" }} />
           </At>
         </Layer>
